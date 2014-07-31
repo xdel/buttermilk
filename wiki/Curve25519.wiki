@@ -1,15 +1,15 @@
 #summary Curve25519 support in buttermilk.
 #labels Featured
 
-Buttermilk provides some additional syntactic sugar to make it easier to use Curve25519 from Java. These classes are in the com.cryptoregistry.c2 and c2.key packages.
+Buttermilk provides some additional syntactic sugar to make it easier to use Curve25519 from Java. These classes are in the com.cryptoregistry.c2 and com.cryptoregistry.c2.key packages.
 
-Here is an example of generating and using the Elliptic Curve Diffie-Hellman shared secret algorithm with Curve25519:
+Here is an example of generating and using the Elliptic Curve Diffie-Hellman shared secret key algorithm with Curve25519:
 
 {{{
 Curve25519KeyContents keys0 = CryptoFactory.INSTANCE.generateKeys();
-		Curve25519KeyContents keys1 = CryptoFactory.INSTANCE.generateKeys();
-		SecretKey s0 = CryptoFactory.INSTANCE.keyAgreement(keys1.publicKey, keys0.agreementPrivateKey);
-		SecretKey s1 = CryptoFactory.INSTANCE.keyAgreement(keys0.publicKey, keys1.agreementPrivateKey);
+Curve25519KeyContents keys1 = CryptoFactory.INSTANCE.generateKeys();
+SecretKey s0 = CryptoFactory.INSTANCE.keyAgreement(keys1.publicKey, keys0.agreementPrivateKey);
+SecretKey s1 = CryptoFactory.INSTANCE.keyAgreement(keys0.publicKey, keys1.agreementPrivateKey);
 		Assert.assertTrue(test_equal(s0.getBytes(),s1.getBytes()));
 		
 }}} 
@@ -33,14 +33,14 @@ Here's an example of Curve25519 keys serialized as JSON (in unsecured mode):
 }
 }}}
 
-The key for publication would look like this:
+The same key formatted for publication would look like this:
 
 {{{
 {
   "Version" : "Buttermilk Key Materials 1.0",
   "RegHandle" : "Chinese Eyes",
   "Keys" : {
-    "ec3bfc9d-1a6b-4c0e-a668-058a20d5ad4f-U" : {
+    "ec3bfc9d-1a6b-4c0e-a668-058a20d5ad4f-P" : {
       "KeyAlgorithm" : "Curve25519",
       "CreatedOn" : "2014-07-31T09:59:27+0000",
       "Encoding" : "Base64url",
