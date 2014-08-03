@@ -1,0 +1,24 @@
+#summary Buttermilk implementation of Croll's BiEntropy algorithm
+#labels Featured,Entropy
+
+See http://arxiv.org/abs/1305.0954 for algorithm details
+
+Buttermilk contains the first open source java implementation of G J Croll's BiEntropy Algorithm. Binary Entropy is an entropy measure of actual bits, rather than the characters. This is very useful for password analysis or work in the context of key stretching and password-based encryption (PBE).
+
+From the command line:
+
+{{{
+java -cp buttermilk.jar com.cryptoregistry.utility.app.BiEntropy -a password1
+
+{
+  "version" : "Buttermilk BiEntropy v1.0",
+  "algorithm" : "TresBiEntropy",
+  "input" : "password1",
+  "biEntropy" : "0.92",
+  "bitsOfEntropy" : 66
+}
+}}}
+
+
+
+ 
