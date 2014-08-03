@@ -19,6 +19,23 @@ java -cp buttermilk.jar com.cryptoregistry.utility.app.BiEntropy -a password1
 }
 }}}
 
+"TresBiEntropy" uses a logarithmic algorithm rather than a power series.
+
+For individual character bientropy, the "BiEntropy" algorithm computes a power series:
+
+{{{
+
+java -cp buttermilk.jar com.cryptoregistry.utility.app.BiEntropy -a x
+{
+  "version" : "Buttermilk BiEntropy v1.0",
+  "algorithm" : "BiEntropy",
+  "input" : "x",
+  "bits" : "[0, 1, 1, 1, 1, 0, 0, 0]",
+  "biEntropy" : "0.11",
+  "bitsOfEntropy" : 1
+}
+}}} 
+
 
 
  
