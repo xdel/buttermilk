@@ -7,21 +7,7 @@ Buttermilk contains the first open source java implementation of G J Croll's !Bi
 
 From the command line:
 
-{{{
-java -cp buttermilk.jar com.cryptoregistry.utility.app.BiEntropy -a password1
-
-{
-  "version" : "Buttermilk BiEntropy v1.0",
-  "algorithm" : "TresBiEntropy",
-  "input" : "password1",
-  "biEntropy" : "0.92",
-  "bitsOfEntropy" : 66
-}
-}}}
-
-!TresBiEntropy uses a logarithmic algorithm rather than a power series.
-
-For individual character bientropy, the !BiEntropy algorithm computes a power series:
+For individual character bientropy (one byte), the !BiEntropy algorithm computes a power series:
 
 {{{
 
@@ -36,6 +22,21 @@ java -cp buttermilk.jar com.cryptoregistry.utility.app.BiEntropy -a x
 }
 }}} 
 
+This is useful for academic work. For practical analysis of arbitrary length strings we use the !TresBiEntropy variant:
+
+{{{
+java -cp buttermilk.jar com.cryptoregistry.utility.app.BiEntropy -a password1
+
+{
+  "version" : "Buttermilk BiEntropy v1.0",
+  "algorithm" : "TresBiEntropy",
+  "input" : "password1",
+  "biEntropy" : "0.92",
+  "bitsOfEntropy" : 66
+}
+}}}
+
+!TresBiEntropy is a logarithmic summation rather than a power series.
 
 
  
