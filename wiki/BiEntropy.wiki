@@ -11,7 +11,7 @@ For individual character bientropy (one byte), the !BiEntropy algorithm computes
 
 {{{
 
-java -cp buttermilk.jar com.cryptoregistry.utility.app.BiEntropy -a x
+bientropy.sh -a x
 {
   "version" : "Buttermilk BiEntropy v1.0",
   "algorithm" : "BiEntropy",
@@ -25,7 +25,8 @@ java -cp buttermilk.jar com.cryptoregistry.utility.app.BiEntropy -a x
 This is useful for academic work. For practical analysis of arbitrary length strings we use the !TresBiEntropy variant (which is invoked when the input is more than one byte):
 
 {{{
-java -cp buttermilk.jar com.cryptoregistry.utility.app.BiEntropy -a password1
+
+bientropy.sh -a password1
 
 {
   "version" : "Buttermilk BiEntropy v1.0",
@@ -37,6 +38,12 @@ java -cp buttermilk.jar com.cryptoregistry.utility.app.BiEntropy -a password1
 }}}
 
 !TresBiEntropy uses a logarithmic summation rather than a power series.
+
+Here's some source doe for this stuff:
+
+http://buttermilk.googlecode.com/svn/trunk/buttermilk-core/src/main/java/com/cryptoregistry/util/entropy/
+
+http://buttermilk.googlecode.com/svn/trunk/utility-apps/src/main/java/com/cryptoregistry/utility/app/BiEntropy.java
 
 
  
