@@ -39,7 +39,7 @@ bientropy.sh -a password1
 
 !TresBiEntropy uses a logarithmic summation rather than a power series.
 
-Here's some source doe for this stuff:
+Here's some source code for this stuff:
 
 http://buttermilk.googlecode.com/svn/trunk/buttermilk-core/src/main/java/com/cryptoregistry/util/entropy/
 
