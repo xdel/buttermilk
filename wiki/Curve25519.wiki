@@ -1,5 +1,5 @@
 #summary Curve25519 support in buttermilk.
-#labels Featured
+#labels Featured,Curve25519
 
 Buttermilk provides some additional syntactic sugar to make it easier to use Curve25519 from Java. These classes are in the com.cryptoregistry.c2 and com.cryptoregistry.c2.key packages.
 
@@ -50,6 +50,8 @@ The same key formatted for publication would look like this:
 }
 }}}
 
+Here's some source code from the junits on this:
 
+http://buttermilk.googlecode.com/svn/trunk/buttermilk-core/src/test/java/com/cryptoregistry/c2/Curve25519Test.java
 
  
