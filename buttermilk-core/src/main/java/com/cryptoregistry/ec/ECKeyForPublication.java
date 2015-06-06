@@ -5,6 +5,8 @@
  */
 package com.cryptoregistry.ec;
 
+import java.io.IOException;
+import java.io.StringWriter;
 import java.util.Date;
 
 import com.cryptoregistry.CryptoKey;
@@ -12,7 +14,12 @@ import com.cryptoregistry.CryptoKeyMetadata;
 import com.cryptoregistry.ECCustomCurve;
 import com.cryptoregistry.KeyGenerationAlgorithm;
 import com.cryptoregistry.Verifier;
+import com.cryptoregistry.formats.FormatUtil;
 import com.cryptoregistry.formats.KeyFormat;
+import com.cryptoregistry.util.MapIterator;
+import com.cryptoregistry.util.TimeUtil;
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonGenerator;
 
 import x.org.bouncycastle.crypto.params.ECDomainParameters;
 import x.org.bouncycastle.crypto.params.ECPublicKeyParameters;
@@ -147,5 +154,45 @@ public class ECKeyForPublication  implements CryptoKey,Verifier {
 	@Override
 	public CryptoKeyMetadata getMetadata() {
 		return metadata;
+	}
+
+	@Override
+	public String formatJSON() {
+		StringWriter privateDataWriter = new StringWriter();
+		JsonFactory f = new JsonFactory();
+		JsonGenerator g = null;
+		try {
+			g = f.createGenerator(privateDataWriter);
+			g.useDefaultPrettyPrinter();
+			g.writeStartObject();
+			g.writeObjectFieldStart(getHandle()+"-P");
+			g.writeStringField("KeyAlgorithm", "EC");
+			g.writeStringField("CreatedOn", TimeUtil.format(metadata.createdOn));
+			g.writeStringField("Encoding", metadata.format.encodingHint.toString());
+			g.writeStringField("Q", FormatUtil.serializeECPoint(Q, metadata.format.encodingHint));
+			if(usesNamedCurve()) {
+				g.writeStringField("CurveName", curveName);
+			}else{
+				g.writeObjectFieldStart("Curve");
+				MapIterator iter = (MapIterator) getCustomCurveDefinition();
+				while(iter.hasNext()) {
+					String key = iter.next();
+					String value = iter.get(key);
+					g.writeStringField(key, value);
+				}
+				g.writeEndObject();
+			}
+			g.writeEndObject();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				g.close();
+			} catch (IOException e) {
+				throw new RuntimeException(e);
+			}
+		}
+
+		return privateDataWriter.toString();
 	}
 }

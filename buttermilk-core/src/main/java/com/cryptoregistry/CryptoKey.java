@@ -14,5 +14,6 @@ package com.cryptoregistry;
 public interface CryptoKey {
 
 	public CryptoKeyMetadata getMetadata();
+	public String formatJSON();
 
 }

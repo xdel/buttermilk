@@ -5,10 +5,15 @@
  */
 package com.cryptoregistry;
 
+import java.io.IOException;
+import java.io.StringWriter;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.UUID;
+
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonGenerator;
 
 /**
  * Backing for a contact record. 
@@ -68,6 +73,40 @@ public class CryptoContact {
 
 	public String getHandle() {
 		return handle;
+	}
+	
+	/**
+	 * Formats this contact record including the handle
+	 * 
+	 * @return
+	 */
+	public String formatJSON() {
+		StringWriter writer = new StringWriter();
+		JsonFactory f = new JsonFactory();
+		JsonGenerator g = null;
+		try {
+			g = f.createGenerator(writer);
+			g.writeStartObject();
+			g.writeObjectFieldStart(getHandle());
+			Iterator<String> inner = iterator();
+			while(inner.hasNext()){
+				String key = inner.next();
+				if(key.equals("Handle")) continue;
+				g.writeStringField(key, get(key));
+			}
+			g.writeEndObject();
+		} catch (IOException x) {
+			throw new RuntimeException(x);
+		} finally {
+			try {
+				if (g != null)
+					g.close();
+			} catch (IOException e) {
+				throw new RuntimeException(e);
+			}
+		}
+			
+		return writer.toString();
 	}
 
 }

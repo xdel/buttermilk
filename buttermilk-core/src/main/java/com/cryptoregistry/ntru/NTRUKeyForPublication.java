@@ -5,11 +5,19 @@
  */
 package com.cryptoregistry.ntru;
 
+import java.io.IOException;
+import java.io.StringWriter;
+
 import com.cryptoregistry.CryptoKey;
 import com.cryptoregistry.CryptoKeyMetadata;
+import com.cryptoregistry.KeyGenerationAlgorithm;
 import com.cryptoregistry.Verifier;
+import com.cryptoregistry.formats.NTRUParametersFormatter;
 import com.cryptoregistry.util.ArmoredCompressedString;
 import com.cryptoregistry.util.ArrayUtil;
+import com.cryptoregistry.util.TimeUtil;
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonGenerator;
 
 import x.org.bouncycastle.pqc.crypto.ntru.NTRUEncryptionParameters;
 import x.org.bouncycastle.pqc.crypto.ntru.NTRUEncryptionPublicKeyParameters;
@@ -17,6 +25,7 @@ import x.org.bouncycastle.pqc.math.ntru.polynomial.IntegerPolynomial;
 
 /**
  * When parameterName is defined, we can format this using our internal definitions (NTRUNamedParams)
+ * 
  * @author Dave
  *
  */
@@ -121,6 +130,42 @@ public class NTRUKeyForPublication implements CryptoKey,Verifier {
 			return true;
 		}
 		return false;
+	}
+
+	@Override
+	public String formatJSON() {
+		StringWriter writer = new StringWriter();
+		JsonFactory f = new JsonFactory();
+		JsonGenerator g = null;
+		try {
+			g = f.createGenerator(writer);
+			g.useDefaultPrettyPrinter();
+			g.writeStartObject();
+			g.writeObjectFieldStart(metadata.handle+"-P");
+			g.writeStringField("KeyAlgorithm", KeyGenerationAlgorithm.NTRU.toString());
+			g.writeStringField("CreatedOn", TimeUtil.format(metadata.createdOn));
+			//g.writeStringField("Encoding", enc.toString());
+			
+			g.writeStringField("h", wrappedH().toString());
+			
+			NTRUParametersFormatter pFormat = null;
+			if(parameterEnum == null) pFormat = new NTRUParametersFormatter(params);
+			else pFormat = new NTRUParametersFormatter(parameterEnum);
+			pFormat.format(g, writer);
+			
+			g.writeEndObject();
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				g.close();
+			} catch (IOException e) {
+				throw new RuntimeException(e);
+			}
+		}
+
+		return writer.toString();
 	}
 
 }
