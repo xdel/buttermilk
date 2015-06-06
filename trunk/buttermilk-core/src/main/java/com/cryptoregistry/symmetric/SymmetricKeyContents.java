@@ -61,4 +61,10 @@ public class SymmetricKeyContents extends SecretKey implements CryptoKey  {
 		return "SymmetricKeyContents [metadata=" + metadata + "]";
 	}
 
+	@Override
+	public String formatJSON() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

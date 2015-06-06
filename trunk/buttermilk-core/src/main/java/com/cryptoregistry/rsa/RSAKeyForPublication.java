@@ -5,11 +5,17 @@
  */
 package com.cryptoregistry.rsa;
 
+import java.io.IOException;
+import java.io.StringWriter;
 import java.math.BigInteger;
 
 import com.cryptoregistry.CryptoKey;
 import com.cryptoregistry.CryptoKeyMetadata;
 import com.cryptoregistry.Verifier;
+import com.cryptoregistry.formats.FormatUtil;
+import com.cryptoregistry.util.TimeUtil;
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonGenerator;
 
 import x.org.bouncycastle.crypto.params.RSAKeyParameters;
 
@@ -77,6 +83,36 @@ public class RSAKeyForPublication  implements CryptoKey,Verifier {
 	@Override
 	public CryptoKeyMetadata getMetadata() {
 		return metadata;
+	}
+
+	@Override
+	public String formatJSON() {
+		StringWriter writer = new StringWriter();
+		JsonFactory f = new JsonFactory();
+		JsonGenerator g = null;
+		try {
+			g = f.createGenerator(writer);
+			g.useDefaultPrettyPrinter();
+			g.writeStartObject();
+			g.writeObjectFieldStart(metadata.getHandle()+"-P");
+			g.writeStringField("KeyAlgorithm", "RSA");
+			g.writeStringField("CreatedOn", TimeUtil.format(metadata.createdOn));
+			g.writeStringField("Encoding", metadata.format.encodingHint.toString());
+			g.writeStringField("Strength", String.valueOf(metadata.strength));
+			g.writeStringField("Modulus", FormatUtil.wrap(metadata.format.encodingHint, modulus));
+			g.writeStringField("PublicExponent", FormatUtil.wrap(metadata.format.encodingHint, publicExponent));
+			g.writeEndObject();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				g.close();
+			} catch (IOException e) {
+				throw new RuntimeException(e);
+			}
+		}
+
+		return writer.toString();
 	}
 	
 	
