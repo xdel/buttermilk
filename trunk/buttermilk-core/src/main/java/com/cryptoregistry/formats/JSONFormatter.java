@@ -35,6 +35,7 @@ import com.fasterxml.jackson.core.JsonGenerator;
  * 
  * Version
  * Registration Handle
+ * Email
  * Assertions
  *   uuid
  *     IdentityPoints=100
@@ -89,6 +90,7 @@ public class JSONFormatter {
 
 	protected String version;
 	protected String registrationHandle;
+	protected String email;
 	protected List<CryptoKey> keys;
 	protected List<CryptoContact> contacts;
 	protected List<CryptoSignature> signatures;
@@ -102,6 +104,18 @@ public class JSONFormatter {
 	public JSONFormatter(String handle) {
 		version = Version.OVERALL_VERSION;
 		this.registrationHandle = handle;
+		this.email = "";
+		keys = new ArrayList<CryptoKey>();
+		contacts = new ArrayList<CryptoContact>();
+		signatures = new ArrayList<CryptoSignature>();
+		mapData = new ArrayList<MapData>();
+		listData = new ArrayList<ListData>();
+	}
+	
+	public JSONFormatter(String handle, String email) {
+		version = Version.OVERALL_VERSION;
+		this.registrationHandle = handle;
+		this.email = email;
 		keys = new ArrayList<CryptoKey>();
 		contacts = new ArrayList<CryptoContact>();
 		signatures = new ArrayList<CryptoSignature>();
@@ -109,13 +123,14 @@ public class JSONFormatter {
 		listData = new ArrayList<ListData>();
 	}
 
-	public JSONFormatter(String version, String registrationHandle,
+	public JSONFormatter(String version, String registrationHandle, String email,
 			List<CryptoKey> keys, List<CryptoContact> contacts,
 			List<CryptoSignature> signatures, List<MapData> mapData, 
 			List<ListData> listData) {
 		super();
 		this.version = version;
 		this.registrationHandle = registrationHandle;
+		this.email = email;
 		this.keys = keys;
 		this.contacts = contacts;
 		this.signatures = signatures;
@@ -192,6 +207,7 @@ public class JSONFormatter {
 			g.writeStartObject();
 			g.writeStringField("Version", Version.OVERALL_VERSION);
 			g.writeStringField("RegHandle", registrationHandle);
+			g.writeStringField("Email", email);
 			
 			if(contacts.size()> 0) {
 				
