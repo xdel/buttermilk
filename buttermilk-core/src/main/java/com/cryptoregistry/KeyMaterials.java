@@ -20,6 +20,7 @@ public interface KeyMaterials {
 	
 	String version();
 	String regHandle();
+	String email();
 	List<CryptoKeyWrapper> keys();
 	List<CryptoContact> contacts();
 	List<CryptoSignature> signatures();

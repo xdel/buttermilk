@@ -123,6 +123,10 @@ public class JSONReader {
 			public String regHandle() {
 				return String.valueOf(map.get("RegHandle"));
 			}
+			
+			public String email() {
+				return String.valueOf(map.get("Email"));
+			}
 
 			/**
 			 * Create a list of CryptoKeyWrappers
