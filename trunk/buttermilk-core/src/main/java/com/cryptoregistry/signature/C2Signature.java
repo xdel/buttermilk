@@ -76,4 +76,10 @@ public class C2Signature implements SignatureBytes {
 		return this.r.decodeToBytes();
 	}
 
+	@Override
+	public boolean hasTwoMembers() {
+		return true;
+	}
+
+	
 }
