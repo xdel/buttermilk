@@ -5,10 +5,15 @@
  */
 package com.cryptoregistry;
 
+import java.io.IOException;
+import java.io.StringWriter;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.UUID;
+
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonGenerator;
 
 public class MapData {
 
@@ -76,6 +81,33 @@ public class MapData {
 		return "MapData [uuid=" + uuid + ", data=" + data + "]";
 	}
 	
-	
+	public String formatJSON() {
+		StringWriter writer = new StringWriter();
+		JsonFactory f = new JsonFactory();
+		JsonGenerator g = null;
+		try {
+			g = f.createGenerator(writer);
+			g.writeStartObject();
+			g.writeObjectFieldStart(uuid);
+			Iterator<String> inner = data.keySet().iterator();
+			while(inner.hasNext()){
+				String key = inner.next();
+				if(key.equals("Handle")) continue;
+				g.writeStringField(key, data.get(key));
+			}
+			g.writeEndObject();
+		} catch (IOException x) {
+			throw new RuntimeException(x);
+		} finally {
+			try {
+				if (g != null)
+					g.close();
+			} catch (IOException e) {
+				throw new RuntimeException(e);
+			}
+		}
+			
+		return writer.toString();
+	}
 
 }
