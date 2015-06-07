@@ -122,7 +122,7 @@ public class Curve25519KeyForPublication  implements CryptoKey, Verifier {
 			JsonGenerator g = null;
 			try {
 				g = f.createGenerator(privateDataWriter);
-				g.useDefaultPrettyPrinter();
+				//g.useDefaultPrettyPrinter();
 				g.writeStartObject();
 				g.writeObjectFieldStart(metadata.getHandle()+"-P");
 				g.writeStringField("KeyAlgorithm", "Curve25519");
