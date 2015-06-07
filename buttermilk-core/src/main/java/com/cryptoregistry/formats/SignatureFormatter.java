@@ -6,6 +6,7 @@
 package com.cryptoregistry.formats;
 
 import java.io.IOException;
+import java.io.StringWriter;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -13,10 +14,11 @@ import java.util.List;
 
 import com.cryptoregistry.signature.CryptoSignature;
 import com.cryptoregistry.util.TimeUtil;
+import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.core.JsonGenerator;
 
-class SignatureFormatter {
+public class SignatureFormatter {
 
 	private List<CryptoSignature> list;
 	
@@ -56,6 +58,26 @@ class SignatureFormatter {
 			g.writeEndArray();
 			g.writeEndObject();
 		}
+	}
+	
+	public String format(){
+		StringWriter writer = new StringWriter();
+		JsonFactory f = new JsonFactory();
+		JsonGenerator g = null;
+		try {
+			g = f.createGenerator(writer);
+			format(g, writer);
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				g.close();
+			} catch (IOException e) {
+				throw new RuntimeException(e);
+			}
+		}
+
+		return writer.toString();
 	}
 
 }
