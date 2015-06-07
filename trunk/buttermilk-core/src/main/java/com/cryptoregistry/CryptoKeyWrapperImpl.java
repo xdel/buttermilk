@@ -33,6 +33,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  * 
  * isSecure() - tells us if the object is an instance of ArmoredPBEResult
  * getMetadata() - if not secure, we can get the key generation algorithm with this method
+ * getKeyContents() - returns a CryptoKey
  * 
  * </pre>
  * @author Dave
@@ -172,8 +173,8 @@ public class CryptoKeyWrapperImpl implements CryptoKeyWrapper {
 	}
 
 	@Override
-	public Object getKeyContents() {
-		return wrapped;
+	public CryptoKey getKeyContents() {
+		return (CryptoKey) wrapped;
 	}
 
 	@Override

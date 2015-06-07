@@ -23,7 +23,7 @@ public interface CryptoKeyWrapper {
 	// net result is key contents becomes secure
 	void lock(KeyFormat format); // throws RuntimeException if contents is ForPublication or there was error
 	
-	Object getKeyContents();
+	CryptoKey getKeyContents();
 	void setKeyContents(Object obj);
 	
 }
