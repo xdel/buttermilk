@@ -59,4 +59,9 @@ public class ECDSASignature implements SignatureBytes {
 		return s.toByteArray();
 	}
 
+	@Override
+	public boolean hasTwoMembers() {
+		return true;
+	}
+
 }

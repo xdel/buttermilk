@@ -17,4 +17,6 @@ public interface SignatureBytes {
 
 	public byte [] b1();
 	public byte [] b2();
+	
+	public boolean hasTwoMembers();
 }

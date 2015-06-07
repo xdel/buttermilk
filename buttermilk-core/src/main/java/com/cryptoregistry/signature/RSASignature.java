@@ -49,14 +49,18 @@ public class RSASignature implements SignatureBytes {
 
 	@Override
 	public byte[] b1() {
-		// TODO Auto-generated method stub
-		return null;
+		return s.decodeToBytes();
+	}
+
+	
+	@Override
+	public byte[] b2() {
+		throw new UnsupportedOperationException("not used in the RSA signature algorithm");
 	}
 
 	@Override
-	public byte[] b2() {
-		// TODO Auto-generated method stub
-		return null;
+	public boolean hasTwoMembers() {
+		return false;
 	}
 
 }
