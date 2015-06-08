@@ -39,16 +39,23 @@ public class CryptoContact {
 		this.handle = handle;
 	}
 	
+	/**
+	 * Validates content values for length - security feature
+	 *  
+	 * @param handle
+	 * @param contents
+	 */
 	public CryptoContact(String handle, Map<String,Object> contents) {
 		map = new LinkedHashMap<String,String>();
 		this.handle = handle;
 		Iterator<String> iter = contents.keySet().iterator();
 		while(iter.hasNext()){
 			String key = iter.next();
-			String value = map.get(key);
+			Object value = contents.get(key);
+			String val = String.valueOf(value);
 			if(key.length() > MAX_KEY_LENGTH) throw new RuntimeException("key too long");
-			if(value.length() > MAX_VALUE_LENGTH) throw new RuntimeException("value too long");
-			map.put(key, value);
+			if(val.length() > MAX_VALUE_LENGTH) throw new RuntimeException("value too long");
+			map.put(key, val);
 		}
 	}
 	
