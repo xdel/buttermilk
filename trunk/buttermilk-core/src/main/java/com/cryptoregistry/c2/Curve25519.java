@@ -24,6 +24,8 @@ package com.cryptoregistry.c2;
  * Implementation of Daniel J Bernstein's Curve 25519 code by Matthijs van Duin and Dmitry Skiba. There
  * is a patch to the sign method provided by DoctorEvil from https://gist.github.com/doctorevil/9521116.
  * 
+ * Presumably we will lose this soon as google.code is going away: https://code.google.com/p/curve25519-java/
+ * 
  * I've looked into how one might use the parameters of Curve 25519 with the Bouncy Castle EC
  * code I have in this same library. Apparently Curve 25519 is expressed in a form which makes 
  * this quite difficult. See the discussion here: http://bouncy-castle.1462172.n4.nabble.com/SafeCurves-td4656794.html
