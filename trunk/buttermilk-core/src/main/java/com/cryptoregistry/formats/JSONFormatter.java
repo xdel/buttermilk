@@ -35,7 +35,7 @@ import com.fasterxml.jackson.core.JsonGenerator;
  * 
  * Version
  * Registration Handle
- * Email
+ * Private Notification Email
  * Assertions
  *   uuid
  *     IdentityPoints=100
