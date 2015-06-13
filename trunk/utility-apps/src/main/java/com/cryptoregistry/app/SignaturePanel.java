@@ -18,6 +18,7 @@ import java.net.URISyntaxException;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JLabel;
 import javax.swing.GroupLayout;
@@ -71,6 +72,7 @@ public class SignaturePanel extends JPanel {
 	private JSONFormatter requestFormatter;
 	private JSONFormatter secureKeyFormatter;
 
+	private final String copyrightTemplate = "Copyright 2015 by <Your Legal Name>. All Rights Reserved";
 	public SignaturePanel(final Properties props) {
 		super();
 		
@@ -80,7 +82,7 @@ public class SignaturePanel extends JPanel {
 		textArea.setEditable(true);
 		textArea.setLineWrap(true);
 		textArea.setWrapStyleWord(true);
-		textArea.setText("Copyright 2015 by <Your Legal Name>. All Rights Reserved");
+		textArea.setText(copyrightTemplate);
 		
 		btnCreateSignature = new JButton("Create Signature");
 		chckbxIAgreeTo = new JCheckBox("I agree to cryptoregistry.com's Terms of Service");
@@ -90,6 +92,13 @@ public class SignaturePanel extends JPanel {
 		chckbxIAgreeTo.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				if(textArea.getText().equals(copyrightTemplate)){
+					JOptionPane.showMessageDialog((JButton)e.getSource(),
+						    "Please update the copyright text.",
+						    "Input Required",
+						    JOptionPane.WARNING_MESSAGE);
+					return;
+				}
 				if(chckbxIAgreeTo.isSelected() && chckbxIAffirmThe.isSelected()) {
 					btnCreateSignature.setEnabled(true);
 				}else{
