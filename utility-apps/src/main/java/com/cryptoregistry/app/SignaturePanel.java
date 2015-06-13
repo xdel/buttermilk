@@ -224,12 +224,14 @@ public class SignaturePanel extends JPanel {
 		affirmations.put("InfoAffirmation", this.chckbxIAffirmThe.getText());
 		
 		String regHandle = SwingRegistrationWizardGUI.km.getRegHandle();
+		String privateEmail = SwingRegistrationWizardGUI.km.getPrivateEmail();
 		KeyGenerationAlgorithm alg = SwingRegistrationWizardGUI.km.getKeyAlg();
 		CryptoKey pubKey = SwingRegistrationWizardGUI.km.getKeyForPublication();
 		CryptoKey secureKey = SwingRegistrationWizardGUI.km.getSecureKey();
 		List<CryptoContact> contacts = SwingRegistrationWizardGUI.km.getContacts();
 		
-		requestFormatter = new JSONFormatter(regHandle);
+		requestFormatter = new JSONFormatter(regHandle,privateEmail);
+		
 		secureKeyFormatter = new JSONFormatter(regHandle);
 		secureKeyFormatter.add(secureKey);
 		
