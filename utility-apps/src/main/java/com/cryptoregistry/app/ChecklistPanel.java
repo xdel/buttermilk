@@ -6,6 +6,8 @@
 package com.cryptoregistry.app;
 
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
@@ -75,6 +77,12 @@ public class ChecklistPanel extends JPanel implements PropertyChangeListener {
 		panel1.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 		btnRegister = new JButton("Send Registration Request");
 		btnRegister.setEnabled(false);
+		btnRegister.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// do registration!
+			}
+		});
 		panel1.add(btnRegister);
 		
 		add(panel1);
@@ -131,6 +139,7 @@ public class ChecklistPanel extends JPanel implements PropertyChangeListener {
 			}
 			case "signature": {
 				this.lblSignatureCompleted.setIcon(createImageIcon("/checkbox_full.png", ""));
+				this.btnRegister.setEnabled(true);
 				break;
 			}
 			case "formatter": {

@@ -18,7 +18,6 @@ import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
 
 import asia.redact.bracket.properties.Properties;
 
@@ -26,7 +25,9 @@ public class SettingsPanel extends JPanel {
 
 	private static final long serialVersionUID = 1L;
 	private JTextField parentFolderTextField;
+	
 	JFileChooser fc;
+	private JTextField privateEmailTextField;
 
 	public SettingsPanel(Properties props) {
 		
@@ -64,19 +65,24 @@ public class SettingsPanel extends JPanel {
 			}
 		});
 		
-		JCheckBox chckbxCreateIfDoes = new JCheckBox("Create folder if does not exist");
-		chckbxCreateIfDoes.setSelected(true);
-		
 		JButton btnOk = new JButton("OK");
 		btnOk.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				SwingRegistrationWizardGUI.km.setPrivateEmail(privateEmailTextField.getText().trim());
 				SwingRegistrationWizardGUI.km.setKmPath(parentFolderTextField.getText().trim());
 				SwingRegistrationWizardGUI.tabbedPane.setSelectedIndex(2);
 			}
 			
 		});
+		
+		JLabel lblPrivateEmail = new JLabel("Private Email");
+		
+		privateEmailTextField = new JTextField();
+		privateEmailTextField.setColumns(10);
+		
+		JLabel lblThisEmailAddress = new JLabel("<html><i>This email address is used in the registration process only<br> and is not publically displayed</i></html>");
 		
 		GroupLayout groupLayout = new GroupLayout(this);
 		groupLayout.setHorizontalGroup(
@@ -84,14 +90,19 @@ public class SettingsPanel extends JPanel {
 				.addGroup(groupLayout.createSequentialGroup()
 					.addContainerGap()
 					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-						.addComponent(chckbxCreateIfDoes)
+						.addComponent(lblThisEmailAddress, GroupLayout.PREFERRED_SIZE, 339, GroupLayout.PREFERRED_SIZE)
+						.addComponent(btnOk, Alignment.TRAILING)
 						.addGroup(groupLayout.createSequentialGroup()
-							.addComponent(lblKeyMaterialsFolder)
+							.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+								.addComponent(lblKeyMaterialsFolder)
+								.addComponent(lblPrivateEmail))
 							.addPreferredGap(ComponentPlacement.RELATED)
-							.addComponent(parentFolderTextField, GroupLayout.DEFAULT_SIZE, 254, Short.MAX_VALUE)
-							.addGap(8)
-							.addComponent(btnBrowse))
-						.addComponent(btnOk, Alignment.TRAILING))
+							.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+								.addComponent(privateEmailTextField, GroupLayout.PREFERRED_SIZE, 255, GroupLayout.PREFERRED_SIZE)
+								.addGroup(groupLayout.createSequentialGroup()
+									.addComponent(parentFolderTextField, GroupLayout.DEFAULT_SIZE, 254, Short.MAX_VALUE)
+									.addGap(8)
+									.addComponent(btnBrowse)))))
 					.addContainerGap())
 		);
 		groupLayout.setVerticalGroup(
@@ -103,8 +114,12 @@ public class SettingsPanel extends JPanel {
 						.addComponent(parentFolderTextField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
 						.addComponent(btnBrowse))
 					.addPreferredGap(ComponentPlacement.RELATED)
-					.addComponent(chckbxCreateIfDoes)
-					.addPreferredGap(ComponentPlacement.RELATED, 207, Short.MAX_VALUE)
+					.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
+						.addComponent(lblPrivateEmail)
+						.addComponent(privateEmailTextField, GroupLayout.PREFERRED_SIZE, 23, GroupLayout.PREFERRED_SIZE))
+					.addPreferredGap(ComponentPlacement.UNRELATED)
+					.addComponent(lblThisEmailAddress, GroupLayout.PREFERRED_SIZE, 46, GroupLayout.PREFERRED_SIZE)
+					.addPreferredGap(ComponentPlacement.RELATED, 146, Short.MAX_VALUE)
 					.addComponent(btnOk)
 					.addContainerGap())
 		);
