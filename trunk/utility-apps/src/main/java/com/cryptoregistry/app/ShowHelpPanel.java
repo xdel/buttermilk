@@ -8,6 +8,7 @@ package com.cryptoregistry.app;
 import javax.swing.JPanel;
 import javax.swing.JTextPane;
 
+import java.awt.Color;
 import java.awt.GridLayout;
 import java.io.IOException;
 
@@ -25,6 +26,7 @@ public class ShowHelpPanel extends JPanel {
 	public ShowHelpPanel(Properties props) {
 		super();
 		setLayout(new GridLayout(1, 0, 0, 0));
+		setBackground(new Color(208, 228, 254));
 		
 		java.net.URL helpURL = this.getClass().getResource("/helptext.html");
 		

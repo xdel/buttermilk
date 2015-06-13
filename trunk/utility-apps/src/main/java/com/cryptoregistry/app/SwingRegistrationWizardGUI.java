@@ -5,6 +5,7 @@
  */
 package com.cryptoregistry.app;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.io.InputStream;
 
@@ -56,6 +57,7 @@ public class SwingRegistrationWizardGUI {
 	       
 	        tabbedPane = new JTabbedPane();
 	        tabbedPane.setPreferredSize(new Dimension(970,350));
+	        tabbedPane.setBackground(new Color(208, 228, 254));
 	       
 	        showHelpPanel = new ShowHelpPanel(props);
 	        settingsPanel = new SettingsPanel(props);
@@ -68,12 +70,19 @@ public class SwingRegistrationWizardGUI {
 	        keyMaterialsPanel = new KeyMaterialsPanel(props);
 	        
 	    	settingsPanel.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
+	    	settingsPanel.setBackground(new Color(208, 228, 254));
 	    	regHandlePanel.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
+	    	regHandlePanel.setBackground(new Color(208, 228, 254));
 	    	createKeyPanel.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
+	    	createKeyPanel.setBackground(new Color(208, 228, 254));
 	    	personalContactPanel.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
+	    	personalContactPanel.setBackground(new Color(208, 228, 254));
 	    	businessContactPanel.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
+	    	businessContactPanel.setBackground(new Color(208, 228, 254));
 	    	websiteContactPanel.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
+	    	websiteContactPanel.setBackground(new Color(208, 228, 254));
 	    	signaturePanel.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
+	    	signaturePanel.setBackground(new Color(208, 228, 254));
 	        
 	        tabbedPane.addTab("Introduction", showHelpPanel);
 	        tabbedPane.addTab("Settings", settingsPanel);
@@ -84,6 +93,7 @@ public class SwingRegistrationWizardGUI {
 	        tabbedPane.addTab("Website Contact", websiteContactPanel);
 	        tabbedPane.addTab("Signature", signaturePanel);
 	        tabbedPane.addTab("Generated Key Materials", keyMaterialsPanel);
+	        tabbedPane.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 	        
 	        ChangeListener changeListener = new ChangeListener() {
 
@@ -140,6 +150,7 @@ public class SwingRegistrationWizardGUI {
 	        outer.setLayout(new BoxLayout(outer, BoxLayout.LINE_AXIS));
 	        outer.add(tabbedPane);
 	        outer.add(new ChecklistPanel(km));
+	        outer.setBackground(new Color(208, 228, 254));
 	        
 	        frame.getContentPane().add(outer);
 	        
