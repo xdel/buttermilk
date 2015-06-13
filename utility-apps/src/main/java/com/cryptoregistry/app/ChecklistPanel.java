@@ -5,6 +5,7 @@
  */
 package com.cryptoregistry.app;
 
+import java.awt.Color;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -34,6 +35,7 @@ public class ChecklistPanel extends JPanel implements PropertyChangeListener {
 		this();
 		this.km = km;
 		km.addPropertyChangeListener(this);
+		setBackground(new Color(208, 228, 254));
 	}
 	
 
@@ -43,6 +45,7 @@ public class ChecklistPanel extends JPanel implements PropertyChangeListener {
 		this.setLayout(new GridLayout(2,0,0,0));
 		
 		JPanel panel = new JPanel();
+		panel.setBackground(new Color(208, 228, 254));
 		panel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 		
 		panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
@@ -74,6 +77,7 @@ public class ChecklistPanel extends JPanel implements PropertyChangeListener {
 		add(panel);
 		
 		JPanel panel1 = new JPanel();
+		panel1.setBackground(new Color(208, 228, 254));
 		panel1.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 		btnRegister = new JButton("Send Registration Request");
 		btnRegister.setEnabled(false);
