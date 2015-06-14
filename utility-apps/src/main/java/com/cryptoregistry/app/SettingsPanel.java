@@ -74,7 +74,6 @@ public class SettingsPanel extends JPanel {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				String path = parentFolderTextField.getText().trim();
-				System.err.println("Settings Path = "+path);
 				SwingRegistrationWizardGUI.km.setPrivateEmail(privateEmailTextField.getText().trim());
 				SwingRegistrationWizardGUI.km.setKmPath(path);
 				SwingRegistrationWizardGUI.session = new RequestSession(new File(path));

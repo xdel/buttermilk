@@ -303,14 +303,7 @@ public class CreateKeyPanel extends JPanel {
 		File kmDir = SwingRegistrationWizardGUI.session.currentPath();
 		
 		if(!kmDir.exists()){
-			try {
-				System.out.println("creating directory: "+kmDir.getCanonicalPath());
-			} catch (IOException e) {}
 			kmDir.mkdirs();
-		}else{
-			try {
-				System.out.println("Using directory: "+kmDir.getCanonicalPath());
-			} catch (IOException e) {}
 		}
 		
 		// get the proposed Reg Handle
