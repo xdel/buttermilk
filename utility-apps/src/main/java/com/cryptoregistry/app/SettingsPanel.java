@@ -60,7 +60,6 @@ public class SettingsPanel extends JPanel {
 			            try {
 			            	String path = file.getCanonicalPath();
 							parentFolderTextField.setText(path);
-							SwingRegistrationWizardGUI.session = new RequestSession(file);
 						} catch (IOException e1) {}
 			        } else {
 			           
@@ -75,6 +74,7 @@ public class SettingsPanel extends JPanel {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				String path = parentFolderTextField.getText().trim();
+				System.err.println("Settings Path = "+path);
 				SwingRegistrationWizardGUI.km.setPrivateEmail(privateEmailTextField.getText().trim());
 				SwingRegistrationWizardGUI.km.setKmPath(path);
 				SwingRegistrationWizardGUI.session = new RequestSession(new File(path));

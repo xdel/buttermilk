@@ -1,18 +1,23 @@
 package com.cryptoregistry.app;
 
 import java.io.File;
+import java.io.IOException;
 
 public class RequestSession {
 	
 	int counter;
-	File parentPath;
+	final File parentPath;
 
 	public RequestSession(File parentPath) {
+		this.parentPath = parentPath;
 		counter = scan()+1;
 	}
 	
 	public File currentPath() {
 		File path = new File(parentPath, String.valueOf(counter));
+		try {
+			System.err.println("Current path ="+path.getCanonicalPath());
+		} catch (IOException e) {}
 		return path;
 	}
 	
