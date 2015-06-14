@@ -5,6 +5,7 @@
  */
 package com.cryptoregistry.app;
 
+//import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 import javax.swing.JTextPane;
 
@@ -27,12 +28,15 @@ public class ShowHelpPanel extends JPanel {
 		super();
 		setLayout(new GridLayout(1, 0, 0, 0));
 		setBackground(new Color(208, 228, 254));
+	//	this.setBorder(BorderFactory.createLineBorder(new Color(208, 228, 254)));
 		
 		java.net.URL helpURL = this.getClass().getResource("/helptext.html");
 		
 		final JTextPane textPane = new JTextPane();
+		textPane.setBackground(new Color(208, 228, 254));
 		textPane.setEditable(false);
 		JScrollPane scrollPane = new JScrollPane(textPane);
+		scrollPane.setBackground(new Color(208, 228, 254));
 		add(scrollPane);
 		
 		textPane.addHyperlinkListener(new HyperlinkListener() {

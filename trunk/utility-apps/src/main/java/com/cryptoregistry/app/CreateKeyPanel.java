@@ -301,6 +301,7 @@ public class CreateKeyPanel extends JPanel {
 		
 		// check the directory destination
 		File kmDir = SwingRegistrationWizardGUI.session.currentPath();
+		RequestSession session = SwingRegistrationWizardGUI.session;
 		if(!kmDir.exists()){
 			try {
 				System.out.println("creating directory: "+kmDir.getCanonicalPath());
