@@ -367,15 +367,18 @@ public class SignaturePanel extends JPanel {
 		 StringWriter writer = new StringWriter();
 		 requestFormatter.format(writer);
 		 String output = writer.toString();
-		 String path = SwingRegistrationWizardGUI.settingsPanel.getParentFolderTextField().getText().trim();
-		 File reqFile = new File(new File(path), "request.json.txt");
+		 File path = SwingRegistrationWizardGUI.session.currentPath();
+		 if(!path.exists()) {
+			 path.mkdirs();
+		 }
+		 File reqFile = new File(path, "request.json.txt");
 		 writeFile(reqFile, output);
 		 SwingRegistrationWizardGUI.keyMaterialsPanel.getRequestTextPane().setText(output);
 		 
 		 writer = new StringWriter();
 		 secureKeyFormatter.format(writer);
 		 output = writer.toString();
-		 File securedFile = new File(new File(path), "secureKey.json.txt");
+		 File securedFile = new File(path, "secureKey.json.txt");
 		 writeFile(securedFile, output);
 		 SwingRegistrationWizardGUI.keyMaterialsPanel.getSecureKeyTextPane().setText(output);
 		 

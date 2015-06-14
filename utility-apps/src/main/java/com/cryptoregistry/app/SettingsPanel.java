@@ -33,6 +33,8 @@ public class SettingsPanel extends JPanel {
 		
 		String userDir = System.getProperties().getProperty("user.dir");
 		File defaultPath = new File(new File(userDir), "km");
+		SwingRegistrationWizardGUI.session = new RequestSession(defaultPath);
+		 
 		String canonical = "";
 		
 		try {
@@ -56,7 +58,9 @@ public class SettingsPanel extends JPanel {
 				 if (returnVal == JFileChooser.APPROVE_OPTION) {
 			            File file = fc.getSelectedFile();
 			            try {
-							parentFolderTextField.setText(file.getCanonicalPath());
+			            	String path = file.getCanonicalPath();
+							parentFolderTextField.setText(path);
+							SwingRegistrationWizardGUI.session = new RequestSession(file);
 						} catch (IOException e1) {}
 			        } else {
 			           
@@ -70,8 +74,10 @@ public class SettingsPanel extends JPanel {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				String path = parentFolderTextField.getText().trim();
 				SwingRegistrationWizardGUI.km.setPrivateEmail(privateEmailTextField.getText().trim());
-				SwingRegistrationWizardGUI.km.setKmPath(parentFolderTextField.getText().trim());
+				SwingRegistrationWizardGUI.km.setKmPath(path);
+				SwingRegistrationWizardGUI.session = new RequestSession(new File(path));
 				SwingRegistrationWizardGUI.tabbedPane.setSelectedIndex(2);
 			}
 			

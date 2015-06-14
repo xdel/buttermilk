@@ -103,6 +103,7 @@ public class ChecklistPanel extends JPanel implements PropertyChangeListener {
 			public void actionPerformed(ActionEvent e) {
 				if(e.getActionCommand().equals("send-reg")){
 					String resp = postRegistration(props);
+					System.out.println(resp);
 				}
 			}
 		});
@@ -215,10 +216,15 @@ public class ChecklistPanel extends JPanel implements PropertyChangeListener {
 	 * @return
 	 */
 	private String requestText() {
-		 String path = SwingRegistrationWizardGUI.settingsPanel.getParentFolderTextField().getText().trim();
-		 File reqFile = new File(new File(path), "request.json.txt");
+		 File path = SwingRegistrationWizardGUI.session.currentPath();
+		 File reqFile = new File(path, "request.json.txt");
 		 if(!reqFile.exists()){
-			 System.err.println("Could not find request.json.txt");
+			 try {
+				System.err.println("Could not find request.json.txt in "+reqFile.getCanonicalPath());
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		 }else{
 			try {
 				return new String(readAllBytes(get(reqFile.getCanonicalPath())));
