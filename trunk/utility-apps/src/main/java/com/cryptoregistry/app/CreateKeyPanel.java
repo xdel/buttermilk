@@ -300,9 +300,16 @@ public class CreateKeyPanel extends JPanel {
 	private void createKey(){
 		
 		// check the directory destination
-		File kmDir = new File(SwingRegistrationWizardGUI.settingsPanel.getParentFolderTextField().getText().trim());
+		File kmDir = SwingRegistrationWizardGUI.session.currentPath();
 		if(!kmDir.exists()){
+			try {
+				System.out.println("creating directory: "+kmDir.getCanonicalPath());
+			} catch (IOException e) {}
 			kmDir.mkdirs();
+		}else{
+			try {
+				System.out.println("Using directory: "+kmDir.getCanonicalPath());
+			} catch (IOException e) {}
 		}
 		
 		// get the proposed Reg Handle

@@ -35,12 +35,13 @@ public class SwingRegistrationWizardGUI {
      public static KeyMaterialsPanel keyMaterialsPanel;
      
      public static KM km;
+     public static RequestSession session;
      
 
 	 private static void createAndShowGUI(Properties props) {
 		 
 		 km = new KM();
-		 
+		
 		 try {
 			    for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
 			        if ("Nimbus".equals(info.getName())) {
