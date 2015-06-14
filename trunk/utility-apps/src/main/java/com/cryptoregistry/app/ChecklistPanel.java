@@ -11,6 +11,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.File;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -18,6 +22,16 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JLabel;
+
+import org.apache.http.HttpVersion;
+import org.apache.http.client.fluent.Request;
+import org.apache.http.client.utils.URIBuilder;
+import org.apache.http.entity.ContentType;
+
+import asia.redact.bracket.properties.Properties;
+
+import static java.nio.file.Files.readAllBytes;
+import static java.nio.file.Paths.get;
 
 public class ChecklistPanel extends JPanel implements PropertyChangeListener {
 
@@ -28,18 +42,20 @@ public class ChecklistPanel extends JPanel implements PropertyChangeListener {
 	JLabel lblContactSet, lblSignatureCompleted, lblRegistrationSent;
 	
 	KM km;
+	Properties props;
 	
 	JButton btnRegister;
 	
-	public ChecklistPanel(KM km) {
+	public ChecklistPanel(KM km, Properties props) {
 		this();
 		this.km = km;
 		km.addPropertyChangeListener(this);
+		this.props = props;
 		setBackground(new Color(208, 228, 254));
 	}
 	
 
-	public ChecklistPanel() {
+	private ChecklistPanel() {
 		
 		this.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 		this.setLayout(new GridLayout(2,0,0,0));
@@ -81,10 +97,13 @@ public class ChecklistPanel extends JPanel implements PropertyChangeListener {
 		panel1.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 		btnRegister = new JButton("Send Registration Request");
 		btnRegister.setEnabled(false);
+		btnRegister.setActionCommand("send-reg");
 		btnRegister.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// do registration!
+				if(e.getActionCommand().equals("send-reg")){
+					String resp = postRegistration(props);
+				}
 			}
 		});
 		panel1.add(btnRegister);
@@ -97,7 +116,7 @@ public class ChecklistPanel extends JPanel implements PropertyChangeListener {
 			java.net.URL imgURL = getClass().getResource(path);
 			if (imgURL != null) {
 				ImageIcon icon =  new ImageIcon(imgURL, description);
-				System.err.println(icon);
+				//System.err.println(icon);
 				return icon;
 			} else {
 				System.err.println("Couldn't find file: " + path);
@@ -155,6 +174,61 @@ public class ChecklistPanel extends JPanel implements PropertyChangeListener {
 
 	public JButton getBtnRegister() {
 		return btnRegister;
+	}
+	
+	/**
+	 * Port the request. This is done over SSL
+	 * 
+	 * @param props
+	 * @return
+	 */
+	private String postRegistration(Properties props) {
+		
+		String regJSON = requestText();
+		if(regJSON == null) {
+			throw new RuntimeException("request text is empty, cannot send request.");
+		}
+		
+		try {
+		  URIBuilder builder = new URIBuilder();
+		   builder.setScheme(props.get("registration.reg.scheme"))
+	        .setHost(props.get("registration.reg.hostname"))
+	        .setPath(props.get("registration.reg.path"))
+	        .setPort(props.intValue("registration.reg.port"));
+		   String url = builder.build().toString();
+			byte [] res = Request.Post(url)
+			        .useExpectContinue()
+			        .version(HttpVersion.HTTP_1_1)
+			        .bodyString(regJSON, ContentType.APPLICATION_JSON)
+			        .execute().returnContent().asBytes();
+			return new String(res);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return null;
+	}
+	
+	/**
+	 * Get the request text from the file which has been saved. 
+	 * Return null if not found
+	 * @return
+	 */
+	private String requestText() {
+		 String path = SwingRegistrationWizardGUI.settingsPanel.getParentFolderTextField().getText().trim();
+		 File reqFile = new File(new File(path), "request.json.txt");
+		 if(!reqFile.exists()){
+			 System.err.println("Could not find request.json.txt");
+		 }else{
+			try {
+				return new String(readAllBytes(get(reqFile.getCanonicalPath())));
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		 }
+		 
+		 return null;
 	}
 
 }
