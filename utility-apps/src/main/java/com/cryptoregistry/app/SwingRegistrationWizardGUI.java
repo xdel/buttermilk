@@ -149,7 +149,7 @@ public class SwingRegistrationWizardGUI {
 	        JPanel outer = new JPanel();
 	        outer.setLayout(new BoxLayout(outer, BoxLayout.LINE_AXIS));
 	        outer.add(tabbedPane);
-	        outer.add(new ChecklistPanel(km));
+	        outer.add(new ChecklistPanel(km,props));
 	        outer.setBackground(new Color(208, 228, 254));
 	        
 	        frame.getContentPane().add(outer);
