@@ -17,7 +17,7 @@ public class RequestSession {
 	}
 	
 	private int scan() {
-		if(!parentPath.exists()) return 0;
+		if(parentPath == null || !parentPath.exists()) return 0;
 		
 		int highestValue = 0;
 		File[] list = parentPath.listFiles();
