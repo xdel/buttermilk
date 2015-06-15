@@ -17,7 +17,6 @@
         <module>protocol-buffers</module>
         <module>client-storage</module>
         <module>bTLS</module>
-        <module>registry</module>
     </modules>
 
     <build>
