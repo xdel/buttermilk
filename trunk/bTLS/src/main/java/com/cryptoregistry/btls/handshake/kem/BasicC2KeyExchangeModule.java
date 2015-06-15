@@ -18,8 +18,8 @@ import com.cryptoregistry.c2.key.Curve25519KeyContents;
 import com.cryptoregistry.c2.key.Curve25519KeyForPublication;
 import com.cryptoregistry.c2.key.SecretKey;
 import com.cryptoregistry.client.security.SuitableMatchFailedException;
-import com.cryptoregistry.client.storage.Criteria;
-import com.cryptoregistry.client.storage.Result;
+import com.cryptoregistry.client.storage.SingleResultCriteria;
+import com.cryptoregistry.client.storage.SingleResult;
 import com.cryptoregistry.proto.frame.btls.C2KeyForPublicationOutputFrame;
 import com.cryptoregistry.proto.frame.btls.HelloOutputFrame;
 import com.cryptoregistry.proto.reader.C2KeyForPublicationProtoReader;
@@ -61,9 +61,9 @@ public class BasicC2KeyExchangeModule extends BaseKEM {
 	public boolean exchange() throws ExchangeFailedException, UnexpectedCodeException {
 	
 		// 0.9 - needed for both client and server - get our local key of correct type
-		Criteria c = null;
+		SingleResultCriteria c = null;
 		try {
-			c = Criteria.c2(null);
+			c = SingleResultCriteria.c2(null);
 			handshake.getDs().getViews().get(c);
 			localKey = (Curve25519KeyContents) c.result.getResult();
 		} catch (SuitableMatchFailedException e1) {
@@ -83,7 +83,7 @@ public class BasicC2KeyExchangeModule extends BaseKEM {
 				Hello hello = readHello();
 				logger.trace("Server got client's hello: "+hello);
 				
-				Result remote = new Result();
+				SingleResult remote = new SingleResult();
 				try {
 					// 1.1a use cached key as mentioned in hello
 					handshake.getDs().getViews().get(hello.keyHandle, remote);
@@ -211,7 +211,7 @@ public class BasicC2KeyExchangeModule extends BaseKEM {
 					hello = readHello();
 				}
 				
-				Result remote = new Result();
+				SingleResult remote = new SingleResult();
 				try {
 					// 1.1a use cached key as mentioned in hello
 					handshake.getDs().getViews().get(hello.keyHandle, remote);

@@ -14,8 +14,8 @@ import com.cryptoregistry.btls.BTLSProtocol;
 import com.cryptoregistry.btls.handshake.Handshake;
 import com.cryptoregistry.btls.handshake.UnexpectedCodeException;
 import com.cryptoregistry.client.security.SuitableMatchFailedException;
-import com.cryptoregistry.client.storage.Criteria;
-import com.cryptoregistry.client.storage.Result;
+import com.cryptoregistry.client.storage.SingleResultCriteria;
+import com.cryptoregistry.client.storage.SingleResult;
 import com.cryptoregistry.ec.CryptoFactory;
 import com.cryptoregistry.ec.ECKeyForPublication;
 import com.cryptoregistry.ec.ECKeyContents;
@@ -68,7 +68,7 @@ public class BasicECKeyExchangeModule extends BaseKEM {
 				Hello hello = readHello();
 				logger.trace("Server got client's hello: "+hello);
 				
-				Result remote = new Result();
+				SingleResult remote = new SingleResult();
 				try {
 					// 1.1a use cached key as mentioned in hello
 					handshake.getDs().getViews().get(hello.keyHandle, remote);
@@ -100,9 +100,9 @@ public class BasicECKeyExchangeModule extends BaseKEM {
 				
 				logger.trace("Server getting localKey from store...");
 				// needed for both client and server - get our local key of correct type and curveName
-				Criteria c = null;
+				SingleResultCriteria c = null;
 				try {
-					c = Criteria.ec(curveName);
+					c = SingleResultCriteria.ec(curveName);
 					handshake.getDs().getViews().get(c);
 					localKey = (ECKeyContents) c.result.getResult();
 				} catch (SuitableMatchFailedException e1) {
@@ -167,9 +167,9 @@ public class BasicECKeyExchangeModule extends BaseKEM {
 			
 			logger.trace("Client getting localKey from store...");
 			// needed for both client and server - get our local key of correct type and curveName
-			Criteria c = null;
+			SingleResultCriteria c = null;
 			try {
-				c = Criteria.ec(null); // will get the first available EC Key
+				c = SingleResultCriteria.ec(null); // will get the first available EC Key
 				handshake.getDs().getViews().get(c);
 				localKey = (ECKeyContents) c.result.getResult();
 			} catch (SuitableMatchFailedException e1) {
@@ -228,7 +228,7 @@ public class BasicECKeyExchangeModule extends BaseKEM {
 					hello = readHello();
 				}
 				
-				Result remote = new Result();
+				SingleResult remote = new SingleResult();
 				try {
 					// 1.1a use cached key as mentioned in hello
 					handshake.getDs().getViews().get(hello.keyHandle, remote);
