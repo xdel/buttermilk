@@ -71,7 +71,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * Read the canonical format as output by JSONBuilder. This reader is for the scenario where
- * nothing is known at runtime about the contents of the JSON being passed in
+ * little or nothing is known at runtime about the contents of the JSON being passed in
  * 
  * @author Dave
  * @see JSONFormatter
