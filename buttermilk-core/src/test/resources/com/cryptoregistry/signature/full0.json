@@ -45,7 +45,7 @@
       "SignatureAlgorithm" : "RSA",
       "DigestAlgorithm" : "SHA-256",
       "s" : "fr_YnzycCZbrlTDbtdjjkqpzSrh7Mjdvmmd1WvBeQnZ980g2e2SSaE7NqzAmcnRVTrGBWb4CIpJpAmEW8PSmIDxBmY7H8-3k5xXvhpW4TpaWK529rrBZ6HGNHndokmwmbVG8Z2etir4UITYMNgpMjbI8l5TDoIe_gpL5vWrYnKLn5Dl2Nuhw7UtyCe1VwCFKcKkmtMzloNnoa9HffxCneYBOGMlyK734VulT--kRV3yjwLinBhrtMfbiwDdCkC-UGmQO-TpPCAbBLPc4sIA7vZEEo-M-zcszWSFDMBXy0YHJ8hghQdZajv-m58-F18e0-wnNLAjAYvEtnsgFHJUANA==",
-      "DataRefs" : [ "c6d5e78f-97f5-4fbb-a653-ed0db8a45419:SignedBy", ".SignedWith", "d8481ed5-6d2c-410d-bdc5-cc5433bfcdc8:Handle", ".CreatedOn", ".Algorithm", ".Modulus", ".PublicExponent", "62058037-7f8d-471c-b302-701bb0f69048:GivenName.0", ".GivenName.1", ".FamilyName.0", ".Address.0", ".City", ".State", ".PostalCode", ".CountryCode", "a9d86148-a106-4ee1-8dd2-6206cda8525a:Copyright", ".License", "14ad6579-4eb7-44ed-983f-ebd61ab4ee8b:Copyright", ".License", "19007431-3eed-4a7a-b255-b600c4a9dffb:some key", ".another key" ]
+      "DataRefs" :  "c6d5e78f-97f5-4fbb-a653-ed0db8a45419:SignedBy, .SignedWith, d8481ed5-6d2c-410d-bdc5-cc5433bfcdc8:Handle, .CreatedOn, .Algorithm, .Modulus, .PublicExponent, 62058037-7f8d-471c-b302-701bb0f69048:GivenName.0, .GivenName.1, .FamilyName.0, .Address.0, .City, .State, .PostalCode, .CountryCode, a9d86148-a106-4ee1-8dd2-6206cda8525a:Copyright, .License, 14ad6579-4eb7-44ed-983f-ebd61ab4ee8b:Copyright, .License, 19007431-3eed-4a7a-b255-b600c4a9dffb:some key, .another key"
     }
   }
 }

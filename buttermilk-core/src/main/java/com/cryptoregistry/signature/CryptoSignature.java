@@ -21,7 +21,7 @@ import com.fasterxml.jackson.core.JsonGenerator;
  * @author Dave
  *
  */
-public abstract class CryptoSignature implements Serializable,CanFormatSignatureData {
+public abstract class CryptoSignature implements Serializable, CanFormatSignatureData {
 
 	protected static final long serialVersionUID = 1L;
 	
@@ -39,6 +39,31 @@ public abstract class CryptoSignature implements Serializable,CanFormatSignature
 		this.metadata = metadata;
 		dataRefs = refs;
 	}
+	
+	/**
+	 * Return a String representation of the dataRefs (in comma delimited form)
+	 * @return
+	 */
+	public static String getDataReferenceString(CryptoSignature sig) {
+		StringBuffer buf = new StringBuffer();
+		int count = 0;
+		for(String part: sig.dataRefs){
+			buf.append(part);
+			if(count<sig.dataRefs.size()-1) buf.append(", ");
+			count++;
+		}
+		return buf.toString();
+	}
+	
+	public static List<String> parseDataReferenceString(String in) {
+		List<String> list = new ArrayList<String>();
+		String [] parts = in.split("\\,");
+		for(String item: parts){
+			list.add(item.trim());
+		}
+		return list;
+	}
+	
 
 	public void addDataReference(String ref){
 		dataRefs.add(ref);
