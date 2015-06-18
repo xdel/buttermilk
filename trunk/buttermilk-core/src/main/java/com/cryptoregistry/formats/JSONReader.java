@@ -447,7 +447,7 @@ public class JSONReader {
 					String digestAlg = String.valueOf(sigData.get("DigestAlgorithm"));
 					SignatureMetadata meta = 
 							new SignatureMetadata(handle,createdOn,sigAlg,digestAlg,signedWith,signedBy);
-					List<String> dataRefs = collect(String.valueOf(sigData.get("DataRefs")));
+					List<String> dataRefs = CryptoSignature.parseDataReferenceString(String.valueOf(sigData.get("DataRefs")));
 					
 					// specific to the encoding of each CryptoSignature subclass
 					switch(sigAlg){
@@ -503,9 +503,7 @@ public class JSONReader {
 			@Override
 			public List<ListData> listData() {
 				ArrayList<ListData> list = new ArrayList<ListData>();
-				
 				Map<String, Object> data = (Map<String, Object>) map.get("Data");
-				
 				List<Object> urls = (List<Object>) data.get("Remote");
 				ListData rd = new ListData();
 				for(Object url: urls){
@@ -513,22 +511,12 @@ public class JSONReader {
 				}
 				
 				list.add(rd);
-					
 				return list;
 			}
 			
 		};
 		
 		return km;
-	}
-	
-	private List<String> collect(String in) {
-		List<String> list = new ArrayList<String>();
-		String [] items = in.split("\\.");
-		for(String ref: items){
-			list.add(ref.trim());
-		}
-		return list;
 	}
 
 }

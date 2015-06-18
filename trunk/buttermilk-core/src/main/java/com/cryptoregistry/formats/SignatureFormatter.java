@@ -56,12 +56,16 @@ public class SignatureFormatter {
 			s.formatSignaturePrimitivesJSON(g, writer);
 
 			// also common
-			g.writeArrayFieldStart("DataRefs");
-			Iterator<String> iter = s.getDataRefs().iterator();
-			while (iter.hasNext()) {
-				g.writeString(iter.next());
-			}
-			g.writeEndArray();
+		//	g.writeArrayFieldStart("DataRefs");
+		//	Iterator<String> iter = s.getDataRefs().iterator();
+		//	while (iter.hasNext()) {
+		//		g.writeString(iter.next());
+		//	}
+		//	g.writeEndArray();
+			
+			// simplification, cleaner
+			g.writeStringField("DataRefs", CryptoSignature.getDataReferenceString(s));
+			
 			g.writeEndObject();
 		}
 	}
