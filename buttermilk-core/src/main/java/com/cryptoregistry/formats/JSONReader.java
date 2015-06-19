@@ -70,8 +70,11 @@ import com.cryptoregistry.util.TimeUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
- * Read the canonical format as output by JSONBuilder. This reader is for the scenario where
- * little or nothing is known at runtime about the contents of the JSON being passed in
+ * <p>Read the canonical format as output by JSONBuilder. This reader is for the scenario where
+ * little or nothing is known at runtime about the contents of the JSON being passed in.</p>
+ * 
+ * <p>This reader builds buttermilk cryptographic objects. Use JSONGenericReader to get a 
+ * simple, Map-based textual representation of the data. </p>
  * 
  * @author Dave
  * @see JSONFormatter
@@ -89,7 +92,7 @@ public class JSONReader {
 	@SuppressWarnings("unchecked")
 	public JSONReader(File path) {
 		
-		// TODO the below is reasonable, but use the stream parsing API to be more efficient
+		// TODO the below is reasonable, but in future use the stream parsing API to be more efficient
 		mapper = new ObjectMapper();
 		try {
 			map = mapper.readValue(path, Map.class);

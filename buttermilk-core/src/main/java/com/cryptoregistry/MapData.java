@@ -44,6 +44,10 @@ public class MapData {
 	public void put(String key, String value){
 		data.put(key,value);
 	}
+	
+	public String get(String key){
+		return data.get(key);
+	}
 
 	@Override
 	public int hashCode() {
@@ -81,6 +85,11 @@ public class MapData {
 		return "MapData [uuid=" + uuid + ", data=" + data + "]";
 	}
 	
+	/**
+	 * Output something like {"70f85718-63c9-473e-9cb0-2ba61b874a00-P":{"KeyAlgorithm":"EC",...}}
+	 * 
+	 * @return
+	 */
 	public String formatJSON() {
 		StringWriter writer = new StringWriter();
 		JsonFactory f = new JsonFactory();

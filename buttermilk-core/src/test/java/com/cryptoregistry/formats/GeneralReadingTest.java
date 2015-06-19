@@ -29,6 +29,18 @@ public class GeneralReadingTest {
 	}
 	
 	@Test
+	public void test0Generic() {
+		File f = new File("src/test/resources/keys.test.json");
+		JSONGenericReader reader = new JSONGenericReader(f);
+		List<MapData> list = reader.keys();
+		Assert.assertEquals(3, list.size());
+		MapData md = list.get(0);
+		String json = md.formatJSON();
+		//System.err.println(json);
+		Assert.assertNotNull(json);
+	}
+	
+	@Test
 	public void test1() {
 		
 		File f = new File("src/test/resources/com/cryptoregistry/signature/full0.json");

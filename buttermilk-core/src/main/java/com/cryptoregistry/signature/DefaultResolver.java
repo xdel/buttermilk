@@ -28,21 +28,21 @@ import com.cryptoregistry.formats.FormatUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
- * The Resolver has the job of finding the values of references of the form uuid:tokenName where uuid
+ * <p>The Resolver has the job of finding the values of references of the form uuid:tokenName where uuid
  * is an identifier and tokenName is the key for a child key/value pair. The data might be a cryptographic 
  * primitive, some contact info, a message part, etc. The data has to be found, and then
- * written to a ByteArrayOutputStream. This needs to happen in the correct order. 
+ * written to a ByteArrayOutputStream. This needs to happen in the correct order. </p>
  * 
- * The default resolver is given a directory containing JSON encoded files to search over. It looks in these
+ * <p>The default resolver is given a directory containing JSON encoded files to search over. It looks in these
  * to find the desired uuid:token references and writes the associated value when it finds it to the 
- * stream as bytes. For simplicity, we assume the Strings are in UTF-8 encoding.
+ * stream as bytes. For simplicity, we assume the Strings are in UTF-8 encoding.</p>
  * 
- * This implementation is trivial and only functions as a way to prove the concept. A real 
+ * <p>This implementation is trivial and only functions as a way to prove the concept. A real 
  * implementation would use some form of database and/or caching, etc., and have more awareness of data 
- * encodings.
+ * encodings.</p>
  * 
- * This implementation will normalize a list of items where the first defines the uuid:token and the following ones
- * are in the abbreviated form .tokenName
+ * <p>This implementation will normalize a list of items where the first defines the uuid:token and the following ones
+ * are in the abbreviated form .tokenName</p>
  * 
  * @author Dave
  *
@@ -78,7 +78,7 @@ public class DefaultResolver implements SignatureReferenceResolver {
 	 * uuid(-(U|S|P)):tokenName
 	 * .tokenName
 	 * 
-	 * Where the extended form indicates the mode and dot form is an abbreviation of the first case
+	 * Where the extended form indicates the mode and dot form is an abbreviation of the first or second case
 	 * 
 	 * preprocess normalizes the ref to be in all cases of the form uuid:tokenName 
 	 * 
