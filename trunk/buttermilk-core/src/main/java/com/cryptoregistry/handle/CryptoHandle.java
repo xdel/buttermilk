@@ -95,7 +95,7 @@ public abstract class CryptoHandle implements Handle {
 	 * when split with "." but 0 parts when split with " " or "-". 
 	 * 
 	 * @param str
-	 * @return
+	 * @return null on fail
 	 */
 	public static Handle parseHandle(String str) {
 		
