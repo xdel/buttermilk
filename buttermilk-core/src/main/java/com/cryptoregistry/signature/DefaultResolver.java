@@ -57,14 +57,14 @@ public class DefaultResolver implements SignatureReferenceResolver {
 
 	@Override
 	public void resolve(String ref, ByteArrayOutputStream collector) throws RefNotFoundException {
-		fileIter(ref, collector);
+		fileIter(ref.trim(), collector);
 	}
 	
 	@Override
 	public void resolve(List<String> refs, ByteArrayOutputStream collector) throws RefNotFoundException {
 		
 		for(String ref: refs){
-			String ref_p = preprocess(ref);
+			String ref_p = preprocess(ref.trim());
 			fileIter(ref_p, collector);
 		}
 	}
@@ -160,12 +160,12 @@ public class DefaultResolver implements SignatureReferenceResolver {
 				retVal = search(inner,ref,collector,false);
 				break;
 			}
-			if(key.equals("Map")){
+			if(key.equals("Local")){
 				Map inner = (Map)map.get(key);
 				retVal = search(inner,ref,collector,false);
 				break;
 			}
-			if(key.equals("List")){
+			if(key.equals("Remote")){
 				List<String> inner = (List<String>)map.get(key);
 				for(Object url : inner){
 					String item = String.valueOf(url);
