@@ -6,6 +6,7 @@
 
 package com.cryptoregistry.c2;
 
+import java.io.ByteArrayOutputStream;
 import java.io.StringWriter;
 import java.nio.charset.Charset;
 
@@ -13,6 +14,7 @@ import org.junit.Test;
 
 import x.org.bouncycastle.crypto.digests.SHA256Digest;
 
+import com.cryptoregistry.MapData;
 import com.cryptoregistry.c2.CryptoFactory;
 import com.cryptoregistry.c2.key.Curve25519KeyContents;
 import com.cryptoregistry.c2.key.PublicKey;
@@ -20,6 +22,10 @@ import com.cryptoregistry.c2.key.SecretKey;
 import com.cryptoregistry.c2.key.SigningPrivateKey;
 import com.cryptoregistry.formats.JSONFormatter;
 import com.cryptoregistry.signature.C2CryptoSignature;
+import com.cryptoregistry.signature.RefNotFoundException;
+import com.cryptoregistry.signature.SelfContainedJSONResolver;
+import com.cryptoregistry.signature.builder.C2SignatureBuilder;
+import com.cryptoregistry.signature.builder.MapDataContentsIterator;
 import com.cryptoregistry.util.XORUtil;
 
 import junit.framework.Assert;
@@ -170,6 +176,55 @@ public class Curve25519Test {
 		C2CryptoSignature sig = CryptoFactory.INSTANCE.sign(signedBy,c2Keys, msgBytes);
 		boolean ok = CryptoFactory.INSTANCE.verify(c2Keys, msgBytes, sig.getSignature());
 		Assert.assertTrue(ok);
+	}
+	
+	@Test
+	public void test3() {
+		
+		String signedBy = "Chinese Eyes"; // my registration handle
+		String message = "My message text...";
+		
+		Curve25519KeyContents c2Keys = CryptoFactory.INSTANCE.generateKeys();
+		C2SignatureBuilder builder = new C2SignatureBuilder(signedBy, c2Keys);
+		MapData data = new MapData();
+		data.put("Msg", message);
+		MapDataContentsIterator iter = new MapDataContentsIterator(data);
+		while(iter.hasNext()){
+			String label = iter.next();
+			builder.update(label, iter.get(label));
+		}
+		C2CryptoSignature sig = builder.build();
+		JSONFormatter format = new JSONFormatter(signedBy);
+		format.add(c2Keys);
+		format.add(data);
+		format.add(sig);
+		StringWriter writer = new StringWriter();
+		format.format(writer);
+		String serialized = writer.toString();
+		
+		// now validate the serialized text
+		
+		SelfContainedJSONResolver resolver = new SelfContainedJSONResolver(serialized);
+		resolver.walk();
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		try {
+			resolver.resolve(sig.dataRefs,out);
+			byte [] msgBytes = out.toByteArray();
+			SHA256Digest digest = new SHA256Digest();
+			digest.update(msgBytes, 0, msgBytes.length);
+			byte [] m = new byte[digest.getDigestSize()];
+			digest.doFinal(m, 0);
+			
+			boolean ok = CryptoFactory.INSTANCE.verify(c2Keys, m, sig.getSignature());
+			Assert.assertTrue(ok);
+		} catch (RefNotFoundException e) {
+			e.printStackTrace();
+		}
+		
+		
+	//	boolean ok = CryptoFactory.INSTANCE.verify(c2Keys, msgBytes, sig.getSignature());
+		//Assert.assertTrue(ok);
+		
 	}
 	
 }

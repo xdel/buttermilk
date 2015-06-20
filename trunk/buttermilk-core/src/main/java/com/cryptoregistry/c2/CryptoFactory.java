@@ -137,6 +137,12 @@ public class CryptoFactory {
 			byte [] m = new byte[digest.getDigestSize()];
 			digest.doFinal(m, 0);
 			
+		//	try {
+		//		System.err.println("verify message digest="+Base64.encodeBytes(m, Base64.URL_SAFE));
+		//	} catch (IOException e) {
+		//		e.printStackTrace();
+		//	}
+			
 			// compute h: m XOR r
 			byte [] h = XORUtil.xor(m, r);
 			
@@ -179,6 +185,12 @@ public class CryptoFactory {
 			digest.update(msgBytes, 0, msgBytes.length);
 			byte [] m = new byte[digest.getDigestSize()];
 			digest.doFinal(m, 0);
+			
+		//	try {
+		//		System.err.println("sign message digest="+Base64.encodeBytes(m, Base64.URL_SAFE));
+		//	} catch (IOException e) {
+		//		e.printStackTrace();
+		//	}
 			
 			// compute x
 			digest = new SHA256Digest();
@@ -226,6 +238,12 @@ public class CryptoFactory {
 			digest.update(msgBytes, 0, msgBytes.length);
 			byte [] m = new byte[digest.getDigestSize()];
 			digest.doFinal(m, 0);
+			
+		//	try {
+		//		System.err.println("sign message digest="+Base64.encodeBytes(m, Base64.URL_SAFE));
+		//	} catch (IOException e) {
+		//		e.printStackTrace();
+		//	}
 			
 			// compute x
 			digest = new SHA256Digest();
