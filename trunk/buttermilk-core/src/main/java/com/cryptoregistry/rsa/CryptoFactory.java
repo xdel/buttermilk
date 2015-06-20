@@ -212,8 +212,6 @@ public class CryptoFactory {
 			byte [] sigBytes = rsaEngine.processBlock(msgHashBytes, 0, msgHashBytes.length);
 			RSASignature sig = new RSASignature(sigBytes);
 			SignatureMetadata meta = new SignatureMetadata(
-					UUID.randomUUID().toString(),
-					new Date(),
 					SignatureAlgorithm.RSA,
 					digestName,
 					sKeys.getMetadata().getHandle(),

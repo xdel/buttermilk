@@ -52,8 +52,6 @@ public class RSASignatureBuilder {
 		if(signedBy == null) throw new RuntimeException("Registration Handle cannot be null");
 		
 		meta = new SignatureMetadata(
-				UUID.randomUUID().toString(),
-				new Date(),
 				SignatureAlgorithm.RSA,
 				digest.getAlgorithmName(),
 				sKey.getMetadata().getHandle(),
@@ -78,8 +76,6 @@ public class RSASignatureBuilder {
 		this.signedBy = signedBy;
 		if(signedBy == null) throw new RuntimeException("Registration Handle cannot be null");
 		meta = new SignatureMetadata(
-				UUID.randomUUID().toString(),
-				new Date(),
 				SignatureAlgorithm.RSA,
 				digest.getAlgorithmName(),
 				sKey.getMetadata().getHandle(),

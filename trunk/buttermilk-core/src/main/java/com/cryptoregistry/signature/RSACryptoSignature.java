@@ -40,8 +40,6 @@ public class RSACryptoSignature extends CryptoSignature {
 	 */
 	public RSACryptoSignature(String signedWith, String signedBy, RSASignature sig) {
 		super(new SignatureMetadata(
-				UUID.randomUUID().toString(),
-				new Date(),
 				SignatureAlgorithm.RSA,
 				"SHA-256",
 				signedWith,

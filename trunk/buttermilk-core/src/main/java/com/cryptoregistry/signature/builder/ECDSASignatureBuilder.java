@@ -7,9 +7,7 @@ package com.cryptoregistry.signature.builder;
 
 import java.nio.charset.Charset;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 
 import x.org.bouncycastle.crypto.Digest;
 import x.org.bouncycastle.crypto.digests.SHA256Digest;
@@ -56,8 +54,6 @@ public class ECDSASignatureBuilder {
 		if(signedBy == null) throw new RuntimeException("Registration Handle cannot be null");
 		
 		meta = new SignatureMetadata(
-				UUID.randomUUID().toString(),
-				new Date(),
 				SignatureAlgorithm.ECDSA,
 				digest.getAlgorithmName(),
 				sKey.getHandle(),
@@ -82,8 +78,6 @@ public class ECDSASignatureBuilder {
 		this.signedBy = signedBy;
 		if(signedBy == null) throw new RuntimeException("Registration Handle cannot be null");
 		meta = new SignatureMetadata(
-				UUID.randomUUID().toString(),
-				new Date(),
 				SignatureAlgorithm.ECDSA,
 				digest.getAlgorithmName(),
 				sKey.getHandle(),
