@@ -33,8 +33,6 @@ public class C2CryptoSignature extends CryptoSignature {
 	
 	public C2CryptoSignature(String signedWith, String signedBy, C2Signature sig) {
 		super(new SignatureMetadata(
-				UUID.randomUUID().toString(),
-				new Date(),
 				SignatureAlgorithm.ECKCDSA,
 				"SHA-256",
 				signedWith,

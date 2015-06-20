@@ -33,8 +33,6 @@ public class ECDSACryptoSignature extends CryptoSignature {
 	
 	public ECDSACryptoSignature(String signedWith, String signedBy, ECDSASignature sig) {
 		super(new SignatureMetadata(
-				UUID.randomUUID().toString(),
-				new Date(),
 				SignatureAlgorithm.ECDSA,
 				"SHA-256",
 				signedWith,
