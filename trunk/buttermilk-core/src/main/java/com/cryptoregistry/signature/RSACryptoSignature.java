@@ -7,9 +7,7 @@ package com.cryptoregistry.signature;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 
 import com.cryptoregistry.SignatureAlgorithm;
 import com.fasterxml.jackson.core.JsonGenerationException;
