@@ -22,7 +22,7 @@ import org.apache.http.util.EntityUtils;
 import asia.redact.bracket.properties.Properties;
 
 /**
- * Call the check handle interface - returns 'Y" or 'N' on a 200 response
+ * Call the check handle interface - returns {"found":false} or {"found":true} on a 200 response
  * 
  * @author Dave
  *
@@ -74,7 +74,7 @@ public class RegHandleChecker {
 	            
 	           String responseBody = httpclient.execute(httpget, responseHandler);
 	           // check if handle is registered (exists). If it is not registered, we assume it is available 
-	           if(responseBody.contains("N")) return true;
+	           if(responseBody.contains("false")) return true;
 	            
 	        }catch(IOException x){
 	        	x.printStackTrace();
