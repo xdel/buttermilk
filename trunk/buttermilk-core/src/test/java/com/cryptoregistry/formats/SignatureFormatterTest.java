@@ -1,7 +1,6 @@
 package com.cryptoregistry.formats;
 
 import java.nio.charset.Charset;
-import java.util.Formatter;
 
 import junit.framework.Assert;
 

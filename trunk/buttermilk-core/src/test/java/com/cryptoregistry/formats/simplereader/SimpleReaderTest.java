@@ -1,5 +1,7 @@
-package com.cryptoregistry.formats.sr;
+package com.cryptoregistry.formats.simplereader;
 
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.io.StringWriter;
 
@@ -13,6 +15,7 @@ import com.cryptoregistry.c2.key.Curve25519KeyContents;
 import com.cryptoregistry.formats.JSONFormatter;
 import com.cryptoregistry.formats.simplereader.JSONC2Reader;
 import com.cryptoregistry.passwords.NewPassword;
+import com.cryptoregistry.signature.CryptoSignature;
 
 public class SimpleReaderTest {
 
@@ -33,6 +36,16 @@ public class SimpleReaderTest {
 		
 		Assert.assertEquals(key, result);
 	
+	}
+	
+	@Test
+	public void test1() {
+		InputStream in = Thread.currentThread().getClass().getResourceAsStream("/sig.json");
+		InputStreamReader reader = new InputStreamReader(in);
+		SignatureReader sr = new SignatureReader(reader);
+		CryptoSignature sig = sr.read();
+		Assert.assertNotNull(sig);
+		
 	}
 
 }
