@@ -29,6 +29,7 @@ public class C2CryptoSignature extends CryptoSignature {
 		this.signature=sig;
 	}
 	
+	
 	public C2CryptoSignature(String signedWith, String signedBy, C2Signature sig) {
 		super(new SignatureMetadata(
 				SignatureAlgorithm.ECKCDSA,
@@ -37,6 +38,7 @@ public class C2CryptoSignature extends CryptoSignature {
 				signedBy));
 		this.signature=sig;
 	}
+	
 
 	public C2Signature getSignature() {
 		return signature;
