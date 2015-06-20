@@ -12,6 +12,11 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import x.org.bouncycastle.crypto.Digest;
+import x.org.bouncycastle.crypto.digests.SHA1Digest;
+import x.org.bouncycastle.crypto.digests.SHA256Digest;
+import x.org.bouncycastle.crypto.digests.SHA512Digest;
+
 import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.core.JsonGenerator;
 
@@ -40,31 +45,6 @@ public abstract class CryptoSignature implements Serializable, CanFormatSignatur
 		dataRefs = refs;
 	}
 	
-	/**
-	 * Return a String representation of the dataRefs (in comma delimited form)
-	 * @return
-	 */
-	public static String getDataReferenceString(CryptoSignature sig) {
-		StringBuffer buf = new StringBuffer();
-		int count = 0;
-		for(String part: sig.dataRefs){
-			buf.append(part);
-			if(count<sig.dataRefs.size()-1) buf.append(", ");
-			count++;
-		}
-		return buf.toString();
-	}
-	
-	public static List<String> parseDataReferenceString(String in) {
-		List<String> list = new ArrayList<String>();
-		String [] parts = in.split("\\,");
-		for(String item: parts){
-			list.add(item.trim());
-		}
-		return list;
-	}
-	
-
 	public void addDataReference(String ref){
 		dataRefs.add(ref);
 	}
@@ -91,6 +71,28 @@ public abstract class CryptoSignature implements Serializable, CanFormatSignatur
 	
 	public String getSigAlg() {
 		return metadata.getSigAlg().toString();
+	}
+	
+	public String getDigestAlg() {
+		return metadata.digestAlg;
+	}
+	
+	/**
+	 * Some common ones
+	 * 
+	 * @return
+	 */
+	public Digest getDigestInstance() {
+		switch(metadata.digestAlg){
+			case "SHA1": return new SHA1Digest();
+			case "SHA-1": return new SHA1Digest();
+			case "SHA256": return new SHA256Digest();
+			case "SHA-256": return new SHA256Digest();
+			case "SHA512": return new SHA512Digest();
+			case "SHA-512": return new SHA512Digest();
+			
+			default: throw new RuntimeException("Unknown Digest algorithm: "+metadata.digestAlg);
+		}
 	}
 
 	@Override
@@ -132,13 +134,44 @@ public abstract class CryptoSignature implements Serializable, CanFormatSignatur
 	}
 
 	/**
-	 * implement in subclass, these are bits which are different in each key
+	 * implement these two methods in subclasses, these are bits which are different in each key
 	 */
 
 	public abstract void formatSignaturePrimitivesJSON(JsonGenerator g, Writer writer)
 			throws JsonGenerationException, IOException;
 	
 	public abstract SignatureBytes signatureBytes();
+	
+	
+	/**
+	 * Return a String representation of the dataRefs (in comma delimited form)
+	 * @return
+	 */
+	public static String getDataReferenceString(CryptoSignature sig) {
+		StringBuffer buf = new StringBuffer();
+		int count = 0;
+		for(String part: sig.dataRefs){
+			buf.append(part);
+			if(count<sig.dataRefs.size()-1) buf.append(", ");
+			count++;
+		}
+		return buf.toString();
+	}
+	
+	/**
+	 * Return a List parsed from what is generated in the above method
+	 * 
+	 * @param in
+	 * @return
+	 */
+	public static List<String> parseDataReferenceString(String in) {
+		List<String> list = new ArrayList<String>();
+		String [] parts = in.split("\\,");
+		for(String item: parts){
+			list.add(item.trim());
+		}
+		return list;
+	}
 
 }
 
