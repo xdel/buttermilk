@@ -66,7 +66,7 @@ public class C2SignatureBuilder {
 		meta = new SignatureMetadata(
 				UUID.randomUUID().toString(),
 				new Date(),
-				SignatureAlgorithm.RSA,
+				SignatureAlgorithm.ECKCDSA,
 				digest.getAlgorithmName(),
 				sKey.getHandle(),
 				signedBy);

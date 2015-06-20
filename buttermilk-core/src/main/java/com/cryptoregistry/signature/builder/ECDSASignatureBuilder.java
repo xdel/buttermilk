@@ -58,7 +58,7 @@ public class ECDSASignatureBuilder {
 		meta = new SignatureMetadata(
 				UUID.randomUUID().toString(),
 				new Date(),
-				SignatureAlgorithm.RSA,
+				SignatureAlgorithm.ECDSA,
 				digest.getAlgorithmName(),
 				sKey.getHandle(),
 				signedBy);
