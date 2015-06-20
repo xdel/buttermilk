@@ -85,7 +85,7 @@ public class C2SignatureBuilder {
 		this.signedBy = signedBy;
 		if(signedBy == null) throw new RuntimeException("Registration Handle cannot be null");
 		meta = new SignatureMetadata(
-				SignatureAlgorithm.ECDSA,
+				SignatureAlgorithm.ECKCDSA,
 				digest.getAlgorithmName(),
 				sKey.getHandle(),
 				signedBy);
