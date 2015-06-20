@@ -47,12 +47,12 @@ public class C2KeyContentsIterator implements MapIterator {
 		if(verbose){
 			map.put(handle+":"+"Handle",handle);
 			map.put(handle+":"+"CreatedOn",TimeUtil.format(pKey.getCreatedOn()));
-			map.put(handle+":"+"Algorithm",pKey.getKeyAlgorithm().toString());
+			map.put(handle+":"+"KeyAlgorithm",pKey.getKeyAlgorithm().toString());
 			map.put(handle+":"+"P",pKey.publicKey.getBase64Encoding());
 		}else{
 			map.put(handle+":"+"Handle",handle);
 			map.put("."+"CreatedOn",TimeUtil.format(pKey.getCreatedOn()));
-			map.put("."+"Algorithm",pKey.getKeyAlgorithm().toString());
+			map.put("."+"KeyAlgorithm",pKey.getKeyAlgorithm().toString());
 			map.put("."+"P",pKey.publicKey.getBase64Encoding());
 		}
 	}

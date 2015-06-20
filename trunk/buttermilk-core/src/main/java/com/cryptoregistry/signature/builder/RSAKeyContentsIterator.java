@@ -42,13 +42,13 @@ public class RSAKeyContentsIterator implements MapIterator {
 		if(verbose){
 			map.put(handle+":"+"Handle",handle);
 			map.put(handle+":"+"CreatedOn",TimeUtil.format(pKey.getMetadata().getCreatedOn()));
-			map.put(handle+":"+"Algorithm",pKey.getMetadata().getKeyAlgorithm().toString());
+			map.put(handle+":"+"KeyAlgorithm",pKey.getMetadata().getKeyAlgorithm().toString());
 			map.put(handle+":"+"Modulus",pKey.modulus.toString(16));
 			map.put(handle+":"+"PublicExponent",pKey.publicExponent.toString(16));
 		}else{
 			map.put(handle+":"+"Handle",handle);
 			map.put("."+"CreatedOn",TimeUtil.format(pKey.getMetadata().getCreatedOn()));
-			map.put("."+"Algorithm",pKey.getMetadata().getKeyAlgorithm().toString());
+			map.put("."+"KeyAlgorithm",pKey.getMetadata().getKeyAlgorithm().toString());
 			map.put("."+"Modulus",pKey.modulus.toString(16));
 			map.put("."+"PublicExponent",pKey.publicExponent.toString(16));
 		}
