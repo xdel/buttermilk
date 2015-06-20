@@ -114,7 +114,7 @@ public class C2SignatureBuilder {
 		digest.doFinal(bytes, 0);
 		digest.reset();
 		
-		C2CryptoSignature sig = CryptoFactory.INSTANCE.sign(signedBy, sKey, bytes);
+		C2CryptoSignature sig = CryptoFactory.INSTANCE.sign(meta, sKey, bytes);
 		for(String ref: references) {
 			sig.addDataReference(ref);
 		}

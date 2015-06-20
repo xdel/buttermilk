@@ -22,6 +22,7 @@ import com.cryptoregistry.c2.key.SecretKey;
 import com.cryptoregistry.c2.key.SigningPrivateKey;
 import com.cryptoregistry.signature.C2CryptoSignature;
 import com.cryptoregistry.signature.C2Signature;
+import com.cryptoregistry.signature.SignatureMetadata;
 import com.cryptoregistry.util.XORUtil;
 
 /**
@@ -162,6 +163,54 @@ public class CryptoFactory {
 			}
 		}
 		return true;
+	}
+	
+	public C2CryptoSignature sign(SignatureMetadata meta, Curve25519KeyContents c2Keys, byte[]msgBytes){
+		
+		lock.lock();
+		try {
+			Curve25519 c2 = curve;
+			SigningPrivateKey spk = c2Keys.signingPrivateKey;
+			PublicKey pKey = c2Keys.publicKey;
+			
+			// compute m
+			SHA256Digest digest = new SHA256Digest();
+			digest.update(pKey.getBytes(), 0, pKey.length());
+			digest.update(msgBytes, 0, msgBytes.length);
+			byte [] m = new byte[digest.getDigestSize()];
+			digest.doFinal(m, 0);
+			
+			// compute x
+			digest = new SHA256Digest();
+			digest.update(m, 0, m.length);
+			digest.update(spk.getBytes(), 0, spk.length());
+			byte [] x = new byte[digest.getDigestSize()];
+			digest.doFinal(x, 0);
+			
+			// compute Y
+			// 	 keygen25519(Y, NULL, x);
+			byte [] Y = new byte[32];
+			c2.keygen(Y, null, x);
+			
+			// compute r
+			byte [] r = new byte[digest.getDigestSize()];
+			digest.update(Y,0,Y.length);
+			digest.doFinal(r, 0);
+			
+			// compute h: m XOR r
+			byte [] h = XORUtil.xor(m, r);
+			
+			// sign, v is the signature
+			byte [] v = new byte[32];
+			boolean ok = c2.sign(v, h, x, spk.getBytes());
+			if(!ok) throw new RuntimeException("signature process failed");
+			
+			C2Signature sig = new C2Signature(v,r);
+			return new C2CryptoSignature(meta, sig);
+			
+		}finally{
+			lock.unlock();
+		}
 	}
 	
 	public C2CryptoSignature sign(String signedBy, Curve25519KeyContents c2Keys, byte[]msgBytes){
