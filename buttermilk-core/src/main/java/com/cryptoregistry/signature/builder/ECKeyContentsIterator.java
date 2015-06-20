@@ -49,13 +49,13 @@ public class ECKeyContentsIterator implements MapIterator {
 		if(verbose){
 			map.put(handle+":"+"Handle",handle);
 			map.put(handle+":"+"CreatedOn",TimeUtil.format(pKey.getCreatedOn()));
-			map.put(handle+":"+"Algorithm",pKey.getKeyAlgorithm().toString());
+			map.put(handle+":"+"KeyAlgorithm",pKey.getKeyAlgorithm().toString());
 			map.put(handle+":"+"Q",FormatUtil.serializeECPoint(pKey.Q, EncodingHint.Base64));
 			map.put(handle+":"+"CurveName",pKey.curveName);
 		}else{
 			map.put(handle+":"+"Handle",handle);
 			map.put("."+"CreatedOn",TimeUtil.format(pKey.getCreatedOn()));
-			map.put("."+"Algorithm",pKey.getKeyAlgorithm().toString());
+			map.put("."+"KeyAlgorithm",pKey.getKeyAlgorithm().toString());
 			map.put("."+"Q",FormatUtil.serializeECPoint(pKey.Q, EncodingHint.Base64));
 			map.put("."+"CurveName",pKey.curveName);
 		}
