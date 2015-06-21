@@ -1,6 +1,9 @@
 package com.cryptoregistry.rsa;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
@@ -9,11 +12,16 @@ import junit.framework.Assert;
 
 import org.junit.Test;
 
+import x.org.bouncycastle.crypto.Digest;
 import x.org.bouncycastle.crypto.digests.SHA256Digest;
 import x.org.bouncycastle.util.Arrays;
 
+import com.cryptoregistry.CryptoKey;
+import com.cryptoregistry.KeyMaterials;
 import com.cryptoregistry.MapData;
 import com.cryptoregistry.formats.JSONFormatter;
+import com.cryptoregistry.formats.JSONReader;
+import com.cryptoregistry.signature.CryptoSignature;
 import com.cryptoregistry.signature.RSACryptoSignature;
 import com.cryptoregistry.signature.RefNotFoundException;
 import com.cryptoregistry.signature.SelfContainedJSONResolver;
@@ -84,7 +92,7 @@ public class RSATest {
 		try {
 			resolver.resolve(sig.dataRefs,out);
 			byte [] msgBytes = out.toByteArray();
-			SHA256Digest digest = new SHA256Digest();
+			Digest digest = sig.getDigestInstance();
 			digest.update(msgBytes, 0, msgBytes.length);
 			byte [] m = new byte[digest.getDigestSize()];
 			digest.doFinal(m, 0);
@@ -94,7 +102,47 @@ public class RSATest {
 		} catch (RefNotFoundException e) {
 			e.printStackTrace();
 		}
-		
+	}
+	
+	@Test
+	public void test5() {
+		InputStream in = this.getClass().getResourceAsStream("/chinese-knees.json");
+		Assert.assertNotNull(in);
+		InputStreamReader reader = null;
+		try {
+			try {
+				reader = new InputStreamReader(in, "UTF-8");
+			} catch (UnsupportedEncodingException e1) {}
+			JSONReader js = new JSONReader(reader);
+			KeyMaterials km = js.parse();
+			SelfContainedJSONResolver resolver = new SelfContainedJSONResolver(km.baseMap());
+			resolver.walk();
+			ByteArrayOutputStream out = new ByteArrayOutputStream();
+			try {
+				CryptoSignature sig = km.signatures().get(0);
+				CryptoKey key = km.keys().get(0).getKeyContents();
+				resolver.resolve(sig.dataRefs,out);
+				byte [] msgBytes = out.toByteArray();
+				Digest digest = sig.getDigestInstance();
+				digest.update(msgBytes, 0, msgBytes.length);
+				byte [] m = new byte[digest.getDigestSize()];
+				digest.doFinal(m, 0);
+				
+				RSACryptoSignature _sig = (RSACryptoSignature) sig;
+				boolean ok = CryptoFactory.INSTANCE.verify(_sig, (RSAKeyForPublication)key, m);
+				Assert.assertTrue(ok);
+			
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}finally{
+			if(reader != null)
+				try {
+					reader.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+		}
 	}
 
 }

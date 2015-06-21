@@ -8,6 +8,7 @@ package com.cryptoregistry.signature.builder;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 
+import com.cryptoregistry.formats.FormatUtil;
 import com.cryptoregistry.rsa.RSAKeyForPublication;
 import com.cryptoregistry.util.MapIterator;
 import com.cryptoregistry.util.TimeUtil;
@@ -43,14 +44,14 @@ public class RSAKeyContentsIterator implements MapIterator {
 			map.put(handle+":"+"Handle",handle);
 			map.put(handle+":"+"CreatedOn",TimeUtil.format(pKey.getMetadata().getCreatedOn()));
 			map.put(handle+":"+"KeyAlgorithm",pKey.getMetadata().getKeyAlgorithm().toString());
-			map.put(handle+":"+"Modulus",pKey.modulus.toString(16));
-			map.put(handle+":"+"PublicExponent",pKey.publicExponent.toString(16));
+			map.put(handle+":"+"Modulus",FormatUtil.wrap(pKey.getMetadata().getFormat().encodingHint, pKey.modulus));
+			map.put(handle+":"+"PublicExponent", FormatUtil.wrap(pKey.getMetadata().getFormat().encodingHint, pKey.publicExponent));
 		}else{
 			map.put(handle+":"+"Handle",handle);
 			map.put("."+"CreatedOn",TimeUtil.format(pKey.getMetadata().getCreatedOn()));
 			map.put("."+"KeyAlgorithm",pKey.getMetadata().getKeyAlgorithm().toString());
-			map.put("."+"Modulus",pKey.modulus.toString(16));
-			map.put("."+"PublicExponent",pKey.publicExponent.toString(16));
+			map.put("."+"Modulus",FormatUtil.wrap(pKey.getMetadata().getFormat().encodingHint, pKey.modulus));
+			map.put("."+"PublicExponent", FormatUtil.wrap(pKey.getMetadata().getFormat().encodingHint, pKey.publicExponent));
 		}
 	}
 
