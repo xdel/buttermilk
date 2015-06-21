@@ -120,12 +120,9 @@ This code generates and validates the following data structure:
  */
 public class SelfContainedSignatureValidator {
 
-	private KeyMaterials km;
+	private final KeyMaterials km;
 	
-	private SelfContainedSignatureValidator(){}
-
 	public SelfContainedSignatureValidator(KeyMaterials km) {
-		this();
 		this.km = km;
 	}
 	
