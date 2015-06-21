@@ -19,8 +19,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.util.concurrent.ExecutionException;
 
-import javax.swing.JCheckBox;
-
 import com.cryptoregistry.CryptoContact;
 
 public class PersonalContactPanel extends JPanel {
