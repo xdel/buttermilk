@@ -5,10 +5,12 @@
  */
 package com.cryptoregistry.signature.builder;
 
+import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.iharder.Base64;
 import x.org.bouncycastle.crypto.Digest;
 import x.org.bouncycastle.crypto.digests.SHA256Digest;
 
@@ -86,14 +88,26 @@ public class RSASignatureBuilder {
 		if(input == null) throw new RuntimeException("Input is null: "+label);
 		references.add(label);
 		byte [] bytes = input.getBytes(Charset.forName("UTF-8"));
+		try {
+			System.err.println("sign="+label+", "+Base64.encodeBytes(bytes, Base64.URL_SAFE));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		digest.update(bytes, 0, bytes.length);
 		return this;
 	}
 	
-	public RSASignatureBuilder update(String label,byte[] bytes){
+	public RSASignatureBuilder update(String label, byte[] bytes){
 		if(bytes == null) throw new RuntimeException("Input is null: "+label);
 		references.add(label);
 		digest.update(bytes, 0, bytes.length);
+		try {
+			System.err.println("sign="+label+", "+Base64.encodeBytes(bytes, Base64.URL_SAFE));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		return this;
 	}
 	
@@ -101,7 +115,6 @@ public class RSASignatureBuilder {
 		
 		byte [] bytes = new byte[digest.getDigestSize()];
 		digest.doFinal(bytes, 0);
-		digest.reset();
 		
 		RSACryptoSignature sig = CryptoFactory.INSTANCE.sign(meta, sKey, bytes);
 		for(String ref: references) {

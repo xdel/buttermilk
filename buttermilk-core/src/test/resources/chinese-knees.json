@@ -1,0 +1,45 @@
+{
+  "Version" : "Buttermilk Key Materials 1.0",
+  "RegHandle" : "Chinese Knees",
+  "Email" : "dave.smith10@gmail.com",
+  "Contacts" : {
+    "72d28559-b2c5-4f53-af10-be4d2a29cb91" : {
+      "contactType" : "Person",
+      "GivenName.0" : "Dave",
+      "FamilyName.0" : "Smith",
+      "Email.0" : "davesmith.gbs@gmail.com",
+      "MobilePhone.0" : "0123456789",
+      "Country" : "AU"
+    }
+  },
+  "Data" : {
+    "Local" : {
+      "e0252ddc-3bdb-4293-b4c3-c7fef445c09f" : {
+        "Copyright" : "Copyright 2015 by DAVE SMITH. All Rights Reserved",
+        "TermsOfServiceAgreement" : "I agree to cryptoregistry.com's Terms of Service",
+        "InfoAffirmation" : "I affirm the information I have entered is valid and correct."
+      }
+    }
+  },
+  "Keys" : {
+    "3c51330a-c225-4663-a778-0b54ac59b02b-P" : {
+      "KeyAlgorithm" : "RSA",
+      "CreatedOn" : "2015-06-21T09:15:12+0000",
+      "Encoding" : "Base64url",
+      "Strength" : "2048",
+      "Modulus" : "AMc7_n0bzk_usO_I8gH21kcaGxIekhQCmkqBpalf59hgciCR7rErnbRdbC3ZRLN4aUb1Ud2ePOciNDpNyw3KLGAQ99UI7OZ0OqG5Fr3hIDVpBins8hBEipgdrtTj0kRBxDuukxThEJUsnH11Tg43Bj2zeN7rP2qhHzJcCFSZZ2VkutMUmkipx09TwkbH49nYjrQPZQFdUzMDgSnxRRzaXV3FswN35LsBAElNWVCAmgN25CEiAaQ6XseKG9nC-T6ltDTllci6jPHCH9wPKrqJNJhp2m8qp4Qw43ihjcv1aY4dMxVc3fCL9wH16A7nBGCjjZf3CjNigWzTu-FU1r3_XK8=",
+      "PublicExponent" : "EQ=="
+    }
+  },
+  "Signatures" : {
+    "05d4efdb-da2d-40a2-af2b-252dfe5a437b" : {
+      "CreatedOn" : "2015-06-21T09:16:23+0000",
+      "SignedWith" : "3c51330a-c225-4663-a778-0b54ac59b02b",
+      "SignedBy" : "Chinese Knees",
+      "SignatureAlgorithm" : "RSA",
+      "DigestAlgorithm" : "SHA-256",
+      "s" : "pDkbW6iinVCzMocFKni0EZHCDIgDKiIbVb36UACm5RmxDP3vC2r8irbRcaA1iCcQv4tJe_5VybySCdJjooVJ-BG4RP7V8a_x8OuTfgYY-Oot581yDJnCODtl8RY0FJBWNPwUlVD0Vs4wlanJekh2wM9fHpVtD3Pbxb3ajFsMGAp8ORSxCb-Q5ACHK1iqkdDy6i1h-UEGeyY6FL4TyTvcMOBTlrAMefCbAAo5vo5YYqhdKfauMJx_1A71BKykPzEWOGQla7rAAPgZmRsGF4XM_pR_GwJia6tIaFGW13wNt38VtUKbqs7oVruYnappwMxjBoO0tbmMKqC389C-_vG35Q==",
+      "DataRefs" : "05d4efdb-da2d-40a2-af2b-252dfe5a437b:SignedBy, .SignedWith, 3c51330a-c225-4663-a778-0b54ac59b02b:Handle, .CreatedOn, .KeyAlgorithm, .Modulus, .PublicExponent, 72d28559-b2c5-4f53-af10-be4d2a29cb91:contactType, .GivenName.0, .FamilyName.0, .Email.0, .MobilePhone.0, .Country, e0252ddc-3bdb-4293-b4c3-c7fef445c09f:Copyright, .TermsOfServiceAgreement, .InfoAffirmation"
+    }
+  }
+}
