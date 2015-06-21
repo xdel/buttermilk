@@ -209,15 +209,21 @@ public class SelfContainedJSONResolver implements SignatureReferenceResolver {
 					}else{
 						
 					 Iterator<String> iterInner = ((Map<String,Object>)s).keySet().iterator();
+					 String uuidTail = null;
 					  while (iterInner.hasNext()) {
 						String tokenKey = iterInner.next();
 						String tokenValue = String.valueOf(((Map<String,Object>)s).get(tokenKey));
 						StringBuilder builder = new StringBuilder();
 						String _uuid = normalizeUUID(key);
+						uuidTail=_uuid;
 						builder.append(_uuid);
 						builder.append(":");
 						builder.append(tokenKey);
 						cache.put(builder.toString(), tokenValue);
+					  }
+					  // kind of a virtual attribute
+					  if(uuidTail != null) {
+						  cache.put(uuidTail+":Handle", uuidTail);
 					  }
 					}
 				}

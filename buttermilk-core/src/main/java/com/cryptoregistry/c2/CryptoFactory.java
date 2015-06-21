@@ -186,12 +186,6 @@ public class CryptoFactory {
 			byte [] m = new byte[digest.getDigestSize()];
 			digest.doFinal(m, 0);
 			
-		//	try {
-		//		System.err.println("sign message digest="+Base64.encodeBytes(m, Base64.URL_SAFE));
-		//	} catch (IOException e) {
-		//		e.printStackTrace();
-		//	}
-			
 			// compute x
 			digest = new SHA256Digest();
 			digest.update(m, 0, m.length);
@@ -201,7 +195,7 @@ public class CryptoFactory {
 			
 			// compute Y
 			// 	 keygen25519(Y, NULL, x);
-			byte [] Y = new byte[32];
+			byte [] Y = new byte[digest.getDigestSize()];
 			c2.keygen(Y, null, x);
 			
 			// compute r
@@ -213,10 +207,13 @@ public class CryptoFactory {
 			byte [] h = XORUtil.xor(m, r);
 			
 			// sign, v is the signature
-			byte [] v = new byte[32];
+			byte [] v = new byte[digest.getDigestSize()];
 			boolean ok = c2.sign(v, h, x, spk.getBytes());
 			if(!ok) throw new RuntimeException("signature process failed");
 			
+			if(v.length != r.length){
+				throw new RuntimeException("v,r should be of equal length");
+			}
 			C2Signature sig = new C2Signature(v,r);
 			return new C2CryptoSignature(meta, sig);
 			

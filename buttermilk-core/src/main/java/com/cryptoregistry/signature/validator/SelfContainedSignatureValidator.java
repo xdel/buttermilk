@@ -19,7 +19,7 @@ import com.cryptoregistry.signature.SelfContainedJSONResolver;
 
 
 /**
- * <p>Validate a Buttermilk 1.0 formatted json file, typically a registration file. All references are exprected to be
+ * <p>Validate a Buttermilk 1.0 formatted json file, typically a registration file. All references are expected to be
  * present in the file<p>
  * 
  * <p>Fail if)</p>

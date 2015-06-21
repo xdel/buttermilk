@@ -7,21 +7,30 @@
 package com.cryptoregistry.c2;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.StringWriter;
+import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 
 import org.junit.Test;
 
 import x.org.bouncycastle.crypto.digests.SHA256Digest;
 
+import com.cryptoregistry.CryptoKey;
+import com.cryptoregistry.KeyMaterials;
 import com.cryptoregistry.MapData;
 import com.cryptoregistry.c2.CryptoFactory;
 import com.cryptoregistry.c2.key.Curve25519KeyContents;
+import com.cryptoregistry.c2.key.Curve25519KeyForPublication;
 import com.cryptoregistry.c2.key.PublicKey;
 import com.cryptoregistry.c2.key.SecretKey;
 import com.cryptoregistry.c2.key.SigningPrivateKey;
 import com.cryptoregistry.formats.JSONFormatter;
+import com.cryptoregistry.formats.JSONReader;
 import com.cryptoregistry.signature.C2CryptoSignature;
+import com.cryptoregistry.signature.CryptoSignature;
 import com.cryptoregistry.signature.RefNotFoundException;
 import com.cryptoregistry.signature.SelfContainedJSONResolver;
 import com.cryptoregistry.signature.builder.C2SignatureBuilder;
@@ -201,6 +210,7 @@ public class Curve25519Test {
 		StringWriter writer = new StringWriter();
 		format.format(writer);
 		String serialized = writer.toString();
+		System.err.println(serialized);
 		
 		// now validate the serialized text
 		
@@ -220,11 +230,48 @@ public class Curve25519Test {
 		} catch (RefNotFoundException e) {
 			e.printStackTrace();
 		}
-		
-		
-	//	boolean ok = CryptoFactory.INSTANCE.verify(c2Keys, msgBytes, sig.getSignature());
-		//Assert.assertTrue(ok);
-		
+	}
+	
+	@Test
+	public void test4() {
+		InputStream in = this.getClass().getResourceAsStream("/chinese-eyes.json");
+		Assert.assertNotNull(in);
+		InputStreamReader reader = null;
+		try {
+			try {
+				reader = new InputStreamReader(in, "UTF-8");
+			} catch (UnsupportedEncodingException e1) {}
+			JSONReader js = new JSONReader(reader);
+			KeyMaterials km = js.parse();
+			SelfContainedJSONResolver resolver = new SelfContainedJSONResolver(km.baseMap());
+			resolver.walk();
+			ByteArrayOutputStream out = new ByteArrayOutputStream();
+			try {
+				CryptoSignature sig = km.signatures().get(0);
+				CryptoKey key = km.keys().get(0).getKeyContents();
+				resolver.resolve(sig.dataRefs,out);
+				byte [] msgBytes = out.toByteArray();
+				SHA256Digest digest = new SHA256Digest();
+				digest.update(msgBytes, 0, msgBytes.length);
+				byte [] m = new byte[digest.getDigestSize()];
+				digest.doFinal(m, 0);
+				
+				C2CryptoSignature _sig = (C2CryptoSignature) sig;
+				boolean ok = CryptoFactory.INSTANCE.verify((Curve25519KeyForPublication)key, m, _sig.signature);
+				Assert.assertTrue(ok);
+			
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}finally{
+			if(reader != null)
+				try {
+					reader.close();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+		}
 	}
 	
 }
