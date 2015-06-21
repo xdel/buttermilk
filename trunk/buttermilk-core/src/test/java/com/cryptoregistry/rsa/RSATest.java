@@ -1,5 +1,7 @@
 package com.cryptoregistry.rsa;
 
+import java.io.ByteArrayOutputStream;
+import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 
@@ -10,24 +12,16 @@ import org.junit.Test;
 import x.org.bouncycastle.crypto.digests.SHA256Digest;
 import x.org.bouncycastle.util.Arrays;
 
-import com.cryptoregistry.pbe.PBEParams;
-import com.cryptoregistry.pbe.PBEParamsFactory;
+import com.cryptoregistry.MapData;
+import com.cryptoregistry.formats.JSONFormatter;
 import com.cryptoregistry.signature.RSACryptoSignature;
+import com.cryptoregistry.signature.RefNotFoundException;
+import com.cryptoregistry.signature.SelfContainedJSONResolver;
+import com.cryptoregistry.signature.builder.MapDataContentsIterator;
+import com.cryptoregistry.signature.builder.RSASignatureBuilder;
 
 public class RSATest {
 
-	
-	
-	@Test
-	public void test1() throws UnsupportedEncodingException {
-		
-		char[]passwordChars0= {'p','a','s','s','w','o','r','d'};
-		PBEParams params = PBEParamsFactory.INSTANCE.createPBKDF2Params(passwordChars0);
-		
-		RSAKeyContents contents = CryptoFactory.INSTANCE.generateKeys();
-		
-		
-	}
 	
 	@Test
 	public void test2() throws UnsupportedEncodingException {
@@ -55,6 +49,51 @@ public class RSATest {
 		RSACryptoSignature sig = CryptoFactory.INSTANCE.sign("Chinese Eyes", contents, digest.getAlgorithmName(), msgHashBytes);
 		boolean ok = CryptoFactory.INSTANCE.verify(sig, contents, msgHashBytes);
 		Assert.assertTrue(ok);
+		
+	}
+	
+	@Test
+	public void test4() {
+		
+		String signedBy = "Chinese Eyes"; // my registration handle
+		String message = "My message text...";
+		
+		RSAKeyContents rKeys = CryptoFactory.INSTANCE.generateKeys();
+		RSASignatureBuilder builder = new RSASignatureBuilder(signedBy,rKeys);
+		MapData data = new MapData();
+		data.put("Msg", message);
+		MapDataContentsIterator iter = new MapDataContentsIterator(data);
+		while(iter.hasNext()){
+			String label = iter.next();
+			builder.update(label, iter.get(label));
+		}
+		RSACryptoSignature sig = builder.build();
+		JSONFormatter format = new JSONFormatter(signedBy);
+		format.add(rKeys);
+		format.add(data);
+		format.add(sig);
+		StringWriter writer = new StringWriter();
+		format.format(writer);
+		String serialized = writer.toString();
+		
+		// now validate the serialized text
+		
+		SelfContainedJSONResolver resolver = new SelfContainedJSONResolver(serialized);
+		resolver.walk();
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		try {
+			resolver.resolve(sig.dataRefs,out);
+			byte [] msgBytes = out.toByteArray();
+			SHA256Digest digest = new SHA256Digest();
+			digest.update(msgBytes, 0, msgBytes.length);
+			byte [] m = new byte[digest.getDigestSize()];
+			digest.doFinal(m, 0);
+			
+			boolean ok = CryptoFactory.INSTANCE.verify(sig, rKeys, m);
+			Assert.assertTrue(ok);
+		} catch (RefNotFoundException e) {
+			e.printStackTrace();
+		}
 		
 	}
 

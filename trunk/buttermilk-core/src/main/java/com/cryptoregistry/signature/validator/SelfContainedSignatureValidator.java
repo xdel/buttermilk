@@ -17,10 +17,63 @@ import com.cryptoregistry.signature.CryptoSignature;
 import com.cryptoregistry.signature.RefNotFoundException;
 import com.cryptoregistry.signature.SelfContainedJSONResolver;
 
+
 /**
- * Fail if) 
- * 	1) no signatures found
- * 	2) Key used for signing is not found, or not public 
+ * <p>Validate a Buttermilk 1.0 formatted json file, typically a registration file. All references are exprected to be
+ * present in the file<p>
+ * 
+ * <p>Fail if)</p>
+ * <ol><li>
+ * 	no signatures found
+ * </li>
+ * <li>
+ * 	 Key used for signing is not found, or not public 
+ * </li>
+ * </ol>
+ * 
+ * <p>Example</p>
+ * <pre>
+ 		String signedBy = "Chinese Eyes"; // my registration handle
+		String message = "My message text...";
+		
+		RSAKeyContents rKeys = CryptoFactory.INSTANCE.generateKeys();
+		RSASignatureBuilder builder = new RSASignatureBuilder(signedBy,rKeys);
+		MapData data = new MapData();
+		data.put("Msg", message);
+		MapDataContentsIterator iter = new MapDataContentsIterator(data);
+		while(iter.hasNext()){
+			String label = iter.next();
+			builder.update(label, iter.get(label));
+		}
+		RSACryptoSignature sig = builder.build();
+		JSONFormatter format = new JSONFormatter(signedBy);
+		format.add(rKeys);
+		format.add(data);
+		format.add(sig);
+		StringWriter writer = new StringWriter();
+		format.format(writer);
+		String serialized = writer.toString();
+		
+		// now validate the serialized text
+		
+		SelfContainedJSONResolver resolver = new SelfContainedJSONResolver(serialized);
+		resolver.walk();
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		try {
+			resolver.resolve(sig.dataRefs,out);
+			byte [] msgBytes = out.toByteArray();
+			SHA256Digest digest = new SHA256Digest();
+			digest.update(msgBytes, 0, msgBytes.length);
+			byte [] m = new byte[digest.getDigestSize()];
+			digest.doFinal(m, 0);
+			
+			boolean ok = CryptoFactory.INSTANCE.verify(sig, rKeys, m);
+			Assert.assertTrue(ok);
+		} catch (RefNotFoundException e) {
+			e.printStackTrace();
+		}
+ 
+  </pre>
  * 
  * @author Dave
  *
