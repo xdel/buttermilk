@@ -54,14 +54,6 @@ public class SignatureFormatter {
 
 			// does the actual key contents (possibly multiple fields)
 			s.formatSignaturePrimitivesJSON(g, writer);
-
-			// also common
-		//	g.writeArrayFieldStart("DataRefs");
-		//	Iterator<String> iter = s.getDataRefs().iterator();
-		//	while (iter.hasNext()) {
-		//		g.writeString(iter.next());
-		//	}
-		//	g.writeEndArray();
 			
 			// simplification, cleaner
 			g.writeStringField("DataRefs", CryptoSignature.getDataReferenceString(s));

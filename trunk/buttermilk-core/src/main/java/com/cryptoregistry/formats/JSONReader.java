@@ -474,8 +474,8 @@ public class JSONReader {
 						}
 						case ECKCDSA: {
 							ArmoredString v = new ArmoredString(String.valueOf(sigData.get("v")));
-							ArmoredString s = new ArmoredString(String.valueOf(sigData.get("s")));
-							C2Signature sig = new C2Signature(v,s);
+							ArmoredString r = new ArmoredString(String.valueOf(sigData.get("r")));
+							C2Signature sig = new C2Signature(v,r);
 							list.add(new C2CryptoSignature(meta,dataRefs,sig));
 							break;
 						}
