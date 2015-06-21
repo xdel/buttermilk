@@ -72,6 +72,44 @@ import com.cryptoregistry.signature.SelfContainedJSONResolver;
 		} catch (RefNotFoundException e) {
 			e.printStackTrace();
 		}
+		
+This code generates and validates the following data structure:
+
+{
+  "Version" : "Buttermilk Key Materials 1.0",
+  "RegHandle" : "Chinese Eyes",
+  "Email" : "",
+  "Data" : {
+    "Local" : {
+      "46b3b5d8-3487-4b9d-a01f-2a03aa8e0d98" : {
+        "Msg" : "My message text..."
+      }
+    }
+  },
+  "Keys" : {
+    "f250a75d-a990-4d0d-8afb-0b7a0190554c-U" : {
+      "KeyAlgorithm" : "EC",
+      "CreatedOn" : "2015-06-21T00:08:19+0000",
+      "Encoding" : "Base64url",
+      "Q" : "GhVXqkLqfzq0sCeqAFZPR-zOsGyMtiVZrXvtnEI-dlI=,ALhWjPeRpek5RP6qwjsXQ6R3UtVPpqwpBxpRXr_1DyJ6",
+      "D" : "AIda_dEida3bPNq6yS12XuJZZQK3MBGRMc1iNJ0kvPrx",
+      "CurveName" : "P-256"
+    }
+  },
+  "Signatures" : {
+    "67f017e3-38b2-4d1a-854d-c9a0f164e6d3" : {
+      "CreatedOn" : "2015-06-21T00:08:19+0000",
+      "SignedWith" : "f250a75d-a990-4d0d-8afb-0b7a0190554c",
+      "SignedBy" : "Chinese Eyes",
+      "SignatureAlgorithm" : "ECDSA",
+      "DigestAlgorithm" : "SHA-256",
+      "r" : "c23250e64706bce3d7640f28243b83ae9973b3ce0da289c0928e45a3f3d6c785",
+      "s" : "4f78247ef6848e58a730d82b2260636b81f5e3eeac3bc7154d3367b02e340d1e",
+      "DataRefs" : "67f017e3-38b2-4d1a-854d-c9a0f164e6d3:SignedBy, .SignedWith, 46b3b5d8-3487-4b9d-a01f-2a03aa8e0d98:Msg"
+    }
+  }
+}
+
  
   </pre>
  * 
