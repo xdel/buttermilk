@@ -19,12 +19,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class JSONGenericReader {
 	
-	protected final ObjectMapper mapper;
-	protected final Map<String,Object> map;
+	public final Map<String,Object> map;
 
 	@SuppressWarnings("unchecked")
 	public JSONGenericReader(File path) {
-		mapper = new ObjectMapper();
+		ObjectMapper mapper = new ObjectMapper();
 		try {
 			map = mapper.readValue(path, Map.class);
 		} catch (Exception e) {
@@ -34,7 +33,7 @@ public class JSONGenericReader {
 	
 	@SuppressWarnings("unchecked")
 	public JSONGenericReader(Reader in) {
-		mapper = new ObjectMapper();
+		ObjectMapper mapper = new ObjectMapper();
 		try {
 			map = mapper.readValue(in, Map.class);
 		} catch (Exception e) {

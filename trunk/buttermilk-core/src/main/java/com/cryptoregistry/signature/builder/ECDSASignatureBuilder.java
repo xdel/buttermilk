@@ -107,7 +107,7 @@ public class ECDSASignatureBuilder {
 		digest.doFinal(bytes, 0);
 		digest.reset();
 		
-		ECDSACryptoSignature sig = CryptoFactory.INSTANCE.sign(signedBy, sKey, bytes);
+		ECDSACryptoSignature sig = CryptoFactory.INSTANCE.sign(meta, sKey, bytes);
 		for(String ref: references) {
 			sig.addDataReference(ref);
 		}
