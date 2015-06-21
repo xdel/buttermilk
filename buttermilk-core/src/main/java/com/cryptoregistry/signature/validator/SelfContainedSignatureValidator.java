@@ -3,6 +3,7 @@ package com.cryptoregistry.signature.validator;
 import java.io.ByteArrayOutputStream;
 import java.util.List;
 
+import x.org.bouncycastle.crypto.Digest;
 import x.org.bouncycastle.crypto.digests.SHA256Digest;
 
 import com.cryptoregistry.CryptoKey;
@@ -13,6 +14,8 @@ import com.cryptoregistry.c2.key.Curve25519KeyForPublication;
 import com.cryptoregistry.ec.ECKeyForPublication;
 import com.cryptoregistry.rsa.RSAKeyForPublication;
 import com.cryptoregistry.signature.C2CryptoSignature;
+import com.cryptoregistry.signature.ECDSACryptoSignature;
+import com.cryptoregistry.signature.RSACryptoSignature;
 import com.cryptoregistry.signature.CryptoSignature;
 import com.cryptoregistry.signature.RefNotFoundException;
 import com.cryptoregistry.signature.SelfContainedJSONResolver;
@@ -197,15 +200,22 @@ public class SelfContainedSignatureValidator {
 	}
 	
 	private boolean validateRSA(CryptoSignature sig, RSAKeyForPublication key, byte [] sourceBytes){
-		
-		return false;
+		Digest digest = sig.getDigestInstance();
+		digest.update(sourceBytes, 0, sourceBytes.length);
+		byte [] m = new byte[digest.getDigestSize()];
+		digest.doFinal(m, 0);
+		return com.cryptoregistry.rsa.CryptoFactory.INSTANCE.verify((RSACryptoSignature)sig, key, m);
 	}
 	
 	private boolean validateEC(CryptoSignature sig, ECKeyForPublication key, byte [] sourceBytes){
-		
-		return false;
+		Digest digest = sig.getDigestInstance();
+		digest.update(sourceBytes, 0, sourceBytes.length);
+		byte [] m = new byte[digest.getDigestSize()];
+		digest.doFinal(m, 0);
+		return com.cryptoregistry.ec.CryptoFactory.INSTANCE.verify((ECDSACryptoSignature)sig, key, m);
 	}
 	
+	// always SHA-256
 	private boolean validateC2(C2CryptoSignature sig, Curve25519KeyForPublication key, byte [] sourceBytes){
 		SHA256Digest digest = new SHA256Digest();
 		digest.update(sourceBytes, 0, sourceBytes.length);
