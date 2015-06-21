@@ -31,7 +31,6 @@ public class PersonalContactPanel extends JPanel {
 	private JTextField givenNameTextField;
 	private JTextField familyNameTextField;
 	private JTextField mobilePhoneTextField;
-	private JCheckBox chckbxIPreferTo;
 	
 	private CryptoContact contact;
 
@@ -89,8 +88,6 @@ public class PersonalContactPanel extends JPanel {
 		familyNameTextField = new JTextField();
 		familyNameTextField.setColumns(10);
 		
-		chckbxIPreferTo = new JCheckBox("I prefer to remain anonymous, please create an empty contact record.");
-		
 		JLabel lblMobile = new JLabel("MobilePhone.0");
 		
 		mobilePhoneTextField = new JTextField();
@@ -137,7 +134,7 @@ public class PersonalContactPanel extends JPanel {
 					.addGap(19)
 					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
 						.addGroup(groupLayout.createSequentialGroup()
-							.addGap(0, 0, Short.MAX_VALUE)
+							.addGap(0, 14, Short.MAX_VALUE)
 							.addComponent(btnGotToWebsiteContact)
 							.addPreferredGap(ComponentPlacement.RELATED)
 							.addComponent(btnGotToBusinessContact)
@@ -146,23 +143,20 @@ public class PersonalContactPanel extends JPanel {
 							.addGap(14))
 						.addGroup(groupLayout.createSequentialGroup()
 							.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-								.addComponent(chckbxIPreferTo)
-								.addGroup(groupLayout.createSequentialGroup()
-									.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-										.addComponent(lblCountry)
-										.addComponent(lblEmail)
-										.addComponent(lblGivenname)
-										.addComponent(lblFamilyname)
-										.addComponent(lblMobile))
-									.addGap(23)
-									.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-										.addComponent(emailTextField, GroupLayout.PREFERRED_SIZE, 258, GroupLayout.PREFERRED_SIZE)
-										.addGroup(groupLayout.createParallelGroup(Alignment.TRAILING, false)
-											.addComponent(familyNameTextField, Alignment.LEADING)
-											.addComponent(givenNameTextField, Alignment.LEADING)
-											.addComponent(countryTextField, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 170, Short.MAX_VALUE))
-										.addComponent(mobilePhoneTextField, GroupLayout.PREFERRED_SIZE, 168, GroupLayout.PREFERRED_SIZE))))
-							.addContainerGap(66, Short.MAX_VALUE))))
+								.addComponent(lblCountry)
+								.addComponent(lblEmail)
+								.addComponent(lblGivenname)
+								.addComponent(lblFamilyname)
+								.addComponent(lblMobile))
+							.addGap(23)
+							.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+								.addComponent(emailTextField, GroupLayout.PREFERRED_SIZE, 258, GroupLayout.PREFERRED_SIZE)
+								.addGroup(groupLayout.createParallelGroup(Alignment.TRAILING, false)
+									.addComponent(familyNameTextField, Alignment.LEADING)
+									.addComponent(givenNameTextField, Alignment.LEADING)
+									.addComponent(countryTextField, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 170, Short.MAX_VALUE))
+								.addComponent(mobilePhoneTextField, GroupLayout.PREFERRED_SIZE, 168, GroupLayout.PREFERRED_SIZE))
+							.addContainerGap(80, Short.MAX_VALUE))))
 		);
 		groupLayout.setVerticalGroup(
 			groupLayout.createParallelGroup(Alignment.TRAILING)
@@ -187,9 +181,7 @@ public class PersonalContactPanel extends JPanel {
 					.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
 						.addComponent(lblMobile)
 						.addComponent(mobilePhoneTextField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-					.addGap(62)
-					.addComponent(chckbxIPreferTo)
-					.addPreferredGap(ComponentPlacement.RELATED, 87, Short.MAX_VALUE)
+					.addPreferredGap(ComponentPlacement.RELATED, 172, Short.MAX_VALUE)
 					.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
 						.addComponent(btnGotToWebsiteContact)
 						.addComponent(btnGotToBusinessContact)
@@ -208,15 +200,6 @@ public class PersonalContactPanel extends JPanel {
 		
 		CryptoContact contact = new CryptoContact();
 		
-		if(chckbxIPreferTo.isSelected()){
-			contact.add("contactType", "Person");
-			contact.add("GivenName.0", "N/A");
-			contact.add("FamilyName.0", "N/A");
-			contact.add("Email.0", "N/A");
-			contact.add("MobilePhone.0", "N/A");
-			contact.add("Country", "N/A");
-			this.contact = contact;
-		}else{
 			contact.add("contactType", "Person");
 			contact.add("GivenName.0", this.givenNameTextField.getText());
 			contact.add("FamilyName.0", this.familyNameTextField.getText());
@@ -224,6 +207,5 @@ public class PersonalContactPanel extends JPanel {
 			contact.add("MobilePhone.0", this.mobilePhoneTextField.getText());
 			contact.add("Country", this.countryTextField.getText());
 			this.contact = contact;
-		}
 	}
 }
