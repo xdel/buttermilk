@@ -4,7 +4,6 @@ import java.io.ByteArrayOutputStream;
 import java.util.List;
 
 import x.org.bouncycastle.crypto.Digest;
-import x.org.bouncycastle.crypto.digests.SHA256Digest;
 
 import com.cryptoregistry.CryptoKey;
 import com.cryptoregistry.CryptoKeyWrapper;
@@ -215,14 +214,12 @@ public class SelfContainedSignatureValidator {
 		return com.cryptoregistry.ec.CryptoFactory.INSTANCE.verify((ECDSACryptoSignature)sig, key, m);
 	}
 	
-	// always SHA-256
 	private boolean validateC2(C2CryptoSignature sig, Curve25519KeyForPublication key, byte [] sourceBytes){
-		SHA256Digest digest = new SHA256Digest();
+		Digest digest = sig.getDigestInstance();
 		digest.update(sourceBytes, 0, sourceBytes.length);
 		byte [] m = new byte[digest.getDigestSize()];
 		digest.doFinal(m, 0);
 		return  com.cryptoregistry.c2.CryptoFactory.INSTANCE.verify(key, m, sig.getSignature());
-		
 	}
 
 }
