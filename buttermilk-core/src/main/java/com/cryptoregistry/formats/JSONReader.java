@@ -82,8 +82,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  */
 public class JSONReader {
 	
-	protected final ObjectMapper mapper;
 	protected final Map<String,Object> map;
+	
+	
+	public JSONReader(Map<String,Object> map) {
+		this.map = map;
+	}
 	
 	/**
 	 * Fails immediately if anything goes wrong reading the file or parsing
@@ -93,7 +97,7 @@ public class JSONReader {
 	public JSONReader(File path) {
 		
 		// TODO the below is reasonable, but in future use the stream parsing API to be more efficient
-		mapper = new ObjectMapper();
+		ObjectMapper mapper = new ObjectMapper();
 		try {
 			map = mapper.readValue(path, Map.class);
 		} catch (Exception e) {
@@ -105,7 +109,7 @@ public class JSONReader {
 	public JSONReader(Reader in) {
 		
 		// TODO the below is reasonable, but someday use the stream parsing API to be more efficient
-		mapper = new ObjectMapper();
+		ObjectMapper mapper = new ObjectMapper();
 		try {
 			map = mapper.readValue(in, Map.class);
 		} catch (Exception e) {
@@ -515,6 +519,90 @@ public class JSONReader {
 				
 				list.add(rd);
 				return list;
+			}
+			
+			// map interface support
+			
+			@SuppressWarnings("unchecked")
+			public List<MapData> keyMaps() {
+				List<MapData> list = new ArrayList<MapData>();
+				Map<String, Object> uuids = (Map<String, Object>) map.get("Keys");
+				Iterator<String> iter = uuids.keySet().iterator();
+				while(iter.hasNext()) {
+					String distinguishedKey = iter.next();
+					Map<String, Object> keyData = (Map<String, Object>) uuids.get(distinguishedKey);
+					MapData md = new MapData(distinguishedKey);
+					Iterator<String> inner = keyData.keySet().iterator();
+					while(inner.hasNext()){
+						String key = inner.next();
+						md.put(key, String.valueOf(keyData.get(key)));
+					}
+					list.add(md);
+				}
+				return list;
+			}
+			
+			@SuppressWarnings("unchecked")
+			public List<MapData> contactMaps() {
+				List<MapData> list = new ArrayList<MapData>();
+				Map<String, Object> uuids = (Map<String, Object>) map.get("Contacts");
+				Iterator<String> iter = uuids.keySet().iterator();
+				while(iter.hasNext()) {
+					String id = iter.next();
+					Map<String, Object> keyData = (Map<String, Object>) uuids.get(id);
+					MapData md = new MapData(id);
+					Iterator<String> inner = keyData.keySet().iterator();
+					while(inner.hasNext()){
+						String key = inner.next();
+						md.put(key, String.valueOf(keyData.get(key)));
+					}
+					list.add(md);
+				}
+				return list;
+			}
+			
+			@SuppressWarnings("unchecked")
+			public List<MapData> signatureMaps() {
+				List<MapData> list = new ArrayList<MapData>();
+				Map<String, Object> uuids = (Map<String, Object>) map.get("Signatures");
+				Iterator<String> iter = uuids.keySet().iterator();
+				while(iter.hasNext()) {
+					String id = iter.next();
+					Map<String, Object> keyData = (Map<String, Object>) uuids.get(id);
+					MapData md = new MapData(id);
+					Iterator<String> inner = keyData.keySet().iterator();
+					while(inner.hasNext()){
+						String key = inner.next();
+						md.put(key, String.valueOf(keyData.get(key)));
+					}
+					list.add(md);
+				}
+				return list;
+			}
+			
+			@SuppressWarnings("unchecked")
+			public List<MapData> mapDataMaps() {
+				List<MapData> list = new ArrayList<MapData>();
+				Map<String, Object> data = (Map<String, Object>) map.get("Data");
+				Map<String, Object> uuids = (Map<String, Object>) data.get("Local");
+				Iterator<String> iter = uuids.keySet().iterator();
+				while(iter.hasNext()) {
+					String id = iter.next();
+					Map<String, Object> keyData = (Map<String, Object>) uuids.get(id);
+					MapData md = new MapData(id);
+					Iterator<String> inner = keyData.keySet().iterator();
+					while(inner.hasNext()){
+						String key = inner.next();
+						md.put(key, String.valueOf(keyData.get(key)));
+					}
+					list.add(md);
+				}
+				return list;
+			}
+
+			@Override
+			public Map<String, Object> baseMap() {
+				return map;
 			}
 			
 		};

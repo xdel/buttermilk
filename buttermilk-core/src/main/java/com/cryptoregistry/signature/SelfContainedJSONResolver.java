@@ -22,20 +22,23 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  *
  */
 public class SelfContainedJSONResolver implements SignatureReferenceResolver {
-
-	protected final ObjectMapper mapper;
 	protected final Map<String, Object> objectGraph;
 	protected final Map<String, String> cache;
 
 	@SuppressWarnings("unchecked")
 	public SelfContainedJSONResolver(String json) {
 		cache = new HashMap<String, String>();
-		mapper = new ObjectMapper();
+		ObjectMapper mapper = new ObjectMapper();
 		try {
 			objectGraph = mapper.readValue(json, Map.class);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
+	}
+	
+	public SelfContainedJSONResolver(Map<String,Object> map) {
+		cache = new HashMap<String, String>();
+		this.objectGraph = map;
 	}
 
 	public void walk() {

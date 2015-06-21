@@ -14,6 +14,8 @@ import com.cryptoregistry.signature.ECDSACryptoSignature;
 import com.cryptoregistry.signature.ECDSASignature;
 
 
+import com.cryptoregistry.signature.SignatureMetadata;
+
 import x.org.bouncycastle.crypto.AsymmetricCipherKeyPair;
 import x.org.bouncycastle.crypto.Digest;
 import x.org.bouncycastle.crypto.agreement.ECDHBasicAgreement;
@@ -183,6 +185,20 @@ public class CryptoFactory {
 			BigInteger [] sigRes = signer.generateSignature(msgHashBytes);
 			ECDSASignature esig =  new ECDSASignature(sigRes[0],sigRes[1]);
 			return new ECDSACryptoSignature(ecKeys.getHandle(),signedBy,esig);
+		} finally {
+			lock.unlock();
+		}
+	}
+	
+	public ECDSACryptoSignature sign(SignatureMetadata meta, ECKeyContents ecKeys, byte[] msgHashBytes){
+		lock.lock();
+		try {
+			ECDSASigner signer = new ECDSASigner(new HMacDSAKCalculator((Digest)new SHA256Digest()));
+			ParametersWithRandom param = new ParametersWithRandom(ecKeys.getPrivateKey(), rand);
+			signer.init(true, param);
+			BigInteger [] sigRes = signer.generateSignature(msgHashBytes);
+			ECDSASignature esig =  new ECDSASignature(sigRes[0],sigRes[1]);
+			return new ECDSACryptoSignature(meta,esig);
 		} finally {
 			lock.unlock();
 		}

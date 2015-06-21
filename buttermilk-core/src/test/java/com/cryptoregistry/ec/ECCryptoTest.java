@@ -5,6 +5,7 @@
  */
 package com.cryptoregistry.ec;
 
+import java.io.ByteArrayOutputStream;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.math.BigInteger;
@@ -14,9 +15,16 @@ import org.junit.Test;
 
 import com.cryptoregistry.CryptoKeyWrapper;
 import com.cryptoregistry.KeyMaterials;
+import com.cryptoregistry.MapData;
 import com.cryptoregistry.formats.JSONFormatter;
 import com.cryptoregistry.formats.JSONReader;
+import com.cryptoregistry.signature.ECDSACryptoSignature;
+import com.cryptoregistry.signature.RefNotFoundException;
+import com.cryptoregistry.signature.SelfContainedJSONResolver;
+import com.cryptoregistry.signature.builder.ECDSASignatureBuilder;
+import com.cryptoregistry.signature.builder.MapDataContentsIterator;
 
+import x.org.bouncycastle.crypto.digests.SHA256Digest;
 import x.org.bouncycastle.math.ec.ECCurve;
 import x.org.bouncycastle.math.ec.ECPoint;
 import x.org.bouncycastle.util.encoders.Hex;
@@ -78,6 +86,52 @@ public class ECCryptoTest {
 
 	protected static BigInteger fromHex(String hex) {
 		return new BigInteger(1, Hex.decode(hex));
+	}
+	
+	@Test
+	public void test1() {
+		
+		String signedBy = "Chinese Eyes"; // my registration handle
+		String message = "My message text...";
+		
+		ECKeyContents ecKeys = CryptoFactory.INSTANCE.generateKeys("P-256");
+		ECDSASignatureBuilder builder = new ECDSASignatureBuilder(signedBy, ecKeys);
+		MapData data = new MapData();
+		data.put("Msg", message);
+		MapDataContentsIterator iter = new MapDataContentsIterator(data);
+		while(iter.hasNext()){
+			String label = iter.next();
+			builder.update(label, iter.get(label));
+		}
+		ECDSACryptoSignature sig = builder.build();
+		JSONFormatter format = new JSONFormatter(signedBy);
+		format.add(ecKeys);
+		format.add(data);
+		format.add(sig);
+		StringWriter writer = new StringWriter();
+		format.format(writer);
+		String serialized = writer.toString();
+		System.err.println(serialized);
+		
+		// now validate the serialized text
+		
+		SelfContainedJSONResolver resolver = new SelfContainedJSONResolver(serialized);
+		resolver.walk();
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		try {
+			resolver.resolve(sig.dataRefs,out);
+			byte [] msgBytes = out.toByteArray();
+			SHA256Digest digest = new SHA256Digest();
+			digest.update(msgBytes, 0, msgBytes.length);
+			byte [] m = new byte[digest.getDigestSize()];
+			digest.doFinal(m, 0);
+			
+			boolean ok = CryptoFactory.INSTANCE.verify(sig, ecKeys, m);
+			Assert.assertTrue(ok);
+		} catch (RefNotFoundException e) {
+			e.printStackTrace();
+		}
+		
 	}
 
 }
