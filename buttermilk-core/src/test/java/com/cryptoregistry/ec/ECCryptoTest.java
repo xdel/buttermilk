@@ -6,24 +6,31 @@
 package com.cryptoregistry.ec;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.cryptoregistry.CryptoKey;
 import com.cryptoregistry.CryptoKeyWrapper;
 import com.cryptoregistry.KeyMaterials;
 import com.cryptoregistry.MapData;
 import com.cryptoregistry.formats.JSONFormatter;
 import com.cryptoregistry.formats.JSONReader;
+import com.cryptoregistry.signature.CryptoSignature;
 import com.cryptoregistry.signature.ECDSACryptoSignature;
 import com.cryptoregistry.signature.RefNotFoundException;
 import com.cryptoregistry.signature.SelfContainedJSONResolver;
 import com.cryptoregistry.signature.builder.ECDSASignatureBuilder;
 import com.cryptoregistry.signature.builder.MapDataContentsIterator;
 
+import x.org.bouncycastle.crypto.Digest;
 import x.org.bouncycastle.crypto.digests.SHA256Digest;
 import x.org.bouncycastle.math.ec.ECCurve;
 import x.org.bouncycastle.math.ec.ECPoint;
@@ -131,7 +138,47 @@ public class ECCryptoTest {
 		} catch (RefNotFoundException e) {
 			e.printStackTrace();
 		}
-		
+	}
+	
+	@Test
+	public void test3() {
+		InputStream in = this.getClass().getResourceAsStream("/somewhere-else.json");
+		Assert.assertNotNull(in);
+		InputStreamReader reader = null;
+		try {
+			try {
+				reader = new InputStreamReader(in, "UTF-8");
+			} catch (UnsupportedEncodingException e1) {}
+			JSONReader js = new JSONReader(reader);
+			KeyMaterials km = js.parse();
+			SelfContainedJSONResolver resolver = new SelfContainedJSONResolver(km.baseMap());
+			resolver.walk();
+			ByteArrayOutputStream out = new ByteArrayOutputStream();
+			try {
+				CryptoSignature sig = km.signatures().get(0);
+				CryptoKey key = km.keys().get(0).getKeyContents();
+				resolver.resolve(sig.dataRefs,out);
+				byte [] msgBytes = out.toByteArray();
+				Digest digest = sig.getDigestInstance();
+				digest.update(msgBytes, 0, msgBytes.length);
+				byte [] m = new byte[digest.getDigestSize()];
+				digest.doFinal(m, 0);
+				
+				ECDSACryptoSignature _sig = (ECDSACryptoSignature) sig;
+				boolean ok = CryptoFactory.INSTANCE.verify(_sig, (ECKeyForPublication)key, m);
+				Assert.assertTrue(ok);
+			
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}finally{
+			if(reader != null)
+				try {
+					reader.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+		}
 	}
 
 }
