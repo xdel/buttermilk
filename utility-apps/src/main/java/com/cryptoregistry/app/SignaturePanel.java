@@ -327,7 +327,8 @@ public class SignaturePanel extends JPanel {
 				// key contents
 				while(iter.hasNext()){
 					String label = iter.next();
-					sigBuilder.update(label, iter.get(label));
+					String value = iter.get(label);
+					sigBuilder.update(label, value);
 				}
 				requestFormatter.add(pub);
 				

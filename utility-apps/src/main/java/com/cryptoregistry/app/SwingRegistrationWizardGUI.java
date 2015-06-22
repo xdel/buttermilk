@@ -21,6 +21,12 @@ import javax.swing.event.ChangeListener;
 
 import asia.redact.bracket.properties.Properties;
 
+/**
+ * UI for registration
+ * 
+ * @author Dave
+ *
+ */
 public class SwingRegistrationWizardGUI {
 	
 	 public static JTabbedPane tabbedPane;
@@ -158,8 +164,6 @@ public class SwingRegistrationWizardGUI {
 	        //Display the window.
 	        frame.pack();
 	        frame.setVisible(true);
-	        
-	      
 	    }
 	 
 	    public static void main(String[] args) {
