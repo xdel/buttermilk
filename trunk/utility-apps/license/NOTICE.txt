@@ -1,0 +1,22 @@
+   
+   Copyright 2013-2014 David R. Smith for cryptoregistry.com - All Rights Reserved
+
+   This product includes software developed at
+   The Apache Software Foundation (http://www.apache.org/).
+   
+   This product includes software developed at
+   The Legion of the BouncyCastle (http://www.bouncycastle.org/)
+   
+   This product includes software developed at
+   FasterXML (http://fasterxml.com/)
+
+   This product includes public domain software written by
+   Matthijs van Duin and Dmitry Skiba
+   
+   This product includes public domain software written by
+   Robert Harder (iharder.net, http://iharder.sourceforge.net/current/java/base64/)
+   
+   This product includes code which implements GJ Croll's BiEntropy algorithm as described here:
+   http://arxiv.org/ftp/arxiv/papers/1305/1305.0954.pdf
+   To the best of my knowledge this algorithm is not encumbered with a patent
+
