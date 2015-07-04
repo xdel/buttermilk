@@ -8,6 +8,8 @@ package com.cryptoregistry.app;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Image;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
@@ -16,8 +18,12 @@ import java.util.List;
 
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
+import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.UIManager;
@@ -72,6 +78,48 @@ public class SwingRegistrationWizardGUI {
 	     }
      }
      
+     private static JMenuBar createMenuBar(Properties props) {
+    	 
+    	 final Properties myprops = props;
+    	 
+    	 JMenuBar menuBar = new JMenuBar();
+
+    	//Build the first menu.
+    	JMenu fileMenu = new JMenu("File");
+    	menuBar.add(fileMenu);
+    	
+    	JMenu utilityMenu = new JMenu("Utility");
+    	menuBar.add(utilityMenu);
+    	JMenuItem item0 = new JMenuItem("Binary Entropy (Croll's Method)");
+    	utilityMenu.add(item0);
+    	item0.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				JFrame myframe = new JFrame();
+				myframe.setIconImages(new IconLister().getIconList());
+				new EntropyDialog(myframe, "Binary Entropy");
+			}
+    		
+    	});
+    	
+    	menuBar.add(Box.createHorizontalGlue());
+    	
+    	JMenu aboutMenu = new JMenu("About");
+    	menuBar.add(aboutMenu);
+    	
+    	JMenuItem itemAbout = new JMenuItem("About This Application");
+    	aboutMenu.add(itemAbout);
+    	itemAbout.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+			            	new AboutFrame(myprops);
+			}
+    	});
+    	
+    	return menuBar;
+     }
+     
 
 	 private static void createAndShowGUI(Properties props) {
 		 
@@ -91,8 +139,9 @@ public class SwingRegistrationWizardGUI {
 	        //Create and set up the window.
 	        JFrame frame = new JFrame("cryptoregistry.com - Registration Key Materials Wizard");
 	        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-	        frame.setPreferredSize(new Dimension(970,570));
+	      //  frame.setPreferredSize(new Dimension(970,570));
 	        frame.setIconImages(new IconLister().getIconList());
+	        frame.setJMenuBar(createMenuBar(props));
 	       
 	        tabbedPane = new JTabbedPane();
 	        tabbedPane.setPreferredSize(new Dimension(970,350));
