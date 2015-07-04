@@ -178,8 +178,7 @@ public class CreateKeyPanel extends JPanel {
 		passwordEqualityMsg = new JLabel("...");
 		
 		chckbxCreateObfuscatedPassword = new JCheckBox("Create obfuscated password file from this value");
-		
-		
+		chckbxCreateObfuscatedPassword.setSelected(true);
 		
 		GroupLayout groupLayout = new GroupLayout(this);
 		groupLayout.setHorizontalGroup(

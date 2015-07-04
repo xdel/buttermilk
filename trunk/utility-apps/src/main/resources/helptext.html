@@ -1,5 +1,7 @@
-<html>
-	<head>
+<!DOCTYPE html>
+<html lang="en" dir="ltr" class="client-nojs">
+<head>
+	<meta charset="UTF-8" />
 		<title>Introduction</title>
 		 <link rel="stylesheet" href="https://www.cryptoregistry.com/default.css" />
 	</head>
@@ -14,11 +16,11 @@
 	<a name="intro"></a>
 	<h2>Introduction</h2>
 	
-	<p>Welcome to the <b>cryptoregistry.com</b> registration wizard. This wizard helps build your first 
+	<p>Welcome to the <b>cryptoregistry.com</b> Registration Wizard. This wizard helps build your first 
 	Buttermilk-formatted cryptographic key pair and then digitally sign a registration request using that key. 
 	You will then upload the request file to start the registration process.</p>
 	
-	<p>The registration wizard consists of several tabs. These are intended to be used in order:</p> 
+	<p>The registration wizard consists of several tabs. These are intended to be used more or less in order, but you can go backwards if required:</p> 
 	
 	<ol>
 		<li>Introduction (this tab)</li>
@@ -31,27 +33,29 @@
 	    <li>Signature</li>
 	</ol>
 	
-	<p>Each tab builds the registration file starting with the registration handle itself and then moving through
-	your initial encryption key, contact info appropriate to your situation, and finally a digital signature using your
-	own key.</p>
+	<p>Each tab builds the registration data set starting with the location on your file system for the generated key materials,
+	selecting the registration handle itself by checking availability, and then moving through to creation of your initial 
+	encryption key, contact info appropriate to your situation, and finally a digital signature using your own key.</p>
 	
 	<h2>Settings</h2>
 	
-	<p>Define where you would like the application to save the generated key materials, and other settings.</p>
+	<p>Define where you would like the application to save the generated key materials, and a private email address. This "private"
+	address is not included in the registration and not presented to the public; it is used to send a confirmation email only. If
+	this field is left blank, no confirmation email will be sent.</p>
 	
 	<h2>Select Registration Handle</h2>
 	
-	<p>This tab allows you to compose a registration handle and verify if it is available. It requires an 
-	Internet connection to make contact with cryptoregistry.com to check on handles.</p>
+	<p>This tab allows you to compose a registration handle and verify if it is available. It requires an Internet connection to make 
+	contact with cryptoregistry.com to check on handles. See below in the FAQ for a definition of a "registration handle". Basically, this
+	value is a unique moniker that can be used by other people to find your listing in the registry.</p>
 	
 	<h2>Initial Key</h2>
 	
-	<p>Once you have created a candidate registration handle, this tab allows you to generate an 
-	 asymmetric cryptographic key which will be used to sign the registration request.
-	 You may select from one of three algorithms for the key. The generated key will have a for-publication (public) portion,
-	 which is sent to cryptoregistry.com, and also a secured (private) portion which is used for signing or encrypting
+	<p>Once you have created a candidate registration handle, this tab allows you to generate an asymmetric cryptographic key which
+	 will be used to sign the registration request. You may select from one of three algorithms for the key. The generated key will have a 
+	 for-publication (public) portion, which is sent to cryptoregistry.com, and also a secured (private) portion which is used for signing or encrypting
 	 messages, etc. The secured portion is encrypted and placed in a separate file, which is why you must supply a password, and you must keep the file
-	 and the associated password secure. </p>
+	 and the associated password secure.</p>
 	 
 	 <p>This password and the generated secured key file are not communicated to cryptoregistry.com.</p>
 	 
@@ -62,6 +66,9 @@
 	 you are comfortable having available on-line. If you are not comfortable with having any information on-line,
 	 then use the checkbox for creating an anonymous record.</p>
 	 
+	 <p>Note that if your registration handle is in domain name form (i.e., if you use periods or "full stops" as separators)
+	 then this tab will be disabled and you will be required to use the Website Contact form.</p>
+	 
 	 <h2>Business Contact</h2>
 	 
 	 <p>If the context of your security requirements is for business use then you can create a 
@@ -71,43 +78,75 @@
 	  <h2>Website Contact</h2>
 	 
 	 <p>If the context of your security requirements is for web site use (similar to a legacy digital certificate)
-	 then you can create one or more web site contact records. This information should be essentially the same values
-	 as what is defined in WHOIS (So it can be verified).</p>
+	 then you can create one or more web site contact records. This is automatically detected because your handle must be
+	 in domain name form in order to use this tab. This information should be entered exactly the same values
+	 as what is defined in WHOIS (So it can be verified later).</p>
+	 
+	 <p>Note: you do not need to fill in all the fields, and you do not need multiple records (Registrant, Administrative, etc.) unless
+	 you want to have those. </p>
 	 
 	 
 	 <h2>Signature</h2>
 	 
-	 <p>This tab allows you to sign all the preceding information you have input using the key you just created. It is essentially
-	 a "self-signed" assertion which proves specifically only that you have possession of the secured portion of the
-	 cryptographic key found in the keys section.</p>
+	 <p>This tab allows you to sign all the preceding information you have input using the key you just created. We call
+	 this a "CryptoSignature." It is essentially a "self-signed" assertion which proves specifically only that you have 
+	 possession of the secured portion of the cryptographic key found in the keys section. Still, this is useful. Public Key 
+	 Infrastructure is based on this concept: if you are in possession of the secret key, then you are an authenticated Subject.</p>
 	 
-	    
+	 <h2>Key Materials</h2>
+	 
+	 <p>After you have created the digital signature you will be taken to a tab which displays the generated key materials.
+	 These are also written to the file system for future reference, along with an obfuscated password file if you kept
+	 that box checked. At this point, if all the check boxes to the right are checked, the "Send Registration Request" 
+	 button will be enabled.</p>
+	 
+	 <h2>Registration</h2>
+	 
+	<p>At this point you can register in one of two ways: </p>
+	
+	<ol><li>press the "Send Registration Request" button</li>
+	<li> or visit
+	<a href="https://www.cryptoregistry.com/registration/reg-form-direct.jsp">https://www.cryptoregistry.com/registration/reg-form-direct.jsp</a>
+	page and paste in the contents of the left pane and then press submit.</li>
+	</ol>
+	
+	<p> The end result is the same: the registration will be processed and if successful, an email will be generated
+	to the "private" email address you entered above, assuming that field was filled in with a valid address.</p>
 	 
 	<a name="faq"></a>
 	<h2>FAQ</h2>
 	
-	<h2>What is Public Key Infrastructure</h2>
+	<h2>What is Public Key Infrastructure?</h2>
 	
-	<p>Public Key Infrastructure or PKI is infrastructure which is concerned with securing information. It uses the
-	basic techniques of cryptography - encryption, digital signature, and identity management - to create an
-	environment in which information can be protected and managed.</p>
+	<p>Public Key Infrastructure or PKI is network or Internet infrastructure which is concerned with securing information. 
+	It uses the  techniques of cryptography - encryption, digital signature, and identity management - to create an environment in 
+	which information can be managed securely and your privacy protected.</p>
 	
 	<h2>What Is <b>cryptoregistry.com</b>?</h2>
 	
 	<p><b>cryptoregistry.com</b> is part of a new Public Key Infrastructure (PKI) designed by David R. Smith. 
-	The PKI design consists
-	of an open source cryptographic library implemented in the Java programming language, called Buttermilk; a new
-	security protocol (loosely modeled on TLS) called bTLS (aka "beatles"); new cryptographic formats,
+	The PKI design consists of an open source cryptographic library implemented in the Java programming language, 
+	called Buttermilk; a new security protocol (loosely modeled on TLS) called bTLS (pronounced "beatles"); new cryptographic formats,
 	utilities, and programs, and a web site to support it all.</p>
+	
+	<h2>Where is the Privacy Policy and Terms of Service agreement for cryptoregistry.com?</h2>
+	
+	<p>Here: <a href="https://www.cryptoregistry.com/tos.html">TOS</a> and <a href="https://www.cryptoregistry.com/privacy.html">Privacy Policy</a>.<p> 
+	
+	<h2>Does cryptoregistry.com sell or resell information users or registrants submit?</h2>
+	
+	<p>No. Cryptoregistry.com does not sell or resell its database contents. The information submitted by users remains theirs and is 
+	copyrighted by the submitter. This is explained in more detail in the Terms of Service.</p>
 	
 	<h2>What is a Handle?</h2>
 	
-	<p>Handles are UTF-8 encoded text strings which follow certain formatting rules. Handles are intended to work as a moniker 
-	or nick-name for all your PKI use. They are intentionally oriented towards individuals, but also can be used for
-	other entities such as  businesses and web sites.</p>
+	<p>Handles are UTF-8 encoded text strings - possibly a phrase - which follow certain syntax rules. Handles are intended to work as a moniker 
+	or "nick-name" for all your PKI use. This is a little different from any existing way of using cryptographic keys or digital signatures,
+	and the method is a distinguishing characteristic of the cryptoregistry.com PKI.</p>
 	
-	<p>The handle provides <i>a unique lookup</i> to locate your key materials 
-	in the registry, but it also allows Identity Points&trade; and other trust materials to adhere.</p>
+	<p>Handles are intentionally oriented towards individuals, but also can be used for other entities such as businesses and web sites.</p>
+	
+	<p>The handle provides <i>a unique lookup</i> to locate your registration.</p>
 	
 	<p>Just to get a flavor of what is possible, here are some examples of valid formatted handles:</p>
 	
@@ -124,7 +163,7 @@
 		<li>Consists of more than one "word" with a separator character</li>
 		<li>The "words" may consist of any combination of UTF-8 characters, max length of a word is 128 bytes</li>
 		<li>The "words" are separated by either a space, a dash, or a dot (period).</li>
-		<li>If the separator is a <i>dot (period)</i> character, then parsing rules for domain names are in play.</li>
+		<li>If the separator is a <i>dot (period)</i> character, then parsing rules for DNS (Domain Names) are in play.</li>
 		<li>If the separator is a <i>dash</i>, then parsing rules for UUIDs are in play.</li>
 	</ol> 
 	
@@ -141,37 +180,35 @@
 	
 	<h2>What is a Registration Handle&trade;?</h2>
 	
-	<p>A registration handle is a handle chosen by a registrant (i.e., you) for use with a cryptoregistry.com registration.</p>
+	<p>A registration handle is a handle chosen by a registrant for use with a cryptoregistry.com registration.</p>
 	
-	<p>The registration handle will be publicly visible and internet-searchable, and depending on the level of
-	PKI validation your use-case requires, it ties back directly to contact details about you or your business,
-	so it is worth thinking about and choosing wisely. You are only allowed to have one personal handle and
-	one handle per business or web site entity which you legally control.</p>
+	<p>The registration handle will be <b>publicly visible</b> and <b>internet-searchable</b>, and depending on the level of
+	PKI validation your use-case requires, it ties back directly to contact details about you or your business or web site,
+	so it is worth thinking about and choosing wisely.</p>
 	
 	<p>Some guidelines on defining a handle, more are found in the Terms of Service:</p> 
 	
 	<ul>
-		<li>Do not include your legal name or personally identifiable details like phone numbers in your personal handle. 
-		There are millions of people named John Smith. Try to think of something
-		more original which fits your personality. Also be aware that while phone numbers may change with relative ease,
-		your digital signatures are harder to adjust.</li>
+		<li>Do not include your legal name or personally identifiable details. Consider closely whether phone numbers or other
+		ID numbers are a good idea - usually they would not be.</li> 
+		<li>There are millions of people named John Smith. Try to think of something
+		 more original than your name, a nickname you like, something which fits your true self or says something 
+		 about you that is unique.</li>
 		<li>You can use your legal business name as a business registration Handle, but keep in mind you must own the
-		trademark for that phrase or name.</li>
+		trademark for that phrase or name to do this.</li>
 		<li>You must claim copyright as part of your handle creation upon registration. I.e., you must assert the handle
-		is your unique intellectual property and creatively yours.</li>
-		<li>If you cannot think of anything creative, a unique UUID can be generated instead - but this is harder to remember
-		or tell your friends.</li>
-		<li>Pornographic or sexually offensive phrases are not allowed, although a certain amount of 
-		creative license is reasonable. Do you
-		really want people to look up your on-line handle by searching for "Big Dick 10?" Unless you
-		are a working porn star you should choose something less provocative.</li> 
+		is your unique intellectual property and creatively yours. If it is found later this is not the case, you will be in
+		violation of the Terms of Service and your registration may be deleted as a consequence.</li>
+		<li>Pornographic or sexually offensive phrases are not allowed and are a violation of the Terms of Service, although a certain amount of 
+		creative license is reasonable. Do you really want people to look up your on-line handle by searching 
+		for "Big Dick #10?" Unless you are a working porn star you should probably choose something less provocative.</li> 
 		<li>Hate speech or any speech which is considered defamatory, slanderous, or libelous, is not allowed 
-		in a registration handle.</li>
+		in a registration handle and is a violation of the Terms of Service.</li>
 	</ul>
 	
 	<h2>What are Key Materials&trade;?</h2>
 	
-	<p>Key Materials&trade; is our term for the menage of cryptographic materials such as keys, digital signatures, etc.,
+	<p>Key Materials&trade; is our term for the ménage of cryptographic materials such as keys, digital signatures, etc.,
 	in various formats such as JSON or Google protocol buffers as used by the Buttermilk project.</p>
 	
 	<h2>Does cryptoregistry.com perform x509 Certificate Signing or Certificate Authority Services?</h2>
