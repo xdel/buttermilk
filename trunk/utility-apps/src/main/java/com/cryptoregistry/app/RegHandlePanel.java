@@ -24,6 +24,7 @@ import java.util.concurrent.ExecutionException;
 import asia.redact.bracket.properties.Properties;
 
 import com.cryptoregistry.handle.CryptoHandle;
+import com.cryptoregistry.handle.DomainNameHandle;
 import com.cryptoregistry.handle.Handle;
 
 public class RegHandlePanel extends JPanel {
@@ -32,8 +33,11 @@ public class RegHandlePanel extends JPanel {
 	private final JTextField regHandleTextField;
 	private final RegHandleChecker checker;
 	
+	private final ExceptionHolder exception;
+	
 	public RegHandlePanel(Properties props){
 		super();
+		exception = new ExceptionHolder();
 		checker = new RegHandleChecker(props);
 	
 		JLabel lblRegistrationHandle = new JLabel("Registration Handle");
@@ -59,7 +63,12 @@ public class RegHandlePanel extends JPanel {
 					
 					@Override
 					protected Boolean doInBackground() throws Exception {
+						try {
 						return checker.check(regHandle);
+						}catch(RuntimeException x){
+							exception.ex = x;
+							return false;
+						}
 					}
 					
 					 @Override
@@ -69,7 +78,12 @@ public class RegHandlePanel extends JPanel {
 								if(get()) {
 									lblAvailable.setText("Available!");
 								}else{
-									lblAvailable.setText("Not Available, Sorry.");
+									if(exception.hasException()){
+										lblAvailable.setText(exception.ex.getMessage());
+										exception.ex.printStackTrace();
+									}else{
+										lblAvailable.setText("Not Available, Sorry.");
+									}
 								}
 						} catch (InterruptedException | ExecutionException e) {
 							e.printStackTrace();
@@ -114,8 +128,29 @@ public class RegHandlePanel extends JPanel {
 		JButton btnCreate = new JButton("OK");
 		btnCreate.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				SwingRegistrationWizardGUI.km.setRegHandle(regHandleTextField.getText().trim());
-				SwingRegistrationWizardGUI.tabbedPane.setSelectedIndex(3);
+				String handleText = regHandleTextField.getText().trim();
+				SwingRegistrationWizardGUI.km.setRegHandle(handleText);
+				
+				Handle h = CryptoHandle.parseHandle(handleText);
+				if(h.validate()){
+					if(h instanceof DomainNameHandle){
+						// deactivate personal and business contact tabs, activate web contact
+						SwingRegistrationWizardGUI.tabbedPane.setEnabledAt(4, false);
+						SwingRegistrationWizardGUI.tabbedPane.setEnabledAt(5, false);
+						SwingRegistrationWizardGUI.tabbedPane.setEnabledAt(6, true);
+					}else{
+						// activate personal and business contact tabs, deactivate web contact
+						
+						SwingRegistrationWizardGUI.tabbedPane.setEnabledAt(4, true);
+						SwingRegistrationWizardGUI.tabbedPane.setEnabledAt(5, true);
+						SwingRegistrationWizardGUI.tabbedPane.setEnabledAt(6, false);
+						SwingRegistrationWizardGUI.tabbedPane.setSelectedIndex(3);
+					}
+					
+					SwingRegistrationWizardGUI.tabbedPane.setSelectedIndex(3);
+				}else{
+					
+				}
 			} 
 		});
 		
@@ -174,5 +209,16 @@ public class RegHandlePanel extends JPanel {
 
 	public JTextField getRegHandleTextField() {
 		return regHandleTextField;
+	}
+	
+	private static class ExceptionHolder{
+		
+		public Exception ex;
+
+		public ExceptionHolder() {}
+		
+		public boolean hasException() {
+			return ex != null;
+		}
 	}
 }

@@ -4,8 +4,6 @@
  *
  */
 package com.cryptoregistry.app;
-
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.GroupLayout;
 import javax.swing.SwingWorker;
@@ -91,52 +89,13 @@ public class PersonalContactPanel extends JPanel {
 		mobilePhoneTextField = new JTextField();
 		mobilePhoneTextField.setColumns(10);
 		
-		JButton btnGotToBusinessContact = new JButton("Go to Business Contact");
-		btnGotToBusinessContact.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				if(contact == null) {
-					JOptionPane.showMessageDialog((JButton)e.getSource(),
-						    "Please create at least an anonymous contact record.",
-						    "Request",
-						    JOptionPane.WARNING_MESSAGE);
-					return;
-				}
-				 SwingRegistrationWizardGUI.tabbedPane.setSelectedIndex(5);
-			}
-			
-		});
-		
-		JButton btnGotToWebsiteContact = new JButton("Go to Website Contact");
-		btnGotToWebsiteContact.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				if(contact == null) {
-					JOptionPane.showMessageDialog((JButton)e.getSource(),
-						    "Please create at least an anonymous contact record.",
-						    "Request",
-						    JOptionPane.WARNING_MESSAGE);
-					return;
-				}
-				 SwingRegistrationWizardGUI.tabbedPane.setSelectedIndex(6);
-			}
-			
-		});
-		
 		GroupLayout groupLayout = new GroupLayout(this);
 		groupLayout.setHorizontalGroup(
 			groupLayout.createParallelGroup(Alignment.LEADING)
 				.addGroup(groupLayout.createSequentialGroup()
 					.addGap(19)
 					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-						.addGroup(groupLayout.createSequentialGroup()
-							.addGap(0, 14, Short.MAX_VALUE)
-							.addComponent(btnGotToWebsiteContact)
-							.addPreferredGap(ComponentPlacement.RELATED)
-							.addComponent(btnGotToBusinessContact)
-							.addPreferredGap(ComponentPlacement.RELATED)
+						.addGroup(Alignment.TRAILING, groupLayout.createSequentialGroup()
 							.addComponent(btnCreateContact)
 							.addGap(14))
 						.addGroup(groupLayout.createSequentialGroup()
@@ -180,10 +139,7 @@ public class PersonalContactPanel extends JPanel {
 						.addComponent(lblMobile)
 						.addComponent(mobilePhoneTextField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
 					.addPreferredGap(ComponentPlacement.RELATED, 172, Short.MAX_VALUE)
-					.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
-						.addComponent(btnGotToWebsiteContact)
-						.addComponent(btnGotToBusinessContact)
-						.addComponent(btnCreateContact))
+					.addComponent(btnCreateContact)
 					.addContainerGap())
 		);
 		setLayout(groupLayout);
