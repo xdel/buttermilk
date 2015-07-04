@@ -87,7 +87,7 @@ public class SettingsPanel extends JPanel {
 		privateEmailTextField = new JTextField();
 		privateEmailTextField.setColumns(10);
 		
-		JLabel lblThisEmailAddress = new JLabel("<html><i>This email address is used in the registration process only<br> and is not publically displayed</i></html>");
+		JLabel lblThisEmailAddress = new JLabel("<html><i>This email address is used in the registration process only<br>and is not publicly displayed on the web site</i></html>");
 		
 		GroupLayout groupLayout = new GroupLayout(this);
 		groupLayout.setHorizontalGroup(

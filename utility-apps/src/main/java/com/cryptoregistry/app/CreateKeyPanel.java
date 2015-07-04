@@ -45,6 +45,9 @@ import com.cryptoregistry.c2.key.Curve25519KeyForPublication;
 import com.cryptoregistry.ec.ECKeyContents;
 import com.cryptoregistry.ec.ECKeyForPublication;
 import com.cryptoregistry.ec.ECKeyMetadata;
+import com.cryptoregistry.handle.CryptoHandle;
+import com.cryptoregistry.handle.DomainNameHandle;
+import com.cryptoregistry.handle.Handle;
 import com.cryptoregistry.pbe.PBEAlg;
 import com.cryptoregistry.rsa.RSAKeyContents;
 import com.cryptoregistry.rsa.RSAKeyForPublication;
@@ -141,7 +144,14 @@ public class CreateKeyPanel extends JPanel {
 						 
 						 btnCreate.setText("Create Key");
 						 btnCreate.setEnabled(true);
-						 SwingRegistrationWizardGUI.tabbedPane.setSelectedIndex(4);
+						 
+						Handle handle = CryptoHandle.parseHandle(SwingRegistrationWizardGUI.km.getRegHandle());
+						if(handle instanceof DomainNameHandle){
+							 SwingRegistrationWizardGUI.tabbedPane.setSelectedIndex(6);
+						}else{
+							 SwingRegistrationWizardGUI.tabbedPane.setSelectedIndex(4);
+						}
+						
 					}
 				};
 				worker.execute();
@@ -173,12 +183,8 @@ public class CreateKeyPanel extends JPanel {
 		
 		GroupLayout groupLayout = new GroupLayout(this);
 		groupLayout.setHorizontalGroup(
-			groupLayout.createParallelGroup(Alignment.TRAILING)
+			groupLayout.createParallelGroup(Alignment.LEADING)
 				.addGroup(groupLayout.createSequentialGroup()
-					.addContainerGap(353, Short.MAX_VALUE)
-					.addComponent(btnCreate)
-					.addContainerGap())
-				.addGroup(Alignment.LEADING, groupLayout.createSequentialGroup()
 					.addContainerGap()
 					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
 						.addComponent(chckbxCreateObfuscatedPassword)
@@ -206,6 +212,10 @@ public class CreateKeyPanel extends JPanel {
 									.addComponent(password1)
 									.addComponent(password0, GroupLayout.DEFAULT_SIZE, 331, Short.MAX_VALUE)))))
 					.addContainerGap(45, Short.MAX_VALUE))
+				.addGroup(Alignment.TRAILING, groupLayout.createSequentialGroup()
+					.addContainerGap(345, Short.MAX_VALUE)
+					.addComponent(btnCreate, GroupLayout.PREFERRED_SIZE, 95, GroupLayout.PREFERRED_SIZE)
+					.addContainerGap())
 		);
 		groupLayout.setVerticalGroup(
 			groupLayout.createParallelGroup(Alignment.LEADING)

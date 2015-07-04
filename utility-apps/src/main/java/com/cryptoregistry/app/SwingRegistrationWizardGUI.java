@@ -7,8 +7,14 @@ package com.cryptoregistry.app;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Image;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
+import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JFrame;
@@ -43,6 +49,29 @@ public class SwingRegistrationWizardGUI {
      public static KM km;
      public static RequestSession session;
      
+     private static class IconLister {
+     
+	    public IconLister() {}
+
+		public final List<Image> getIconList() {
+	    	 
+	    	  List<Image> iconList = null;
+			try {
+				 BufferedImage icon16 = ImageIO.read(this.getClass().getResource("/hand-trans16.png"));
+				 BufferedImage icon32 = ImageIO.read(this.getClass().getResource("/hand-trans32.png"));
+				 BufferedImage icon64 = ImageIO.read(this.getClass().getResource("/hand-trans64.png"));
+				  iconList = new ArrayList<Image>();
+				  iconList.add(icon16);
+				  iconList.add(icon32);
+				  iconList.add(icon64);
+			  
+			} catch (IOException e) {
+				throw new RuntimeException(e);
+			}
+			  return iconList;
+	     }
+     }
+     
 
 	 private static void createAndShowGUI(Properties props) {
 		 
@@ -57,10 +86,13 @@ public class SwingRegistrationWizardGUI {
 			    }
 			} catch (Exception e) {}
 		 
+		
+		 
 	        //Create and set up the window.
 	        JFrame frame = new JFrame("cryptoregistry.com - Registration Key Materials Wizard");
 	        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	        frame.setPreferredSize(new Dimension(970,570));
+	        frame.setIconImages(new IconLister().getIconList());
 	       
 	        tabbedPane = new JTabbedPane();
 	        tabbedPane.setPreferredSize(new Dimension(970,350));

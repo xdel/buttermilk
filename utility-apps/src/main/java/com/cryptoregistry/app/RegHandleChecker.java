@@ -76,10 +76,8 @@ public class RegHandleChecker {
 	           // check if handle is registered (exists). If it is not registered, we assume it is available 
 	           if(responseBody.contains("false")) return true;
 	            
-	        }catch(IOException x){
-	        	x.printStackTrace();
-	        } catch (URISyntaxException e) {
-				e.printStackTrace();
+	        }catch(Exception x){
+	        	throw new RuntimeException("Server may be down. Please try later.", x);
 			}
 	      }finally {
 	    	  try {
