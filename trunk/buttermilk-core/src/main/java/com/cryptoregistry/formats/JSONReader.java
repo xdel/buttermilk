@@ -268,8 +268,8 @@ public class JSONReader {
 								ArmoredString k_ = new ArmoredString(String.valueOf(keyData.get("k")));
 								ArmoredString s = new ArmoredString(String.valueOf(keyData.get("s")));
 								PublicKey pKey = new PublicKey(P.decodeToBytes());
-								SigningPrivateKey sPrivKey = new SigningPrivateKey(k_.decodeToBytes());
-								AgreementPrivateKey aPrivKey = new AgreementPrivateKey(s.decodeToBytes());
+								SigningPrivateKey sPrivKey = new SigningPrivateKey(s.decodeToBytes());
+								AgreementPrivateKey aPrivKey = new AgreementPrivateKey(k_.decodeToBytes());
 								Curve25519KeyContents p = new Curve25519KeyContents((C2KeyMetadata) meta,pKey,sPrivKey,aPrivKey);
 								list.add(new CryptoKeyWrapperImpl(p));
 								break;

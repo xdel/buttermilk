@@ -9,7 +9,6 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.List;
 
-import com.cryptoregistry.SignatureAlgorithm;
 import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.core.JsonGenerator;
 
@@ -26,15 +25,6 @@ public class ECDSACryptoSignature extends CryptoSignature {
 	
 	public ECDSACryptoSignature(SignatureMetadata metadata, List<String> dataRefs, ECDSASignature sig) {
 		super(metadata,dataRefs);
-		this.signature=sig;
-	}
-	
-	public ECDSACryptoSignature(String signedWith, String signedBy, ECDSASignature sig) {
-		super(new SignatureMetadata(
-				SignatureAlgorithm.ECDSA,
-				"SHA-256",
-				signedWith,
-				signedBy));
 		this.signature=sig;
 	}
 

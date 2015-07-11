@@ -9,7 +9,7 @@ import com.cryptoregistry.pbe.PBEParams;
 import com.cryptoregistry.pbe.PBEParamsFactory;
 
 /**
- * Encapsulate various modes for formatting
+ * Encapsulate various modes for formatting. pbeParams is here to pass into the formatter if encryption of the key is requested
  * 
  * @author Dave
  *
@@ -65,7 +65,11 @@ public class KeyFormat {
 	}
 	
 	public KeyFormat clone() {
-		KeyFormat f = new KeyFormat(this.encodingHint,this.mode,this.pbeParams.clone());
+		PBEParams pbe = null;
+		if(this.pbeParams != null){
+			pbe = this.pbeParams.clone();
+		}
+		KeyFormat f = new KeyFormat(this.encodingHint, this.mode, pbe);
 		return f;
 	}
 

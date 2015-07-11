@@ -8,6 +8,7 @@ package com.cryptoregistry.ec;
 import java.math.BigInteger;
 import java.util.Date;
 
+import com.cryptoregistry.CryptoKey;
 import com.cryptoregistry.ECCustomCurve;
 import com.cryptoregistry.Signer;
 import com.cryptoregistry.formats.KeyFormat;
@@ -84,6 +85,11 @@ public class ECKeyContents extends ECKeyForPublication implements Signer {
 		}
 	}
 	
+	@Override
+	public CryptoKey keyForPublication() {
+		return forPublication();
+	}
+	
 	public ECKeyContents clone(){
 		ECKeyMetadata meta = metadata.clone();
 		if(usesNamedCurve()) {
@@ -141,4 +147,13 @@ public class ECKeyContents extends ECKeyForPublication implements Signer {
 		}
 		
 	}
+	
+	/**
+	 * Only return the public portion here - so don't use this for attempting to glean the key
+	 */
+	final public String toString() {
+		return super.toString();
+	}
+	
+	
 }

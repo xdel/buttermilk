@@ -93,6 +93,7 @@ class SymmetricKeyFormatter {
 					.valueOf(((ArmoredScryptResult) result).cpuMemoryCost));
 			g.writeStringField("KeyData.Parallelization", String
 					.valueOf(((ArmoredScryptResult) result).parallelization));
+			
 		}
 		g.writeEndObject();
 

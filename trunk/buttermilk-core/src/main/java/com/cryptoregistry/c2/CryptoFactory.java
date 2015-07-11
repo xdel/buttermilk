@@ -5,10 +5,13 @@
  */
 package com.cryptoregistry.c2;
 
+import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.concurrent.locks.ReentrantLock;
 
+import net.iharder.Base64;
+import x.org.bouncycastle.crypto.Digest;
 import x.org.bouncycastle.crypto.digests.SHA256Digest;
 
 import com.cryptoregistry.CryptoKey;
@@ -122,7 +125,7 @@ public class CryptoFactory {
 	 *   P  [in]  public key
 	 */
 	
-	public boolean verify(Curve25519KeyForPublication cpKey, byte[]msgBytes, C2Signature sig){
+	public boolean verify(Curve25519KeyForPublication cpKey, byte[]msgBytes, C2Signature sig, Digest digest){
 		lock.lock();
 		try {
 			Curve25519 c2 = curve;
@@ -131,17 +134,17 @@ public class CryptoFactory {
 			byte [] r = sig.r.decodeToBytes();
 			
 			// compute m 
-			SHA256Digest digest = new SHA256Digest();
+			//SHA256Digest digest = new SHA256Digest();
 			digest.update(pKey.getBytes(), 0, pKey.length());
 			digest.update(msgBytes, 0, msgBytes.length);
 			byte [] m = new byte[digest.getDigestSize()];
 			digest.doFinal(m, 0);
 			
-		//	try {
-		//		System.err.println("verify message digest="+Base64.encodeBytes(m, Base64.URL_SAFE));
-		//	} catch (IOException e) {
-		//		e.printStackTrace();
-		//	}
+			try {
+				System.err.println("verifying c2 message digest="+Base64.encodeBytes(m, Base64.URL_SAFE));
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 			
 			// compute h: m XOR r
 			byte [] h = XORUtil.xor(m, r);
@@ -171,7 +174,17 @@ public class CryptoFactory {
 		return true;
 	}
 	
-	public C2CryptoSignature sign(SignatureMetadata meta, Curve25519KeyContents c2Keys, byte[]msgBytes){
+	/* Signature generation primitive, calculates (x-h)s mod q
+	 *   v  [out] signature value
+	 *   h  [in]  signature hash (of message, signature pub key, and context data)
+	 *   x  [in]  signature private key
+	 *   s  [in]  private key for signing
+	 * returns true on success, false on failure (use different x or h)
+	 * 
+	 * we will throw a runtime exception if false
+	 */
+	
+	public C2CryptoSignature sign(SignatureMetadata meta, Curve25519KeyContents c2Keys, byte[]msgBytes, Digest digest){
 		
 		lock.lock();
 		try {
@@ -180,14 +193,21 @@ public class CryptoFactory {
 			PublicKey pKey = c2Keys.publicKey;
 			
 			// compute m
-			SHA256Digest digest = new SHA256Digest();
+			//SHA256Digest digest = new SHA256Digest();
 			digest.update(pKey.getBytes(), 0, pKey.length());
 			digest.update(msgBytes, 0, msgBytes.length);
 			byte [] m = new byte[digest.getDigestSize()];
 			digest.doFinal(m, 0);
 			
+			try {
+				System.err.println("signing c2 message digest="+Base64.encodeBytes(m, Base64.URL_SAFE));
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			
 			// compute x
-			digest = new SHA256Digest();
+		//	digest = new SHA256Digest();
+			digest.reset();
 			digest.update(m, 0, m.length);
 			digest.update(spk.getBytes(), 0, spk.length());
 			byte [] x = new byte[digest.getDigestSize()];
@@ -222,7 +242,7 @@ public class CryptoFactory {
 		}
 	}
 	
-	public C2CryptoSignature sign(String signedBy, Curve25519KeyContents c2Keys, byte[]msgBytes){
+	public C2CryptoSignature sign(String signedBy, Curve25519KeyContents c2Keys, byte[]msgBytes, Digest digest){
 		lock.lock();
 		try {
 			Curve25519 c2 = curve;
@@ -230,20 +250,21 @@ public class CryptoFactory {
 			PublicKey pKey = c2Keys.publicKey;
 			
 			// compute m
-			SHA256Digest digest = new SHA256Digest();
+			//SHA256Digest digest = new SHA256Digest();
 			digest.update(pKey.getBytes(), 0, pKey.length());
 			digest.update(msgBytes, 0, msgBytes.length);
 			byte [] m = new byte[digest.getDigestSize()];
 			digest.doFinal(m, 0);
 			
-		//	try {
-		//		System.err.println("sign message digest="+Base64.encodeBytes(m, Base64.URL_SAFE));
-		//	} catch (IOException e) {
-		//		e.printStackTrace();
-		//	}
+			try {
+				System.err.println("signing c2 message digest="+Base64.encodeBytes(m, Base64.URL_SAFE));
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 			
 			// compute x
-			digest = new SHA256Digest();
+			//digest = new SHA256Digest();
+			digest.reset();
 			digest.update(m, 0, m.length);
 			digest.update(spk.getBytes(), 0, spk.length());
 			byte [] x = new byte[digest.getDigestSize()];
@@ -274,5 +295,5 @@ public class CryptoFactory {
 			lock.unlock();
 		}
 	}
-
+	
 }

@@ -10,6 +10,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.concurrent.locks.ReentrantLock;
 
+import com.cryptoregistry.SignatureAlgorithm;
 import com.cryptoregistry.signature.ECDSACryptoSignature;
 import com.cryptoregistry.signature.ECDSASignature;
 
@@ -19,7 +20,7 @@ import com.cryptoregistry.signature.SignatureMetadata;
 import x.org.bouncycastle.crypto.AsymmetricCipherKeyPair;
 import x.org.bouncycastle.crypto.Digest;
 import x.org.bouncycastle.crypto.agreement.ECDHBasicAgreement;
-import x.org.bouncycastle.crypto.digests.SHA256Digest;
+import x.org.bouncycastle.crypto.digests.SHA1Digest;
 import x.org.bouncycastle.crypto.generators.ECKeyPairGenerator;
 import x.org.bouncycastle.crypto.params.ECDomainParameters;
 import x.org.bouncycastle.crypto.params.ECKeyGenerationParameters;
@@ -35,6 +36,8 @@ public class CryptoFactory {
 	private final SecureRandom rand;
 
 	public static final CryptoFactory INSTANCE = new CryptoFactory();
+	
+	public static final int SHA1_SIZE = new SHA1Digest().getDigestSize();
 
 	private CryptoFactory() {
 		lock = new ReentrantLock();
@@ -134,7 +137,7 @@ public class CryptoFactory {
 			ECDHBasicAgreement agree = new ECDHBasicAgreement();
 			agree.init(ours.getPrivateKey());
 			BigInteger bi = agree.calculateAgreement(theirs.getPublicKey());
-			SHA256Digest digest = new SHA256Digest();
+			Digest digest = new SHA1Digest();
 			byte [] bytes = bi.toByteArray();
 			digest.update(bytes, 0, bytes.length);
 			byte[]  digestBytes = new byte[digest.getDigestSize()];
@@ -170,7 +173,7 @@ public class CryptoFactory {
 	}
 	
 	/**
-	 * Deterministic ECDSA with SHA-256. 
+	 * Deterministic ECDSA with SHA1. 
 	 * 
 	 * @param signedBy
 	 * @param ecKeys
@@ -178,25 +181,52 @@ public class CryptoFactory {
 	 */
 	public ECDSACryptoSignature sign(String signedBy, ECKeyContents ecKeys, byte[] msgHashBytes){
 		lock.lock();
+		
+		if(msgHashBytes.length!=SHA1_SIZE) throw new RuntimeException("This method requires a SHA1 digest input");
 		try {
-			ECDSASigner signer = new ECDSASigner(new HMacDSAKCalculator((Digest)new SHA256Digest()));
+			Digest digest = new SHA1Digest();
+			ECDSASigner signer = new ECDSASigner(new HMacDSAKCalculator(digest));
 			ParametersWithRandom param = new ParametersWithRandom(ecKeys.getPrivateKey(), rand);
 			signer.init(true, param);
 			BigInteger [] sigRes = signer.generateSignature(msgHashBytes);
 			ECDSASignature esig =  new ECDSASignature(sigRes[0],sigRes[1]);
-			return new ECDSACryptoSignature(ecKeys.getHandle(),signedBy,esig);
+			SignatureMetadata meta = new SignatureMetadata(
+					SignatureAlgorithm.ECDSA,
+					digest.getAlgorithmName(),
+					ecKeys.getMetadata().getHandle(),
+					signedBy);
+			return new ECDSACryptoSignature(meta, esig);
 		} finally {
 			lock.unlock();
 		}
 	}
 	
+	/**
+	 *  Deterministic ECDSA with SHA1. If SignatureMetadata contains some other sized digest algorithm,
+	 *  then SHA1ify the bytes.
+	 *  
+	 * @param meta
+	 * @param ecKeys
+	 * @param msgHashBytes
+	 * @return
+	 */
 	public ECDSACryptoSignature sign(SignatureMetadata meta, ECKeyContents ecKeys, byte[] msgHashBytes){
 		lock.lock();
 		try {
-			ECDSASigner signer = new ECDSASigner(new HMacDSAKCalculator((Digest)new SHA256Digest()));
+			byte [] hash = null;
+			if(msgHashBytes.length != SHA1_SIZE){
+				SHA1Digest digest = new SHA1Digest();
+				digest.update(msgHashBytes, 0, msgHashBytes.length);
+				hash = new byte[digest.getDigestSize()];
+				digest.doFinal(hash, 0);
+			}else{
+				hash = msgHashBytes;
+			}
+			
+			ECDSASigner signer = new ECDSASigner(new HMacDSAKCalculator(new SHA1Digest()));
 			ParametersWithRandom param = new ParametersWithRandom(ecKeys.getPrivateKey(), rand);
 			signer.init(true, param);
-			BigInteger [] sigRes = signer.generateSignature(msgHashBytes);
+			BigInteger [] sigRes = signer.generateSignature(hash);
 			ECDSASignature esig =  new ECDSASignature(sigRes[0],sigRes[1]);
 			return new ECDSACryptoSignature(meta,esig);
 		} finally {
@@ -204,15 +234,33 @@ public class CryptoFactory {
 		}
 	}
 	
+	/**
+	 *  Deterministic ECDSA. If the digest is larger than SHA1, then re-
+	 * @param sig
+	 * @param pKey
+	 * @param msgHashBytes
+	 * @return
+	 */
 	public boolean verify(ECDSACryptoSignature sig,ECKeyForPublication pKey, byte [] msgHashBytes){
 		lock.lock();
 		try {
-			ECDSASigner signer = new ECDSASigner(new HMacDSAKCalculator((Digest)new SHA256Digest()));
+			byte [] hash = null;
+			if(msgHashBytes.length != SHA1_SIZE){
+				SHA1Digest digest = new SHA1Digest();
+				digest.update(msgHashBytes, 0, msgHashBytes.length);
+				hash = new byte[digest.getDigestSize()];
+				digest.doFinal(hash, 0);
+			}else{
+				hash = msgHashBytes;
+			}
+			ECDSASigner signer = new ECDSASigner(new HMacDSAKCalculator(new SHA1Digest()));
 			signer.init(false, pKey.getPublicKey());
-			return signer.verifySignature(msgHashBytes, sig.signature.r, sig.signature.s);
+			return signer.verifySignature(hash, sig.signature.r, sig.signature.s);
 		} finally {
 			lock.unlock();
 		}
 	}
+	
+	
 	
 }

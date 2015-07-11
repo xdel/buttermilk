@@ -6,10 +6,10 @@
 package com.cryptoregistry;
 
 /**
- * Marker for key classes which represent "private keys" or key contents, i.e., 
+ * Marker for key classes which contain "private key" or confidential key contents, i.e., 
  * they can (at least potentially) make a digital signature. In some cases, like NTRU,
  * that is known to be broken so we don't support actually doing signing with that type of key, 
- * but we still use the marker interface on the key class.
+ * but we still use the marker interface on that key class.
  * 
  * @author Dave
  *

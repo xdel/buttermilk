@@ -35,7 +35,15 @@ public class CryptoFactory {
 	public static final int KEY_STRENGTH = 2048;
 
 	// typically would be 3, 5, 17, 257, or 65537
-	public static final BigInteger PUBLIC_EXPONENT = BigInteger.valueOf(0x11);
+	public static final BigInteger DEFAULT_PUBLIC_EXPONENT = BigInteger.valueOf(65537);
+	
+	public enum PUBLIC_EXPONENTS {
+		px3(3), px5(5), px17(17), px257(257), px65537(65537); 
+		public final int exponent;
+		private PUBLIC_EXPONENTS(int val){
+			this.exponent = val;
+		}
+	}
 
 	public static final CryptoFactory INSTANCE = new CryptoFactory();
 
@@ -57,7 +65,7 @@ public class CryptoFactory {
 		lock.lock();
 		try {
 			RSAKeyPairGenerator kpGen = new RSAKeyPairGenerator(password);
-			kpGen.init(new RSAKeyGenerationParameters(PUBLIC_EXPONENT, rand, KEY_STRENGTH, CERTAINTY));
+			kpGen.init(new RSAKeyGenerationParameters(DEFAULT_PUBLIC_EXPONENT, rand, KEY_STRENGTH, CERTAINTY));
 			return kpGen.generateKeys();
 		} finally {
 			lock.unlock();
@@ -73,7 +81,7 @@ public class CryptoFactory {
 		lock.lock();
 		try {
 			RSAKeyPairGenerator kpGen = new RSAKeyPairGenerator();
-			kpGen.init(new RSAKeyGenerationParameters(PUBLIC_EXPONENT, rand, KEY_STRENGTH, CERTAINTY));
+			kpGen.init(new RSAKeyGenerationParameters(DEFAULT_PUBLIC_EXPONENT, rand, KEY_STRENGTH, CERTAINTY));
 			return kpGen.generateKeys();
 		} finally {
 			lock.unlock();
@@ -84,7 +92,7 @@ public class CryptoFactory {
 		lock.lock();
 		try {
 			RSAKeyPairGenerator kpGen = new RSAKeyPairGenerator();
-			kpGen.init(new RSAKeyGenerationParameters(PUBLIC_EXPONENT, rand, strength, CERTAINTY));
+			kpGen.init(new RSAKeyGenerationParameters(DEFAULT_PUBLIC_EXPONENT, rand, strength, CERTAINTY));
 			return kpGen.generateKeys();
 		} finally {
 			lock.unlock();
@@ -109,6 +117,17 @@ public class CryptoFactory {
 		try {
 			RSAKeyPairGenerator kpGen = new RSAKeyPairGenerator(metadata);
 			kpGen.init(new RSAKeyGenerationParameters(BigInteger.valueOf(publicExp), rand, keyStrength, certainty));
+			return kpGen.generateKeys();
+		} finally {
+			lock.unlock();
+		}
+	}
+	
+	public RSAKeyContents generateKeys(RSAKeyMetadata metadata, PUBLIC_EXPONENTS px, int keyStrength, int certainty) {
+		lock.lock();
+		try {
+			RSAKeyPairGenerator kpGen = new RSAKeyPairGenerator(metadata);
+			kpGen.init(new RSAKeyGenerationParameters(BigInteger.valueOf(px.exponent), rand, keyStrength, certainty));
 			return kpGen.generateKeys();
 		} finally {
 			lock.unlock();

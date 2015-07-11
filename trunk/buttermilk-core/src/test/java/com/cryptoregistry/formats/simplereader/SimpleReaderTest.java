@@ -34,7 +34,9 @@ public class SimpleReaderTest {
 		JSONC2Reader reader = new JSONC2Reader(sr,new NewPassword(password));
 		Curve25519KeyContents result = (Curve25519KeyContents) reader.parse();
 		
-		Assert.assertEquals(key, result);
+		Assert.assertEquals(key.agreementPrivateKey, result.agreementPrivateKey);
+		Assert.assertEquals(key.publicKey, result.publicKey);
+		Assert.assertEquals(key.signingPrivateKey, result.signingPrivateKey);
 	
 	}
 	

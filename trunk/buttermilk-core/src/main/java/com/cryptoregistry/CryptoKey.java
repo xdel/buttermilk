@@ -15,5 +15,6 @@ public interface CryptoKey {
 
 	public CryptoKeyMetadata getMetadata();
 	public String formatJSON();
+	public CryptoKey keyForPublication();
 
 }

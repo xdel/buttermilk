@@ -6,7 +6,6 @@
 package com.cryptoregistry.pbe;
 
 import java.io.IOException;
-import java.util.Date;
 
 import com.cryptoregistry.passwords.Password;
 import com.cryptoregistry.passwords.SensitiveBytes;
@@ -41,14 +40,6 @@ public class ArmoredScryptResult extends ArmoredPBEResult {
 		this.parallelization = parallelization;
 	}
 	
-	public ArmoredScryptResult(String version, Date createdOn, String base64Enc, String base64Salt, String base64IV, int cpuMemoryCost, int blockSize, int parallelization) {
-		super(version, createdOn, base64Enc, base64Salt);
-		this.base64IV = base64IV;
-		this.cpuMemoryCost = cpuMemoryCost;
-		this.blockSize = blockSize;
-		this.parallelization = parallelization;
-	}
-	
 	public PBEParams generateParams(Password password) {
 		PBEParams params = new PBEParams(PBEAlg.SCRYPT);
 		params.setPassword(password);
@@ -76,6 +67,8 @@ public class ArmoredScryptResult extends ArmoredPBEResult {
 	public int hashCode() {
 		final int prime = 31;
 		int result = super.hashCode();
+		result = prime * result
+				+ ((base64IV == null) ? 0 : base64IV.hashCode());
 		result = prime * result + blockSize;
 		result = prime * result + cpuMemoryCost;
 		result = prime * result + parallelization;
@@ -91,6 +84,11 @@ public class ArmoredScryptResult extends ArmoredPBEResult {
 		if (getClass() != obj.getClass())
 			return false;
 		ArmoredScryptResult other = (ArmoredScryptResult) obj;
+		if (base64IV == null) {
+			if (other.base64IV != null)
+				return false;
+		} else if (!base64IV.equals(other.base64IV))
+			return false;
 		if (blockSize != other.blockSize)
 			return false;
 		if (cpuMemoryCost != other.cpuMemoryCost)
@@ -104,8 +102,8 @@ public class ArmoredScryptResult extends ArmoredPBEResult {
 	public String toString() {
 		return "ArmoredScryptResult [cpuMemoryCost=" + cpuMemoryCost
 				+ ", blockSize=" + blockSize + ", parallelization="
-				+ parallelization + ", base64Enc=" + base64Enc
-				+ ", base64Salt=" + base64Salt + "]";
+				+ parallelization + ", base64IV=" + base64IV + "]";
 	}
 
+	
 }

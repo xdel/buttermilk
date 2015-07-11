@@ -5,12 +5,14 @@
  */
 package com.cryptoregistry.signature.builder;
 
+import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.iharder.Base64;
 import x.org.bouncycastle.crypto.Digest;
-import x.org.bouncycastle.crypto.digests.SHA256Digest;
+import x.org.bouncycastle.crypto.digests.SHA1Digest;
 
 import com.cryptoregistry.SignatureAlgorithm;
 import com.cryptoregistry.ec.ECKeyContents;
@@ -45,6 +47,8 @@ public class ECDSASignatureBuilder {
 	final String signedBy;
 	final SignatureMetadata meta;
 	
+	int count = 0;
+	
 	public ECDSASignatureBuilder(String signedBy, ECKeyContents sKey, Digest digest) {
 		super();
 		this.sKey = sKey;
@@ -73,7 +77,7 @@ public class ECDSASignatureBuilder {
 	public ECDSASignatureBuilder(String signedBy, ECKeyContents sKey) {
 		super();
 		this.sKey = sKey;
-		this.digest = new SHA256Digest();
+		this.digest = new SHA1Digest();
 		this.references=new ArrayList<String>();
 		this.signedBy = signedBy;
 		if(signedBy == null) throw new RuntimeException("Registration Handle cannot be null");
@@ -90,6 +94,15 @@ public class ECDSASignatureBuilder {
 		if(input == null) throw new RuntimeException("Input is null: "+label);
 		references.add(label);
 		byte [] bytes = input.getBytes(Charset.forName("UTF-8"));
+		count+=bytes.length;
+		/*
+		try {
+			System.err.println("update="+label+", "+Base64.encodeBytes(bytes, Base64.URL_SAFE));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		*/
 		digest.update(bytes, 0, bytes.length);
 		return this;
 	}
@@ -97,6 +110,15 @@ public class ECDSASignatureBuilder {
 	public ECDSASignatureBuilder update(String label,byte[] bytes){
 		if(bytes == null) throw new RuntimeException("Input is null: "+label);
 		references.add(label);
+		/*
+		try {
+			System.err.println("update="+label+", "+Base64.encodeBytes(bytes, Base64.URL_SAFE));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		*/
+		count+=bytes.length;
 		digest.update(bytes, 0, bytes.length);
 		return this;
 	}
@@ -112,6 +134,8 @@ public class ECDSASignatureBuilder {
 			sig.addDataReference(ref);
 		}
 		references.clear();
+		System.err.println("digest has consumed "+count+" bytes");
+		count = 0;
 		return sig;
 	}
 

@@ -67,4 +67,13 @@ public class SymmetricKeyContents extends SecretKey implements CryptoKey  {
 		return null;
 	}
 
+	/**
+	 * Return null
+	 */
+	@Override
+	public CryptoKey keyForPublication() {
+		
+		return null;
+	}
+
 }

@@ -104,7 +104,7 @@ This code generates and validates the following data structure:
       "SignedWith" : "f250a75d-a990-4d0d-8afb-0b7a0190554c",
       "SignedBy" : "Chinese Eyes",
       "SignatureAlgorithm" : "ECDSA",
-      "DigestAlgorithm" : "SHA-256",
+      "DigestAlgorithm" : "SHA-1",
       "r" : "c23250e64706bce3d7640f28243b83ae9973b3ce0da289c0928e45a3f3d6c785",
       "s" : "4f78247ef6848e58a730d82b2260636b81f5e3eeac3bc7154d3367b02e340d1e",
       "DataRefs" : "67f017e3-38b2-4d1a-854d-c9a0f164e6d3:SignedBy, .SignedWith, 46b3b5d8-3487-4b9d-a01f-2a03aa8e0d98:Msg"
@@ -156,18 +156,18 @@ public class SelfContainedSignatureValidator {
 			}
 			byte [] bytes = collector.toByteArray();
 			
-			//step 1.2.1: get the key used for this signature
+			//step 1.2.1: get the for publication key used for this signature - assumption is that it is present
 			String keyUUID = sig.getSignedWith();
 			List<CryptoKeyWrapper> keys = km.keys();
 			CryptoKey key = null;
 			for(CryptoKeyWrapper wrapper: keys){
-				if(wrapper.getMetadata().getHandle().equals(keyUUID) && wrapper.isForPublication()){
+				if(keyUUID.equals(wrapper.getMetadata().getHandle())){
 					key = wrapper.getKeyContents();
 				}
 			}
 			
 			// step 1.2.2: see if key was found, if not, then fail
-			if(key == null) throw new RuntimeException("Could not find required key: "+key);
+			if(key == null) throw new RuntimeException("Could not find required key, it is assumed to be present for this to work: "+key);
 			
 			// step 1.2.3: do validation based on signature algorithm type, bail if not valid
 			boolean valid = false;
@@ -216,7 +216,8 @@ public class SelfContainedSignatureValidator {
 		digest.update(sourceBytes, 0, sourceBytes.length);
 		byte [] m = new byte[digest.getDigestSize()];
 		digest.doFinal(m, 0);
-		return  com.cryptoregistry.c2.CryptoFactory.INSTANCE.verify(key, m, sig.getSignature());
+		digest.reset();
+		return  com.cryptoregistry.c2.CryptoFactory.INSTANCE.verify(key, m, sig.getSignature(), digest);
 	}
 
 }

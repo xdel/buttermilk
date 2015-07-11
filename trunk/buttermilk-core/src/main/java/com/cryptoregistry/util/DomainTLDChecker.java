@@ -15,11 +15,14 @@ import java.util.Set;
  */
 public class DomainTLDChecker {
 	
-	Set<String> tlds = new HashSet<String>();
+	final Set<String> tlds = new HashSet<String>();
 
 	public DomainTLDChecker() {
-		InputStream in = Thread.currentThread().getClass()
-				.getResourceAsStream("/tlds-alpha-by-domain.txt");
+		
+		InputStream in = this.getClass().getResourceAsStream("/tlds-alpha-by-domain.txt");
+		if(in == null){
+			throw new RuntimeException("Classpath issue, apparently.");
+		}
 		InputStreamReader reader = new InputStreamReader(in);
 		BufferedReader bin = new BufferedReader(reader);
 		String line = null;
