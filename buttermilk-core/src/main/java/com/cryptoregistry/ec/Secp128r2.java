@@ -14,7 +14,7 @@ import x.org.bouncycastle.util.encoders.Hex;
 
 public class Secp128r2 extends ECParametersHolderBase {
 
-	private static final String NAME = "secp118r2";
+	private static final String NAME = "secp128r2";
 
 	private Secp128r2(ECDomainParameters params) {
 		super(params);

@@ -63,7 +63,7 @@ class C2KeyFormatter {
 	protected void seal(JsonGenerator g, EncodingHint enc, Writer writer)
 			throws JsonGenerationException, IOException {
 
-		String plain = formatItem(enc, (Curve25519KeyContents)c2Keys);
+		String plain = formatItem((Curve25519KeyContents)c2Keys);
 		ArmoredPBEResult result;
 		try {
 			byte[] plainBytes = plain.getBytes("UTF-8");
@@ -95,6 +95,7 @@ class C2KeyFormatter {
 					.valueOf(((ArmoredScryptResult) result).cpuMemoryCost));
 			g.writeStringField("KeyData.Parallelization", String
 					.valueOf(((ArmoredScryptResult) result).parallelization));
+		
 		}
 		g.writeEndObject();
 
@@ -125,7 +126,7 @@ class C2KeyFormatter {
 		g.writeEndObject();
 	}
 
-	private String formatItem(EncodingHint enc, Curve25519KeyContents item) {
+	private String formatItem(Curve25519KeyContents item) {
 		StringWriter privateDataWriter = new StringWriter();
 		JsonFactory f = new JsonFactory();
 		JsonGenerator g = null;

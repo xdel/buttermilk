@@ -7,9 +7,13 @@ package com.cryptoregistry.c2.key;
 
 import java.util.Date;
 
+import com.cryptoregistry.CryptoKey;
 import com.cryptoregistry.Signer;
+import com.cryptoregistry.formats.KeyEncryptor;
 import com.cryptoregistry.formats.KeyFormat;
+import com.cryptoregistry.formats.KeyHolder;
 import com.cryptoregistry.passwords.Password;
+import com.cryptoregistry.pbe.ArmoredPBEResult;
 import com.cryptoregistry.pbe.PBEParams;
 
 
@@ -65,13 +69,23 @@ public class Curve25519KeyContents extends Curve25519KeyForPublication implement
 		return c;
 	}
 	
+	@Override
+	public CryptoKey keyForPublication() {
+		return cloneForPublication();
+	}
+	
 	public Curve25519KeyContents clone(KeyFormat format) {
 		C2KeyMetadata meta = new C2KeyMetadata(this.getHandle(),new Date(this.getCreatedOn().getTime()),format);
 		PublicKey pubKey = (PublicKey) super.publicKey.clone();
 		AgreementPrivateKey agree = (AgreementPrivateKey) this.agreementPrivateKey.clone();
 		SigningPrivateKey signingKey = (SigningPrivateKey) this.signingPrivateKey.clone();
-		Curve25519KeyContents c = new Curve25519KeyContents(meta, pubKey, signingKey, agree);
-		return c;
+		return new Curve25519KeyContents(meta, pubKey, signingKey, agree);
+	}
+	
+	public ArmoredPBEResult lockWith(PBEParams params){
+		 Curve25519KeyContents nc = clone(new KeyFormat(params.getPassword().getPassword()));
+		 KeyEncryptor enc = new KeyEncryptor(new KeyHolder(nc));
+		 return enc.wrap(params);
 	}
 	
 	/**
@@ -128,5 +142,7 @@ public class Curve25519KeyContents extends Curve25519KeyForPublication implement
 			return false;
 		return true;
 	}
+
+	
 
 }

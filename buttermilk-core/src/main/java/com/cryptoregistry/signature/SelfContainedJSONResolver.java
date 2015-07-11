@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -34,11 +35,13 @@ public class SelfContainedJSONResolver implements SignatureReferenceResolver {
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
+		System.out.println(objectGraph);
 	}
 	
 	public SelfContainedJSONResolver(Map<String,Object> map) {
 		cache = new HashMap<String, String>();
 		this.objectGraph = map;
+		System.out.println(objectGraph);
 	}
 
 	public void walk() {
@@ -63,6 +66,7 @@ public class SelfContainedJSONResolver implements SignatureReferenceResolver {
 		for(String ref: refs){
 			String normalized = preprocess(ref.trim());
 			String out = cache.get(normalized);
+			System.out.println(normalized+" "+out);
 			if(out == null) throw new RefNotFoundException("Could not find "+normalized);
 			try {
 				byte [] b = out.getBytes(Charset.forName("UTF-8"));
@@ -79,6 +83,10 @@ public class SelfContainedJSONResolver implements SignatureReferenceResolver {
 				e.printStackTrace();
 			}
 		}
+		
+		System.err.println("collector has acquired "+collector.size()+" bytes");
+		String val = new String(collector.toByteArray());
+		System.err.println(val.hashCode());
 	}
 
 	private String uuid;

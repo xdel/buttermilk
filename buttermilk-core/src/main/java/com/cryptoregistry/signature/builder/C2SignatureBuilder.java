@@ -136,7 +136,7 @@ public class C2SignatureBuilder {
 			e.printStackTrace();
 		}
 		
-		C2CryptoSignature sig = CryptoFactory.INSTANCE.sign(meta, sKey, bytes);
+		C2CryptoSignature sig = CryptoFactory.INSTANCE.sign(meta, sKey, bytes, digest);
 		for(String ref: references) {
 			sig.addDataReference(ref);
 		}

@@ -96,6 +96,10 @@ public class Password {
 	    Arrays.fill(byteBuffer.array(), (byte) 0); // clear sensitive data
 	    return bytes;
 	}
+	
+	public final String toString() {
+		return "...";
+	}
 
 	public boolean isAlive() {
 		return alive;

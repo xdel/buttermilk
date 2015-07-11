@@ -149,6 +149,7 @@ public class JSONFormatter {
 	}
 	
 	public JSONFormatter add(CryptoKey e) {
+		if(keys.contains(e)) throw new RuntimeException("Sorry, this exact key already present, it must be added exactly once");
 		keys.add(e);
 		return this;
 	}

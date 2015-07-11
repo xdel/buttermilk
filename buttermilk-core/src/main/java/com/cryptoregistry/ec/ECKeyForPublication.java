@@ -155,6 +155,10 @@ public class ECKeyForPublication  implements CryptoKey,Verifier {
 	public CryptoKeyMetadata getMetadata() {
 		return metadata;
 	}
+	
+	public String toString() {
+		return formatJSON();
+	}
 
 	@Override
 	public String formatJSON() {
@@ -194,5 +198,10 @@ public class ECKeyForPublication  implements CryptoKey,Verifier {
 		}
 
 		return privateDataWriter.toString();
+	}
+
+	@Override
+	public CryptoKey keyForPublication() {
+		return clone();
 	}
 }

@@ -83,15 +83,14 @@ public class Curve25519KeyForPublication  implements CryptoKey, Verifier {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		
-	// do not include metadata
-	//	result = prime * result
-	//			+ ((metadata == null) ? 0 : metadata.hashCode());
-		
+		result = prime * result
+				+ ((metadata == null) ? 0 : metadata.hashCode());
 		result = prime * result
 				+ ((publicKey == null) ? 0 : publicKey.hashCode());
 		return result;
 	}
+
+	
 
 	@Override
 	public boolean equals(Object obj) {
@@ -102,11 +101,11 @@ public class Curve25519KeyForPublication  implements CryptoKey, Verifier {
 		if (getClass() != obj.getClass())
 			return false;
 		Curve25519KeyForPublication other = (Curve25519KeyForPublication) obj;
-	
-		//
-		// do not include metadata in the equals method
-		//
-		
+		if (metadata == null) {
+			if (other.metadata != null)
+				return false;
+		} else if (!metadata.equals(other.metadata))
+			return false;
 		if (publicKey == null) {
 			if (other.publicKey != null)
 				return false;
@@ -141,4 +140,9 @@ public class Curve25519KeyForPublication  implements CryptoKey, Verifier {
 			}
 			return privateDataWriter.toString();
 		}
+
+	@Override
+	public CryptoKey keyForPublication() {
+		return clone();
+	}
 }

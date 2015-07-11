@@ -75,40 +75,7 @@ public class GeneralReadingTest {
 		
 	}
 	
-	@Test
-	public void test2() {
-		
-		File f = new File("src/test/resources/com/cryptoregistry/signature/ecdsa.json");
-		JSONReader reader = new JSONReader(f);
-		KeyMaterials km = reader.parse();
-		
-		Assert.assertTrue(km.keys() != null);
-		Assert.assertTrue(km.contacts() != null);
-		Assert.assertTrue(km.signatures() != null);
-		Assert.assertTrue(km.mapData() != null);
-		Assert.assertTrue(km.listData() != null);
-		
-		for(CryptoKeyWrapper wrapper: km.keys()){
-			System.err.println(wrapper);
-		}
-		
-		for(CryptoContact wrapper: km.contacts()){
-			System.err.println(wrapper);
-		}
-		
-		for(CryptoSignature wrapper: km.signatures()){
-			System.err.println(wrapper);
-		}
-		
-		for(MapData wrapper: km.mapData()){
-			System.err.println(wrapper);
-		}
-		
-		for(ListData wrapper: km.listData()){
-			System.err.println(wrapper);
-		}
-		
-	}
+	
 	
 	@Test
 	public void test3() {

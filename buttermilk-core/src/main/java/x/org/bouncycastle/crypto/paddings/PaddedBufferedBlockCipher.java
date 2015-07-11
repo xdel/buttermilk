@@ -133,14 +133,14 @@ public class PaddedBufferedBlockCipher
     }
 
     /**
-     * process a single byte, producing an output block if neccessary.
+     * process a single byte, producing an output block if necessary.
      *
      * @param in the input byte.
      * @param out the space for any output that might be produced.
      * @param outOff the offset from which the output will be copied.
      * @return the number of output bytes copied to out.
      * @exception DataLengthException if there isn't enough space in out.
-     * @exception IllegalStateException if the cipher isn't initialised.
+     * @exception IllegalStateException if the cipher isn't initialized.
      */
     public int processByte(
         byte        in,
@@ -171,7 +171,7 @@ public class PaddedBufferedBlockCipher
      * @param outOff the offset from which the output will be copied.
      * @return the number of output bytes copied to out.
      * @exception DataLengthException if there isn't enough space in out.
-     * @exception IllegalStateException if the cipher isn't initialised.
+     * @exception IllegalStateException if the cipher isn't initialized.
      */
     public int processBytes(
         byte[]      in,
@@ -237,7 +237,7 @@ public class PaddedBufferedBlockCipher
      * @exception DataLengthException if there is insufficient space in out for
      * the output or we are decrypting and the input is not block size aligned.
      * @exception IllegalStateException if the underlying cipher is not
-     * initialised.
+     * initialized.
      * @exception InvalidCipherTextException if padding is expected and not found.
      */
     public int doFinal(

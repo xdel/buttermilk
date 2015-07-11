@@ -5,6 +5,7 @@
  */
 package com.cryptoregistry.ntru;
 
+import com.cryptoregistry.CryptoKey;
 import com.cryptoregistry.Signer;
 import com.cryptoregistry.passwords.Password;
 import com.cryptoregistry.pbe.PBEParams;
@@ -135,5 +136,6 @@ public class NTRUKeyContents extends NTRUKeyForPublication implements Signer{
 			if(password != null && password.isAlive()) password.selfDestruct();
 		}
 	}
+	
 
 }

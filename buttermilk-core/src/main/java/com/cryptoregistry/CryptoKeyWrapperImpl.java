@@ -11,7 +11,8 @@ import java.util.Map;
 
 import com.cryptoregistry.formats.C2KeyFormatReader;
 import com.cryptoregistry.formats.ECKeyFormatReader;
-import com.cryptoregistry.formats.KeyFormat;
+import com.cryptoregistry.formats.KeyEncryptor;
+import com.cryptoregistry.formats.KeyHolder;
 import com.cryptoregistry.formats.NTRUKeyFormatReader;
 import com.cryptoregistry.formats.RSAKeyFormatReader;
 import com.cryptoregistry.formats.SymmetricKeyFormatReader;
@@ -64,7 +65,6 @@ public class CryptoKeyWrapperImpl implements CryptoKeyWrapper {
 
 	@Override
 	public boolean isForPublication() {
-		// TODO Auto-generated method stub
 		return wrapped instanceof Verifier && !(wrapped instanceof Signer);
 	}
 
@@ -90,12 +90,14 @@ public class CryptoKeyWrapperImpl implements CryptoKeyWrapper {
 			}else{
 				ArmoredScryptResult res = (ArmoredScryptResult) wrapped;
 				params = new PBEParams(PBEAlg.SCRYPT);
+				
+				params.setPassword(password);
 				params.setSalt(res.getSaltWrapper());
 				params.setIv(res.getIVWrapper());
-				params.setSalt(res.getSaltWrapper());
+				params.setBlockSize_r(res.blockSize);
 				params.setCpuMemoryCost_N(res.cpuMemoryCost);
 				params.setParallelization_p(res.parallelization);
-				params.setPassword(password);
+				
 				PBE pbe0 = new PBE(params);
 				data = pbe0.decrypt(res.getResultBytes());
 			}
@@ -165,11 +167,12 @@ public class CryptoKeyWrapperImpl implements CryptoKeyWrapper {
 		}
 	}
 
-	// TODO
 	@Override
-	public void lock(KeyFormat format) {
-		// TODO Auto-generated method stub
-
+	public void lock(PBEParams params) {
+		if(!(wrapped instanceof Signer)) throw new RuntimeException("Cannot lock key unless it implements Signer");
+		KeyHolder holder = new KeyHolder(this.getKeyContents());
+		KeyEncryptor enc = new KeyEncryptor(holder);
+		wrapped = enc.wrap(params);
 	}
 
 	@Override

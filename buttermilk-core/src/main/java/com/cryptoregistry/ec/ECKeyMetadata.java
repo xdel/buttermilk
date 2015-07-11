@@ -148,6 +148,4 @@ public class ECKeyMetadata implements CryptoKeyMetadata {
 				+ ", format=" + format + "]";
 	}
 	
-	
-
 }

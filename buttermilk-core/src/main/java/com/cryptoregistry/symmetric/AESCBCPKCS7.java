@@ -33,8 +33,7 @@ public class AESCBCPKCS7 {
 		CBCBlockCipher blockCipher = new CBCBlockCipher(new AESFastEngine());
 		PaddedBufferedBlockCipher aesCipher = new PaddedBufferedBlockCipher(blockCipher, new PKCS7Padding());
 		aesCipher.init(true, holder);
-		byte [] encrypted = genCipherData(aesCipher, input);
-		return encrypted;
+		return genCipherData(aesCipher, input);
 	}
 	
 	public byte [] decrypt(byte [] encrypted) {

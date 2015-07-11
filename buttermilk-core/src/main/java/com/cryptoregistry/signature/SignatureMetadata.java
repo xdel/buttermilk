@@ -33,6 +33,7 @@ public class SignatureMetadata {
 		this.signedBy = signedBy;
 	}
 
+
 	public SignatureMetadata(SignatureAlgorithm sigAlg, String hashAlg, String signedWith,String signedBy){
 		this(UUID.randomUUID().toString(),new Date(),sigAlg,hashAlg,signedWith,signedBy);
 	}
@@ -40,6 +41,7 @@ public class SignatureMetadata {
 	public SignatureMetadata(SignatureAlgorithm sigAlg,String signedWith,String signedBy){
 		this(UUID.randomUUID().toString(),new Date(),sigAlg,defaultDigestAlg,signedWith,signedBy);
 	}
+	
 
 	@Override
 	public String toString() {

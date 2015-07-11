@@ -11,32 +11,79 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.io.StringWriter;
-import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
+import java.nio.charset.Charset;
 
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.cryptoregistry.CryptoKey;
 import com.cryptoregistry.CryptoKeyWrapper;
 import com.cryptoregistry.KeyMaterials;
 import com.cryptoregistry.MapData;
 import com.cryptoregistry.formats.JSONFormatter;
 import com.cryptoregistry.formats.JSONReader;
-import com.cryptoregistry.signature.CryptoSignature;
 import com.cryptoregistry.signature.ECDSACryptoSignature;
 import com.cryptoregistry.signature.RefNotFoundException;
 import com.cryptoregistry.signature.SelfContainedJSONResolver;
 import com.cryptoregistry.signature.builder.ECDSASignatureBuilder;
 import com.cryptoregistry.signature.builder.MapDataContentsIterator;
+import com.cryptoregistry.signature.validator.SelfContainedSignatureValidator;
 
 import x.org.bouncycastle.crypto.Digest;
+import x.org.bouncycastle.crypto.digests.SHA1Digest;
 import x.org.bouncycastle.crypto.digests.SHA256Digest;
+import x.org.bouncycastle.crypto.digests.SHA512Digest;
 import x.org.bouncycastle.math.ec.ECCurve;
 import x.org.bouncycastle.math.ec.ECPoint;
 import x.org.bouncycastle.util.encoders.Hex;
 
 public class ECCryptoTest {
+	
+	// see http://crypto.stackexchange.com/questions/18488/ecdsa-with-sha256-and-sepc192r1-curve-impossible-or-how-to-calculate-e
+	// There does appear to be an issue, SHA-256 will work in some cases but not others
+	@Test
+	public void testZ() {
+		for(CurveFactory.CurveName c: CurveFactory.CurveName.values()){
+			testrun(c, new SHA1Digest());
+			testrun(c, new SHA256Digest());
+			testrun(c, new SHA512Digest());
+		}
+	}
+	
+	private void testrun(CurveFactory.CurveName c, Digest digest){
+		System.err.println("testing: "+c.name());
+		String signedBy = "Chinese Eyes"; // my registration handle
+		String message = "My message text...";
+		
+		ECKeyContents ecKeys = CryptoFactory.INSTANCE.generateKeys(c.name());
+		ECDSASignatureBuilder builder = new ECDSASignatureBuilder(signedBy, ecKeys);
+		MapData data = new MapData();
+		data.put("Msg", message);
+		data.put("Empty", "");
+		data.put("Null", null);
+		MapDataContentsIterator iter = new MapDataContentsIterator(data);
+		while(iter.hasNext()){
+			String label = iter.next();
+			builder.update(label, iter.get(label));
+		}
+		ECDSACryptoSignature sig = builder.build();
+		JSONFormatter format = new JSONFormatter(signedBy);
+		format.add(ecKeys);
+		format.add(data);
+		format.add(sig);
+		
+		StringWriter writer = new StringWriter();
+		format.format(writer);
+		String serialized = writer.toString();
+		
+		JSONReader js = new JSONReader(new StringReader(serialized));
+		KeyMaterials km = js.parse();
+		SelfContainedSignatureValidator validator = new SelfContainedSignatureValidator(km);
+		Assert.assertTrue(validator.validate());
+	}
+	
+	
+	
 
 	/**
 	 * Test custom curve construction
@@ -45,7 +92,7 @@ public class ECCryptoTest {
 	@Test
 	public void test0() {
 
-		// use params for P-256, imagine these are a new unnamed curve in the
+		// use params for P-256, imagine these are for a new unnamed curve in the prime field
 		// prime field
 		// p = 2^224 (2^32 - 1) + 2^192 + 2^96 - 1
 		BigInteger p = fromHex("FFFFFFFF00000001000000000000000000000000FFFFFFFFFFFFFFFFFFFFFFFF");
@@ -128,7 +175,7 @@ public class ECCryptoTest {
 		try {
 			resolver.resolve(sig.dataRefs,out);
 			byte [] msgBytes = out.toByteArray();
-			SHA256Digest digest = new SHA256Digest();
+			SHA1Digest digest = new SHA1Digest();
 			digest.update(msgBytes, 0, msgBytes.length);
 			byte [] m = new byte[digest.getDigestSize()];
 			digest.doFinal(m, 0);
@@ -138,47 +185,14 @@ public class ECCryptoTest {
 		} catch (RefNotFoundException e) {
 			e.printStackTrace();
 		}
+		
+		JSONReader js = new JSONReader(new StringReader(serialized));
+		KeyMaterials km = js.parse();
+		
+		// newer way
+		SelfContainedSignatureValidator validator = new SelfContainedSignatureValidator(km);
+		Assert.assertTrue(validator.validate());
 	}
 	
-	@Test
-	public void test3() {
-		InputStream in = this.getClass().getResourceAsStream("/somewhere-else.json");
-		Assert.assertNotNull(in);
-		InputStreamReader reader = null;
-		try {
-			try {
-				reader = new InputStreamReader(in, "UTF-8");
-			} catch (UnsupportedEncodingException e1) {}
-			JSONReader js = new JSONReader(reader);
-			KeyMaterials km = js.parse();
-			SelfContainedJSONResolver resolver = new SelfContainedJSONResolver(km.baseMap());
-			resolver.walk();
-			ByteArrayOutputStream out = new ByteArrayOutputStream();
-			try {
-				CryptoSignature sig = km.signatures().get(0);
-				CryptoKey key = km.keys().get(0).getKeyContents();
-				resolver.resolve(sig.dataRefs,out);
-				byte [] msgBytes = out.toByteArray();
-				Digest digest = sig.getDigestInstance();
-				digest.update(msgBytes, 0, msgBytes.length);
-				byte [] m = new byte[digest.getDigestSize()];
-				digest.doFinal(m, 0);
-				
-				ECDSACryptoSignature _sig = (ECDSACryptoSignature) sig;
-				boolean ok = CryptoFactory.INSTANCE.verify(_sig, (ECKeyForPublication)key, m);
-				Assert.assertTrue(ok);
-			
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}finally{
-			if(reader != null)
-				try {
-					reader.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-		}
-	}
-
 }
+

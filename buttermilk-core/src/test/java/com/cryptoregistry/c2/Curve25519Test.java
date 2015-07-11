@@ -10,15 +10,19 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
+import java.util.Arrays;
+import java.util.List;
 
 import org.junit.Test;
 
 import x.org.bouncycastle.crypto.digests.SHA256Digest;
 
 import com.cryptoregistry.CryptoKey;
+import com.cryptoregistry.CryptoKeyWrapper;
 import com.cryptoregistry.KeyMaterials;
 import com.cryptoregistry.MapData;
 import com.cryptoregistry.c2.CryptoFactory;
@@ -48,14 +52,41 @@ public class Curve25519Test {
 		SecretKey s0 = CryptoFactory.INSTANCE.keyAgreement(keys1.publicKey, keys0.agreementPrivateKey);
 		SecretKey s1 = CryptoFactory.INSTANCE.keyAgreement(keys0.publicKey, keys1.agreementPrivateKey);
 		Assert.assertTrue(test_equal(s0.getBytes(),s1.getBytes()));
-		System.err.println(s0.getBase64Encoding());
-		System.err.println(s1.getBase64Encoding());
+		System.err.println("keys0 public key="+Arrays.toString(keys0.publicKey.getBytes()));
+		System.err.println("keys1 public key="+Arrays.toString(keys1.publicKey.getBytes()));
+		System.err.println("keys0 agreement private key="+Arrays.toString(keys0.agreementPrivateKey.getBytes()));
+		System.err.println("keys1 agreement private key="+Arrays.toString(keys1.agreementPrivateKey.getBytes()));
+		System.err.println("keys0 signing private key="+Arrays.toString(keys0.signingPrivateKey.getBytes()));
+		System.err.println("keys1 signing private key="+Arrays.toString(keys1.signingPrivateKey.getBytes()));
 		
 		JSONFormatter format = new JSONFormatter("Chinese Eyes");
 		format.add(keys0).add(keys1);
 		StringWriter writer = new StringWriter();
 		format.format(writer);
 		System.err.println(writer.toString());
+		
+		JSONReader reader = new JSONReader(new StringReader(writer.toString()));
+		KeyMaterials km = reader.parse();
+		List<CryptoKeyWrapper> list = km.keys();
+		Curve25519KeyContents _keys0 = (Curve25519KeyContents) list.get(0).getKeyContents();
+		Curve25519KeyContents _keys1 = (Curve25519KeyContents) list.get(1).getKeyContents();
+		
+		Assert.assertNotNull(_keys0);
+		Assert.assertNotNull(_keys1);
+		
+		// still works after formatting 
+		s0 = CryptoFactory.INSTANCE.keyAgreement(_keys1.publicKey, _keys0.agreementPrivateKey);
+		s1 = CryptoFactory.INSTANCE.keyAgreement(_keys0.publicKey, _keys1.agreementPrivateKey);
+		
+		System.err.println("_keys0 public key="+Arrays.toString(_keys0.publicKey.getBytes()));
+		System.err.println("_keys1 public key="+Arrays.toString(_keys1.publicKey.getBytes()));
+		System.err.println("_keys0 private key="+Arrays.toString(_keys0.agreementPrivateKey.getBytes()));
+		System.err.println("_keys1 private key="+Arrays.toString(_keys1.agreementPrivateKey.getBytes()));
+		System.err.println("_keys0 signing private key="+Arrays.toString(_keys0.signingPrivateKey.getBytes()));
+		System.err.println("_keys1 signing private key="+Arrays.toString(_keys1.signingPrivateKey.getBytes()));
+		
+		Assert.assertTrue(test_equal(s0.getBytes(),s1.getBytes()));
+		
 	}
 	
 	private boolean test_equal(byte[] a, byte[] b) {
@@ -181,9 +212,10 @@ public class Curve25519Test {
 		String message = "My message text...";
 		byte[]msgBytes = message.getBytes(Charset.forName("UTF-8"));
 		
+		
 		Curve25519KeyContents c2Keys = CryptoFactory.INSTANCE.generateKeys();
-		C2CryptoSignature sig = CryptoFactory.INSTANCE.sign(signedBy,c2Keys, msgBytes);
-		boolean ok = CryptoFactory.INSTANCE.verify(c2Keys, msgBytes, sig.getSignature());
+		C2CryptoSignature sig = CryptoFactory.INSTANCE.sign(signedBy,c2Keys, msgBytes, new SHA256Digest());
+		boolean ok = CryptoFactory.INSTANCE.verify(c2Keys, msgBytes, sig.getSignature(),new SHA256Digest());
 		Assert.assertTrue(ok);
 	}
 	
@@ -225,7 +257,7 @@ public class Curve25519Test {
 			byte [] m = new byte[digest.getDigestSize()];
 			digest.doFinal(m, 0);
 			
-			boolean ok = CryptoFactory.INSTANCE.verify(c2Keys, m, sig.getSignature());
+			boolean ok = CryptoFactory.INSTANCE.verify(c2Keys, m, sig.getSignature(),new SHA256Digest());
 			Assert.assertTrue(ok);
 		} catch (RefNotFoundException e) {
 			e.printStackTrace();
@@ -257,7 +289,7 @@ public class Curve25519Test {
 				digest.doFinal(m, 0);
 				
 				C2CryptoSignature _sig = (C2CryptoSignature) sig;
-				boolean ok = CryptoFactory.INSTANCE.verify((Curve25519KeyForPublication)key, m, _sig.signature);
+				boolean ok = CryptoFactory.INSTANCE.verify((Curve25519KeyForPublication)key, m, _sig.signature,new SHA256Digest());
 				Assert.assertTrue(ok);
 			
 			} catch (Exception e) {

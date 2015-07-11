@@ -26,10 +26,6 @@ package com.cryptoregistry.c2;
  * 
  * Presumably we will lose this soon as google.code is going away: https://code.google.com/p/curve25519-java/
  * 
- * I've looked into how one might use the parameters of Curve 25519 with the Bouncy Castle EC
- * code I have in this same library. Apparently Curve 25519 is expressed in a form which makes 
- * this quite difficult. See the discussion here: http://bouncy-castle.1462172.n4.nabble.com/SafeCurves-td4656794.html
- * 
  * I have modified this file from public domain to be Apache-style Licensed. I also modified the code a little; it is
  * now package protected and not static methods; use the CryptoFactory with the defined types to access this class's 
  * functionality

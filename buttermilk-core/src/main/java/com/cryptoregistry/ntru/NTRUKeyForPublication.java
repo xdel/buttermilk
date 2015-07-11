@@ -168,4 +168,9 @@ public class NTRUKeyForPublication implements CryptoKey,Verifier {
 		return writer.toString();
 	}
 
+	@Override
+	public CryptoKey keyForPublication() {
+		return new NTRUKeyForPublication(metadata,params,h);
+	}
+
 }

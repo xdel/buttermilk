@@ -181,4 +181,15 @@ public class PBEParams {
 		return true;
 	}
 
+	@Override
+	public String toString() {
+		return "PBEParams [alg=" + alg + ", password=" + password + ", salt="
+				+ salt + ", iterations=" + iterations + ", iv=" + iv
+				+ ", cpuMemoryCost_N=" + cpuMemoryCost_N + ", blockSize_r="
+				+ blockSize_r + ", parallelization_p=" + parallelization_p
+				+ ", desiredKeyLengthInBytes=" + desiredKeyLengthInBytes + "]";
+	}
+	
+	
+
 }

@@ -114,6 +114,16 @@ public class RSAKeyForPublication  implements CryptoKey,Verifier {
 
 		return writer.toString();
 	}
+
+	@Override
+	public CryptoKey keyForPublication() {
+		return cloneForPublication();
+	}
+	
+	public RSAKeyForPublication cloneForPublication(){
+		RSAKeyMetadata meta = this.metadata.cloneForPublication();
+		return new RSAKeyForPublication(meta,this.modulus,this.publicExponent);
+	}
 	
 	
 }

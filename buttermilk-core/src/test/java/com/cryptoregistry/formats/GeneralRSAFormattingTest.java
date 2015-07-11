@@ -30,7 +30,7 @@ import com.cryptoregistry.util.MapIterator;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
 
-public class GeneralFormattingTest {
+public class GeneralRSAFormattingTest {
 
 	@Test
 	public void test0() {

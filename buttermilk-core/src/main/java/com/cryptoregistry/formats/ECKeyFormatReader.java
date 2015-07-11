@@ -21,7 +21,7 @@ import com.cryptoregistry.ec.ECKeyMetadata;
 import com.cryptoregistry.util.TimeUtil;
 
 /**
- * This class is used to read the contents of the ArmoredPBE
+ * This class is used to read the contents of the ArmoredPBE for an EC key.
  * 
  * @author Dave
  * 

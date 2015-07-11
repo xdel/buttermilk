@@ -35,7 +35,7 @@ public enum PBEAlg {
 				int blockSize = Integer.parseInt((String) keyData.get("KeyData.BlockSize"));
 				int cpuCost = Integer.parseInt((String) keyData.get("KeyData.CpuMemoryCost"));
 				int para = Integer.parseInt((String) keyData.get("KeyData.Parallelization"));
-				return new ArmoredScryptResult(encryptedData,salt,iv,blockSize,cpuCost,para);
+				return new ArmoredScryptResult(encryptedData,salt,iv,cpuCost,blockSize,para);
 			}
 			case PBKDF2: {
 				String encryptedData = (String) keyData.get("KeyData.EncryptedData");

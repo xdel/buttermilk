@@ -16,6 +16,13 @@ import x.org.bouncycastle.crypto.params.ECDomainParameters;
  */
 public class CurveFactory {
 	
+	// curves we know about from BC 1.50 - have only done the prime fields so far
+	public enum CurveName {
+		secp112r1, secp112r2, secp128r1, secp128r2, secp160k1,
+		secp160r1, secp160r2, secp192k1, secp192r1, secp224k1,
+		secp224r1, secp256k1, P224, P256, P384, P521, brainpoolP160r1;
+	}
+	
 	public static boolean curveNameDefined(final String name){
 		try {
 			return getCurveForName(name) != null;
@@ -129,7 +136,8 @@ public class CurveFactory {
 			case "DSTU4145.8": return dstu4145.params[8];
 			case "DSTU4145.9": return dstu4145.params[9];
 			*/
-			// TODO add all the rest, the prime fields seem like the most secure, will add binary fields later
+			// TODO add all the rest, the prime fields seem like the most secure, 
+			// will add binary fields later
 			
 			default: throw new RuntimeException("unknown curve name: "+name);
 		}
