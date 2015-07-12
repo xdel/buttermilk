@@ -20,48 +20,35 @@ public class KeyFormat {
 	public final Mode mode;
 	public final PBEParams pbeParams;
 	
-	public KeyFormat() {
-		encodingHint = EncodingHint.Base64url;
-		mode = Mode.UNSECURED;
-		pbeParams = null;
-	}
-	
-	public KeyFormat(Mode mode) {
-		encodingHint = EncodingHint.Base64url;
+	public KeyFormat(EncodingHint hint, Mode mode, PBEParams params){
+		encodingHint = hint;
 		this.mode = mode;
-		pbeParams = null;
-	}
-	
-	public KeyFormat(EncodingHint enc, Mode mode) {
-		encodingHint = enc;
-		this.mode = mode;
-		pbeParams = null;
-	}
-	
-	public KeyFormat(char [] password) {
-		encodingHint = EncodingHint.Base64url;
-		mode = Mode.SECURED;
-		pbeParams = PBEParamsFactory.INSTANCE.createPBKDF2Params(password);
-	}
-	
-	public KeyFormat(EncodingHint enc, char [] password) {
-		encodingHint = enc;
-		mode = Mode.SECURED;
-		pbeParams = PBEParamsFactory.INSTANCE.createPBKDF2Params(password);
-	}
-	
-	public KeyFormat(EncodingHint encoding, PBEParams params) {
-		super();
-		this.encodingHint = encoding;
-		this.mode = Mode.SECURED;
 		this.pbeParams = params;
 	}
-
-	public KeyFormat(EncodingHint encoding, Mode mode, PBEParams pbeParams) {
-		super();
-		this.encodingHint = encoding;
-		this.mode = mode;
-		this.pbeParams = pbeParams;
+	
+	public static KeyFormat unsecured() {
+		return new KeyFormat(EncodingHint.Base64url,Mode.UNSECURED,null);
+	}
+	
+	public static KeyFormat forPublication() {
+		return new KeyFormat(EncodingHint.Base64url,Mode.REQUEST_FOR_PUBLICATION,null);
+	}
+	
+	public static KeyFormat securedPBKDF2(char [] passwordChars) {
+		return new KeyFormat(EncodingHint.Base64url,Mode.REQUEST_SECURE,PBEParamsFactory.INSTANCE.createPBKDF2Params(passwordChars));
+	}
+	
+	public static KeyFormat securedPBKDF2(int iterations, char [] passwordChars) {
+		return new KeyFormat(EncodingHint.Base64url,Mode.REQUEST_SECURE,PBEParamsFactory.INSTANCE.createPBKDF2Params(iterations, passwordChars));
+	}
+	
+	public static KeyFormat securedSCRYPT(char [] passwordChars) {
+		return new KeyFormat(EncodingHint.Base64url,Mode.REQUEST_SECURE,PBEParamsFactory.INSTANCE.createScryptParams(passwordChars));
+	}
+	
+	public static KeyFormat securedSCRYPT(int cpuCost, int parallelization, char [] passwordChars) {
+		return new KeyFormat(EncodingHint.Base64url,Mode.REQUEST_SECURE,
+				PBEParamsFactory.INSTANCE.createScryptParams(cpuCost,parallelization, passwordChars));
 	}
 	
 	public KeyFormat clone() {

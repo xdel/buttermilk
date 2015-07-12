@@ -162,8 +162,8 @@ public class JSONReader {
 						Date createdOn = TimeUtil.getISO8601FormatDate(String.valueOf(keyData.get("CreatedOn")));
 						EncodingHint encoding = EncodingHint.valueOf((String)keyData.get("Encoding"));
 						String keyAlgorithm = (String) keyData.get("KeyAlgorithm");
-						Mode mode = Mode.FOR_PUBLICATION;
-						KeyFormat format = new KeyFormat(encoding,mode);
+						Mode mode = Mode.REQUEST_FOR_PUBLICATION;
+						KeyFormat format = new KeyFormat(encoding,mode,null);
 						
 						// define metadata for key
 						CryptoKeyMetadata meta = null;
@@ -250,7 +250,7 @@ public class JSONReader {
 						EncodingHint encoding = EncodingHint.valueOf((String)keyData.get("Encoding"));
 						String keyAlgorithm = (String) keyData.get("KeyAlgorithm");
 						Mode mode = Mode.UNSECURED;
-						KeyFormat format = new KeyFormat(encoding,mode);
+						KeyFormat format = new KeyFormat(encoding,mode,null);
 						
 						// define metadata for key
 						CryptoKeyMetadata meta = null;

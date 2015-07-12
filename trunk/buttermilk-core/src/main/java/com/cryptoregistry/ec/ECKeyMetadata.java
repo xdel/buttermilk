@@ -14,7 +14,6 @@ import com.cryptoregistry.formats.EncodingHint;
 import com.cryptoregistry.formats.KeyFormat;
 import com.cryptoregistry.formats.Mode;
 import com.cryptoregistry.pbe.PBEParams;
-import com.cryptoregistry.pbe.PBEParamsFactory;
 
 public class ECKeyMetadata implements CryptoKeyMetadata {
 
@@ -42,7 +41,7 @@ public class ECKeyMetadata implements CryptoKeyMetadata {
 	 * @return
 	 */
 	public static ECKeyMetadata createDefault() {
-		return new ECKeyMetadata(UUID.randomUUID().toString(), new Date(),new KeyFormat());
+		return new ECKeyMetadata(UUID.randomUUID().toString(), new Date(),KeyFormat.unsecured());
 	}
 	
 	public static ECKeyMetadata createUnsecured() {
@@ -50,30 +49,24 @@ public class ECKeyMetadata implements CryptoKeyMetadata {
 	}
 	
 	public static ECKeyMetadata createForPublication() {
-		return new ECKeyMetadata(UUID.randomUUID().toString(), new Date(),new KeyFormat(Mode.FOR_PUBLICATION));
-	}
-	
-	public static ECKeyMetadata createSecureDefault(char[]password) {
-		return new ECKeyMetadata(UUID.randomUUID().toString(), new Date(),new KeyFormat(password));
+		return new ECKeyMetadata(UUID.randomUUID().toString(), new Date(), KeyFormat.forPublication());
 	}
 	
 	public static ECKeyMetadata createSecurePBKDF2(char[]password) {
 		return new ECKeyMetadata(UUID.randomUUID().toString(), 
 				new Date(),
-				new KeyFormat(EncodingHint.Base64url,
-						PBEParamsFactory.INSTANCE.createPBKDF2Params(password)));
+				KeyFormat.securedPBKDF2(password));
 	}
 	
 	public static ECKeyMetadata createSecureScrypt(char[]password) {
 		return new ECKeyMetadata(UUID.randomUUID().toString(), 
 				new Date(),
-				new KeyFormat(EncodingHint.Base64url,
-						PBEParamsFactory.INSTANCE.createScryptParams(password)));
+				KeyFormat.securedSCRYPT(password));
 	}
 	
 	public static ECKeyMetadata createSecure(PBEParams params) {
 		return new ECKeyMetadata(UUID.randomUUID().toString(), new Date(),
-				new KeyFormat(EncodingHint.Base64url,params));
+				new KeyFormat(EncodingHint.Base64url,Mode.REQUEST_SECURE,params));
 	}
 
 	@Override
@@ -101,7 +94,7 @@ public class ECKeyMetadata implements CryptoKeyMetadata {
 	}
 	
 	public ECKeyMetadata cloneForPublication() {
-		return new ECKeyMetadata(handle, createdOn,new KeyFormat(Mode.FOR_PUBLICATION));
+		return new ECKeyMetadata(handle, createdOn, KeyFormat.forPublication());
 	}
 
 	@Override

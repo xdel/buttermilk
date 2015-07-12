@@ -46,11 +46,11 @@ class ECKeyFormatter {
 				formatOpen(g, format.encodingHint, writer);
 				break;
 			}
-			case SECURED: {
+			case REQUEST_SECURE: {
 				seal(g, format.encodingHint, writer);
 				break;
 			}
-			case FOR_PUBLICATION: {
+			case REQUEST_FOR_PUBLICATION: {
 				formatForPublication(g, format.encodingHint, writer);
 				break;
 			}

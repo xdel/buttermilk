@@ -2,10 +2,11 @@ package com.cryptoregistry.signature;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -23,8 +24,20 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  *
  */
 public class SelfContainedJSONResolver implements SignatureReferenceResolver {
+	
 	protected final Map<String, Object> objectGraph;
 	protected final Map<String, String> cache;
+	
+	@SuppressWarnings("unchecked")
+	public SelfContainedJSONResolver(InputStream in) {
+		cache = new HashMap<String, String>();
+		ObjectMapper mapper = new ObjectMapper();
+		try {
+			objectGraph = mapper.readValue(in, Map.class);
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
 
 	@SuppressWarnings("unchecked")
 	public SelfContainedJSONResolver(String json) {
@@ -35,20 +48,36 @@ public class SelfContainedJSONResolver implements SignatureReferenceResolver {
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
-		System.out.println(objectGraph);
 	}
 	
 	public SelfContainedJSONResolver(Map<String,Object> map) {
 		cache = new HashMap<String, String>();
 		this.objectGraph = map;
-		System.out.println(objectGraph);
 	}
 
 	public void walk() {
 		collect(objectGraph);
 	}
+	
+	
+	/**
+	 * For debugging, mainly
+	 * @param ref
+	 * @return
+	 * @throws RefNotFoundException
+	 */
+	public String resolve(String ref)
+			throws RefNotFoundException {
+		String normalized = preprocess(ref.trim());
+		String out = cache.get(normalized);
+		if(out == null) throw new RefNotFoundException("Could not find "+normalized);
+		return out;
+	}
 
 	@Override
+	/**
+	 * implement SignatureReferenceResolver 
+	 */
 	public void resolve(String ref, ByteArrayOutputStream collector)
 			throws RefNotFoundException {
 		String normalized = preprocess(ref.trim());
@@ -60,7 +89,27 @@ public class SelfContainedJSONResolver implements SignatureReferenceResolver {
 			e.printStackTrace();
 		}
 	}
+	
+	/**
+	 * For debugging
+	 * @param refs
+	 * @return
+	 * @throws RefNotFoundException
+	 */
+	public List<String> resolve(List<String> refs) throws RefNotFoundException {
+		List<String> result = new ArrayList<String>();
+		for(String ref: refs){
+			String normalized = preprocess(ref.trim());
+			String out = cache.get(normalized);
+			if(out == null) throw new RefNotFoundException("Could not find "+normalized);
+			result.add(out);
+		}
+		return result;
+	}
 
+	/**
+	 * implement SignatureReferenceResolver 
+	 */
 	@Override
 	public void resolve(List<String> refs, ByteArrayOutputStream collector) throws RefNotFoundException {
 		for(String ref: refs){
@@ -245,4 +294,12 @@ public class SelfContainedJSONResolver implements SignatureReferenceResolver {
 		} else return in;
 	}
 
+	public Map<String, Object> getObjectGraph() {
+		return objectGraph;
+	}
+
+	public Map<String, String> getCache() {
+		return cache;
+	}
+	
 }

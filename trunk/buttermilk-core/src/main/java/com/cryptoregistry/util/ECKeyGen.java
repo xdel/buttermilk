@@ -59,7 +59,7 @@ public class ECKeyGen {
 		ECKeyContents keys0 = CryptoFactory.INSTANCE.generateKeys(curveName);
 		JSONFormatter format = new JSONFormatter(regHandle);
 		if(unsecured)format.add(keys0); // formats an unsecured key
-		if(secured) format.add(keys0.clone(new KeyFormat(password))); // formats a secured clone of the key with a Base64url encoding hint, which is right for Curve25519
+		if(secured) format.add(keys0.clone(KeyFormat.securedPBKDF2(password))); // formats a secured clone of the key with a Base64url encoding hint, which is right for Curve25519
 		if(forPublication) format.add(keys0.cloneForPublication()); // makes a clone ready for publication	
 		StringWriter writer = new StringWriter();
 		format.format(writer);

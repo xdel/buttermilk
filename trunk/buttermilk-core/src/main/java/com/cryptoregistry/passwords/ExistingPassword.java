@@ -19,6 +19,10 @@ public class ExistingPassword extends Password {
 		super(password);
 	}
 	
+	public ExistingPassword(char[] password, boolean isAlive) {
+		super(password, isAlive);
+	}
+	
 	/**
 	 * Copy the chars to make a new and disposable NewPassword instance from this existing one
 	 * @return

@@ -22,6 +22,10 @@ public class NewPassword extends Password {
 		super(password);
 	}
 	
+	public NewPassword(char[] password, boolean isAlive) {
+		super(password, isAlive);
+	}
+	
 	public ExistingPassword promote() {
 		char [] chars = this.getPassword();
 		return new ExistingPassword(chars);

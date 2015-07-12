@@ -69,9 +69,5 @@ public class DefaultResolverTest {
 		}
 	}
 	
-	@Test
-	public void test2() throws IOException {
-		
-	}
 
 }

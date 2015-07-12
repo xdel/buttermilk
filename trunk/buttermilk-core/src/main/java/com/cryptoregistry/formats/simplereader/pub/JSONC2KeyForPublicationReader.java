@@ -71,7 +71,7 @@ public class JSONC2KeyForPublicationReader {
 				C2KeyMetadata meta = new C2KeyMetadata(
 						distUUID.substring(0,distUUID.length()-2),
 						createdOn,
-						new KeyFormat(enc,Mode.FOR_PUBLICATION,null)
+						new KeyFormat(enc,Mode.REQUEST_FOR_PUBLICATION,null)
 				);
 				
 				PublicKey pKey = new PublicKey(P.decodeToBytes());

@@ -21,10 +21,8 @@ import com.cryptoregistry.c2.key.SigningPrivateKey;
 import com.cryptoregistry.passwords.NewPassword;
 import com.cryptoregistry.passwords.Password;
 import com.cryptoregistry.passwords.SensitiveBytes;
-import com.cryptoregistry.pbe.PBE;
 import com.cryptoregistry.pbe.PBEAlg;
 import com.cryptoregistry.pbe.PBEParams;
-import com.cryptoregistry.pbe.PBEParamsFactory;
 import com.cryptoregistry.signature.CryptoSignature;
 import com.cryptoregistry.signature.builder.C2KeyContentsIterator;
 import com.cryptoregistry.signature.builder.C2SignatureBuilder;
@@ -84,7 +82,7 @@ public class C2FormattingTest {
 		params.setParallelization_p(32);
 		params.setDesiredKeyLengthInBytes(32);
 		
-		KeyFormat format = new KeyFormat(hint,params);
+		KeyFormat format = new KeyFormat(hint,Mode.REQUEST_SECURE,params);
 		
 		C2KeyMetadata meta = new C2KeyMetadata(uuidVal, TimeUtil.getISO8601FormatDate(date), format);
 		Curve25519KeyContents contents0 = new Curve25519KeyContents(
@@ -145,71 +143,11 @@ public class C2FormattingTest {
 		// this is with the default alg, PBKDF2
 		char [] ch0 = {'p','a','s','s'}; 
 		char [] ch1 = {'p','a','s','s'}; 
-		transKey0 = key(contents0.clone(new KeyFormat(ch0)), new Password(ch0));
-		transKey1 = key(contents0.clone(new KeyFormat(ch1)), new Password(ch1));
+		transKey0 = key(contents0.prepareSecure(PBEAlg.PBKDF2, ch0, null), new Password(ch0));
+		transKey1 = key(contents0.prepareSecure(PBEAlg.PBKDF2, ch1, null), new Password(ch1));
 		Assert.assertTrue(transKey0.equals(transKey1));
 		
-		// prove cloning for secure mode makes correct clones for scrypt
-		byte [] iv0 = {'0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0'};
-		byte [] iv1 = {'0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0'};
-		char[] p0= {'p','a','s','s','w','o','r','d'};
-		char[] p1= {'p','a','s','s','w','o','r','d'};
-		Password pass0 = new NewPassword(p0);
-		Password pass1 = new NewPassword(p1);
-		byte [] salt0 = {
-				's','a','l','t',
-				'0','0','0','0',
-				'0','0','0','0',
-				'0','0','0','0',
-				'0','0','0','0',
-				'0','0','0','0',
-				'0','0','0','0',
-				'0','0','0','0',
-				'0','0'};
-		byte [] salt1 = {
-				's','a','l','t',
-				'0','0','0','0',
-				'0','0','0','0',
-				'0','0','0','0',
-				'0','0','0','0',
-				'0','0','0','0',
-				'0','0','0','0',
-				'0','0','0','0',
-				'0','0'};
-		SensitiveBytes sb0 = new SensitiveBytes(salt0);
-		SensitiveBytes sb1 = new SensitiveBytes(salt1);
-		
-		PBEParams params0 = new PBEParams(PBEAlg.SCRYPT);
-		params0.setPassword(pass0);
-		params0.setSalt(sb0);
-		params0.setIv(new SensitiveBytes(iv0));
-		params0.setBlockSize_r(128);
-		params0.setCpuMemoryCost_N(4);
-		params0.setParallelization_p(32);
-		
-		PBEParams params1 = new PBEParams(PBEAlg.SCRYPT);
-		params1.setPassword(pass1);
-		params1.setSalt(sb1);
-		params1.setIv(new SensitiveBytes(iv1));
-		params1.setBlockSize_r(128);
-		params1.setCpuMemoryCost_N(4);
-		params1.setParallelization_p(32);
-		
-		// clone with scrypt settings for the secured formatting, validate they are equal
-		transKey0 =contents0.clone(
-				new KeyFormat(
-					EncodingHint.Base64url,
-					params0
-				)
-		); 
-		
-		transKey1 =contents1.clone(
-				new KeyFormat(
-					EncodingHint.Base64url,
-					params0
-				)
-		); 			
-		Assert.assertTrue(transKey0.equals(transKey1));
+	
 		
 	}
 	
@@ -307,11 +245,12 @@ public class C2FormattingTest {
 		Curve25519KeyContents keys0 = CryptoFactory.INSTANCE.generateKeys(meta);
 		JSONFormatter format = new JSONFormatter("Chinese Knees");
 	    format.add(keys0); // formats an unsecured key
-	    format.add(keys0.clone(new KeyFormat(password))); // formats a secured clone of the key with a Base64url encoding hint, which is right for Curve25519
-	    format.add(keys0.cloneForPublication()); // makes a clone ready for publication
+	    format.add(keys0.prepareSecure(PBEAlg.PBKDF2, password,null)); // formats a secured clone of the key with a Base64url encoding hint, which is right for Curve25519
+	    format.add(keys0.copyForPublication()); // makes a clone ready for publication
 		StringWriter writer = new StringWriter();
 		format.format(writer);
 		String out = writer.toString();
+		System.err.println(out);
 		Assert.assertTrue(out.indexOf("TEST-U")>0);
 		Assert.assertTrue(out.indexOf("TEST-S")>0);
 		Assert.assertTrue(out.indexOf("TEST-P")>0);

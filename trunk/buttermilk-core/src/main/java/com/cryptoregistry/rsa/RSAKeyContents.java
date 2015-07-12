@@ -72,7 +72,7 @@ public class RSAKeyContents extends RSAKeyForPublication implements Signer {
 			BigInteger privateExponent, BigInteger p, BigInteger q,
 			BigInteger dP, BigInteger dQ, BigInteger qInv) {
 		
-		super(RSAKeyMetadata.createSecureDefault(password), modulus, publicExponent);
+		super(RSAKeyMetadata.createSecurePBKDF2(password), modulus, publicExponent);
 		
 		this.privateExponent = privateExponent;
 		this.p = p;

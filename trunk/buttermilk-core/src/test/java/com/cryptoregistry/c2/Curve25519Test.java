@@ -26,27 +26,78 @@ import com.cryptoregistry.CryptoKeyWrapper;
 import com.cryptoregistry.KeyMaterials;
 import com.cryptoregistry.MapData;
 import com.cryptoregistry.c2.CryptoFactory;
+import com.cryptoregistry.c2.key.AgreementPrivateKey;
+import com.cryptoregistry.c2.key.C2KeyMetadata;
 import com.cryptoregistry.c2.key.Curve25519KeyContents;
 import com.cryptoregistry.c2.key.Curve25519KeyForPublication;
 import com.cryptoregistry.c2.key.PublicKey;
 import com.cryptoregistry.c2.key.SecretKey;
 import com.cryptoregistry.c2.key.SigningPrivateKey;
+import com.cryptoregistry.formats.EncodingHint;
 import com.cryptoregistry.formats.JSONFormatter;
 import com.cryptoregistry.formats.JSONReader;
+import com.cryptoregistry.formats.KeyFormat;
+import com.cryptoregistry.formats.Mode;
+import com.cryptoregistry.pbe.PBEAlg;
 import com.cryptoregistry.signature.C2CryptoSignature;
 import com.cryptoregistry.signature.CryptoSignature;
 import com.cryptoregistry.signature.RefNotFoundException;
 import com.cryptoregistry.signature.SelfContainedJSONResolver;
 import com.cryptoregistry.signature.builder.C2SignatureBuilder;
 import com.cryptoregistry.signature.builder.MapDataContentsIterator;
+import com.cryptoregistry.util.TimeUtil;
 import com.cryptoregistry.util.XORUtil;
 
 import junit.framework.Assert;
 
 public class Curve25519Test {
+	
+	// dummy keys with controlled values
+	private static final byte[] P={
+		3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+	};
+	private static final byte[] s={
+		5,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+	};
+	private static final byte[] k={
+		9,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+	};
+	
+	private static final String uuidVal = "2eb1cdc9-65fe-4f3e-b029-5fd29d035ae8";
+	private static final String date = "2015-07-11T07:08:27+0000";
+	private static final EncodingHint hint = EncodingHint.Base64url;
+	private static final char [] passwordChars = {'p','a','s','s'}; 
+	
+	@Test
+	public void testKeyFormats() {
+		
+		KeyFormat format = KeyFormat.unsecured();
+		
+		C2KeyMetadata meta = new C2KeyMetadata(uuidVal, TimeUtil.getISO8601FormatDate(date), format);
+		Curve25519KeyContents contents0 = new Curve25519KeyContents(
+				meta,
+				new PublicKey(P), 
+				new SigningPrivateKey(s), 
+				new AgreementPrivateKey(k)
+		);
+		
+		// should be equal
+		Curve25519KeyContents contentsClone = contents0.clone();
+		Assert.assertEquals(contents0,contentsClone);
+		
+		// for publication semantics
+		Curve25519KeyForPublication pub = contents0.copyForPublication();
+		Assert.assertEquals(contents0.metadata.getHandle(),pub.metadata.getHandle());
+		Assert.assertEquals(contents0.metadata.createdOn,pub.metadata.createdOn);
+		Assert.assertEquals(Mode.REQUEST_FOR_PUBLICATION, pub.metadata.format.mode);
+		Assert.assertEquals(null, pub.metadata.format.pbeParams);
+		Assert.assertEquals(contents0.publicKey,pub.publicKey);
+	}
 
 	@Test
 	public void test0() {
+		
+		// prove secret key agreement alg works; also that transform through formatting does not alter keys
 		Curve25519KeyContents keys0 = CryptoFactory.INSTANCE.generateKeys();
 		Curve25519KeyContents keys1 = CryptoFactory.INSTANCE.generateKeys();
 		SecretKey s0 = CryptoFactory.INSTANCE.keyAgreement(keys1.publicKey, keys0.agreementPrivateKey);

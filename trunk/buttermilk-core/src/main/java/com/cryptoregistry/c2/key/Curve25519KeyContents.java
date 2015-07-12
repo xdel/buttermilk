@@ -5,15 +5,12 @@
  */
 package com.cryptoregistry.c2.key;
 
-import java.util.Date;
+import java.util.Arrays;
 
 import com.cryptoregistry.CryptoKey;
 import com.cryptoregistry.Signer;
-import com.cryptoregistry.formats.KeyEncryptor;
-import com.cryptoregistry.formats.KeyFormat;
-import com.cryptoregistry.formats.KeyHolder;
 import com.cryptoregistry.passwords.Password;
-import com.cryptoregistry.pbe.ArmoredPBEResult;
+import com.cryptoregistry.pbe.PBEAlg;
 import com.cryptoregistry.pbe.PBEParams;
 
 
@@ -62,30 +59,43 @@ public class Curve25519KeyContents extends Curve25519KeyForPublication implement
 			return c;
 	}
 	
-	public Curve25519KeyForPublication cloneForPublication() {
+	public Curve25519KeyForPublication copyForPublication() {
 		C2KeyMetadata meta =  metadata.cloneForPublication();
 		PublicKey pubKey = (PublicKey) publicKey.clone();
 		Curve25519KeyForPublication  c = new Curve25519KeyForPublication (meta, pubKey);
 		return c;
 	}
 	
-	@Override
 	public CryptoKey keyForPublication() {
-		return cloneForPublication();
+		return copyForPublication();
 	}
 	
-	public Curve25519KeyContents clone(KeyFormat format) {
-		C2KeyMetadata meta = new C2KeyMetadata(this.getHandle(),new Date(this.getCreatedOn().getTime()),format);
+	
+	public Curve25519KeyContents prepareSecure(PBEAlg alg, char [] passwordChars, int ...args) {
+		
 		PublicKey pubKey = (PublicKey) super.publicKey.clone();
 		AgreementPrivateKey agree = (AgreementPrivateKey) this.agreementPrivateKey.clone();
 		SigningPrivateKey signingKey = (SigningPrivateKey) this.signingPrivateKey.clone();
+		C2KeyMetadata meta = null;
+		if(alg == PBEAlg.PBKDF2){
+			if(args == null) {
+				meta = this.metadata.cloneSecurePBKDF2(passwordChars);
+			}else if(args.length == 1){
+				meta = this.metadata.cloneSecurePBKDF2(args[0], passwordChars);
+			}else{
+				throw new RuntimeException("Not sure what to do with the additional args, expected one: "+Arrays.toString(args));
+			}
+		}else if(alg == PBEAlg.SCRYPT){
+			if(args == null) {
+				meta = this.metadata.cloneSecureScrypt(passwordChars);
+			}else if(args.length == 2){
+				meta = this.metadata.cloneSecureScrypt(args[0], args[1], passwordChars);
+			}else{
+				throw new RuntimeException("Looking for two integers here or none: "+Arrays.toString(args));
+			}
+		}
+		
 		return new Curve25519KeyContents(meta, pubKey, signingKey, agree);
-	}
-	
-	public ArmoredPBEResult lockWith(PBEParams params){
-		 Curve25519KeyContents nc = clone(new KeyFormat(params.getPassword().getPassword()));
-		 KeyEncryptor enc = new KeyEncryptor(new KeyHolder(nc));
-		 return enc.wrap(params);
 	}
 	
 	/**
@@ -99,11 +109,6 @@ public class Curve25519KeyContents extends Curve25519KeyForPublication implement
 			Password password = params.getPassword();
 			if(password != null && password.isAlive()) password.selfDestruct();
 		}
-	}
-	
-	public Curve25519KeyForPublication forPublication() {
-		C2KeyMetadata meta = this.metadata.cloneForPublication();
-		return new Curve25519KeyForPublication(meta,(PublicKey)publicKey.clone());
 	}
 
 	@Override

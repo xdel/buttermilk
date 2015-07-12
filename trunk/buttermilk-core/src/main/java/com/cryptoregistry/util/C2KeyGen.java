@@ -13,7 +13,7 @@ import com.cryptoregistry.c2.CryptoFactory;
 import com.cryptoregistry.c2.key.C2KeyMetadata;
 import com.cryptoregistry.c2.key.Curve25519KeyContents;
 import com.cryptoregistry.formats.JSONFormatter;
-import com.cryptoregistry.formats.KeyFormat;
+import com.cryptoregistry.pbe.PBEAlg;
 import com.cryptoregistry.util.CmdLineParser.Option;
 import com.cryptoregistry.util.CmdLineParser.OptionException;
 
@@ -56,8 +56,8 @@ public class C2KeyGen {
 		Curve25519KeyContents keys0 = CryptoFactory.INSTANCE.generateKeys(meta);
 		JSONFormatter format = new JSONFormatter(regHandle);
 		if(unsecured)format.add(keys0); // formats an unsecured key
-		if(secured) format.add(keys0.clone(new KeyFormat(password))); // formats a secured clone of the key with a Base64url encoding hint, which is right for Curve25519
-		if(forPublication) format.add(keys0.cloneForPublication()); // makes a clone ready for publication	
+		if(secured) format.add(keys0.prepareSecure(PBEAlg.PBKDF2, password, null)); // formats a secured clone of the key with a Base64url encoding hint, which is right for Curve25519
+		if(forPublication) format.add(keys0.copyForPublication()); // makes a clone ready for publication	
 		StringWriter writer = new StringWriter();
 		format.format(writer);
 		FileUtil.writeFile(fileName, writer.toString());

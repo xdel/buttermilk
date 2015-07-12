@@ -54,7 +54,6 @@ public class PBETest {
 		byte [] output = pbe1.decrypt(result.getResultBytes());
 		
 		Assert.assertTrue(Arrays.areEqual(input, output));
-		
 	}
 	
 	/**
@@ -106,42 +105,9 @@ public class PBETest {
 	}
 	
 	
-	/**
-	 * Test the provided PBEParamsFactory and ArmoredScryptResult classes for scrypt
-	 * 
-	 * @throws Exception
-	 */
-	@Test
-	public void test2() throws Exception {
-		
-		byte [] input = "input test is a lot of tiny bytes".getBytes("UTF-8");
-		char[]p= {'p','a','s','s','w','o','r','d'};
-	
-		
-		PBEParams params = PBEParamsFactory.INSTANCE.createScryptParams(p);
-		PBE pbe0 = new PBE(params);
-		ArmoredScryptResult result = (ArmoredScryptResult) pbe0.encrypt(input);
-		
-		// now decrypt
-		
-		char[]q= {'p','a','s','s','w','o','r','d'};
-		Password pass1 = new NewPassword(q);
-		
-		// defaults for params -- TODO make these more strict
-		params = new PBEParams(PBEAlg.SCRYPT);
-		SensitiveBytes sb1 = new SensitiveBytes(result.getSaltBytes());
-		params.setPassword(pass1);
-		params.setSalt(sb1);
-		params.setIv(new SensitiveBytes(result.getIVBytes()));
-		
-		PBE pbe1 = new PBE(params);
-		byte [] output = pbe1.decrypt(result.getResultBytes());
-		
-		Assert.assertTrue(Arrays.areEqual(input, output));
-	}
 	
 	
-	/** Test the scrypt implementation algorithm using one of the published test vectors
+	/** Test the scrypt implementation algorithm from BC using one of the published test vectors
 	 * 
 	 * @param r the block size parameter.
 	 * @param N the CPU/Memory cost parameter.
