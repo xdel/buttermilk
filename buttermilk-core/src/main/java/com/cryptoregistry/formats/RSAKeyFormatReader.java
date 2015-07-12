@@ -15,7 +15,7 @@ import com.cryptoregistry.rsa.RSAKeyMetadata;
 import com.cryptoregistry.util.TimeUtil;
 
 /**
- * This class is used to read the contents of the ArmoredPBE
+ * This class is used to read the contents of an Armored RSA key
  * 
  * @author Dave
  * 

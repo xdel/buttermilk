@@ -44,7 +44,7 @@ public class ECKeyGen {
 	private void run() {
 		
 		Console console = System.console();
-		console.format("%s\n\n", "...Create Elliptic Curve Key...");
+		console.format("%s\n\n", "...Creating Elliptic Curve Key...");
 
 		if(curveName == null || curveName.equals("")){
 			collectCurveName(console);
