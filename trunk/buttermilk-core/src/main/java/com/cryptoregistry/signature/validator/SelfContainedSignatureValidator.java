@@ -31,7 +31,7 @@ import com.cryptoregistry.signature.SelfContainedJSONResolver;
  * 	no signatures found
  * </li>
  * <li>
- * 	 Key used for signing is not found, or not public 
+ * 	 Key used for signing is not found, or not public (e.g., in armored format)
  * </li>
  * </ol>
  * 
@@ -77,7 +77,7 @@ import com.cryptoregistry.signature.SelfContainedJSONResolver;
 			e.printStackTrace();
 		}
 		
-This code generates and validates the following data structure:
+This code above generates and validates the following data structure when formatted:
 
 {
   "Version" : "Buttermilk Key Materials 1.0",
@@ -123,13 +123,19 @@ This code generates and validates the following data structure:
 public class SelfContainedSignatureValidator {
 
 	private final KeyMaterials km;
-	private final boolean debugMode;
+	private boolean debugMode;
 	
 	public SelfContainedSignatureValidator(KeyMaterials km) {
 		this.km = km;
 		this.debugMode = false;
 	}
 	
+	/**
+	 * Turn on debug mode
+	 * 
+	 * @param km
+	 * @param debug
+	 */
 	public SelfContainedSignatureValidator(KeyMaterials km, boolean debug) {
 		this.km = km;
 		this.debugMode = debug;
@@ -237,6 +243,14 @@ public class SelfContainedSignatureValidator {
 		digest.doFinal(m, 0);
 		digest.reset();
 		return  com.cryptoregistry.c2.CryptoFactory.INSTANCE.verify(key, m, sig.getSignature(), digest);
+	}
+
+	public boolean isDebugMode() {
+		return debugMode;
+	}
+
+	public void setDebugMode(boolean debugMode) {
+		this.debugMode = debugMode;
 	}
 
 }

@@ -12,27 +12,14 @@ import org.junit.Test;
 import com.cryptoregistry.c2.key.C2KeyMetadata;
 import com.cryptoregistry.c2.key.Curve25519KeyContents;
 import com.cryptoregistry.c2.key.Curve25519KeyForPublication;
-import com.cryptoregistry.ec.CurveFactory;
-import com.cryptoregistry.ec.ECKeyContents;
-import com.cryptoregistry.ec.ECKeyForPublication;
 import com.cryptoregistry.formats.JSONFormatter;
 import com.cryptoregistry.formats.JSONReader;
 import com.cryptoregistry.passwords.Password;
-import com.cryptoregistry.pbe.PBEParamsFactory;
-import com.cryptoregistry.rsa.RSAKeyContents;
-import com.cryptoregistry.rsa.RSAKeyForPublication;
-import com.cryptoregistry.rsa.RSAKeyMetadata;
 import com.cryptoregistry.signature.C2CryptoSignature;
-import com.cryptoregistry.signature.ECDSACryptoSignature;
-import com.cryptoregistry.signature.RSACryptoSignature;
 import com.cryptoregistry.signature.builder.C2KeyContentsIterator;
 import com.cryptoregistry.signature.builder.C2SignatureBuilder;
 import com.cryptoregistry.signature.builder.ContactContentsIterator;
-import com.cryptoregistry.signature.builder.ECDSASignatureBuilder;
-import com.cryptoregistry.signature.builder.ECKeyContentsIterator;
 import com.cryptoregistry.signature.builder.MapDataContentsIterator;
-import com.cryptoregistry.signature.builder.RSAKeyContentsIterator;
-import com.cryptoregistry.signature.builder.RSASignatureBuilder;
 import com.cryptoregistry.signature.validator.SelfContainedSignatureValidator;
 import com.cryptoregistry.util.MapIterator;
 
@@ -136,7 +123,7 @@ public class RegRequestTest {
 			StringWriter writer = new StringWriter();
 			requestFormatter.format(writer);
 			String output = writer.toString();
-			 System.err.println(output);
+			// System.err.println(output);
 
 			JSONReader js = new JSONReader(new StringReader(output));
 			KeyMaterials km = js.parse();

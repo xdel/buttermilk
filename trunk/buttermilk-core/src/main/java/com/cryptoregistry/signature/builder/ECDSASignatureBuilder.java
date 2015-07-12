@@ -5,12 +5,10 @@
  */
 package com.cryptoregistry.signature.builder;
 
-import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.iharder.Base64;
 import x.org.bouncycastle.crypto.Digest;
 import x.org.bouncycastle.crypto.digests.SHA1Digest;
 
@@ -29,9 +27,9 @@ import com.cryptoregistry.signature.SignatureMetadata;
  * builder.update("handle:token0", bytes0)
  * builder.update("handle:token1", bytes1)
  * builder.update("handle:token2", bytes2)
- * RSACryptoSignature sigHolder = builder.build()
+ * ECCryptoSignature sigHolder = builder.build()
  * 
- * however, you can make use of the various content iterators to make signing much easier. See test cases
+ * you can make use of the various content iterators to make signing much easier. See test cases
  * 
  * 
  * 
@@ -39,7 +37,7 @@ import com.cryptoregistry.signature.SignatureMetadata;
  * @author Dave
  *
  */
-public class ECDSASignatureBuilder {
+public class ECDSASignatureBuilder extends SignatureBuilder {
 
 	final ECKeyContents sKey;
 	final Digest digest;
@@ -95,14 +93,7 @@ public class ECDSASignatureBuilder {
 		references.add(label);
 		byte [] bytes = input.getBytes(Charset.forName("UTF-8"));
 		count+=bytes.length;
-		/*
-		try {
-			System.err.println("update="+label+", "+Base64.encodeBytes(bytes, Base64.URL_SAFE));
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		*/
+		log(label,bytes);
 		digest.update(bytes, 0, bytes.length);
 		return this;
 	}
@@ -110,15 +101,8 @@ public class ECDSASignatureBuilder {
 	public ECDSASignatureBuilder update(String label,byte[] bytes){
 		if(bytes == null) throw new RuntimeException("Input is null: "+label);
 		references.add(label);
-		/*
-		try {
-			System.err.println("update="+label+", "+Base64.encodeBytes(bytes, Base64.URL_SAFE));
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		*/
 		count+=bytes.length;
+		log(label,bytes);
 		digest.update(bytes, 0, bytes.length);
 		return this;
 	}
@@ -128,13 +112,13 @@ public class ECDSASignatureBuilder {
 		byte [] bytes = new byte[digest.getDigestSize()];
 		digest.doFinal(bytes, 0);
 		digest.reset();
-		
+		log(meta,bytes);
 		ECDSACryptoSignature sig = CryptoFactory.INSTANCE.sign(meta, sKey, bytes);
 		for(String ref: references) {
 			sig.addDataReference(ref);
 		}
 		references.clear();
-		System.err.println("digest has consumed "+count+" bytes");
+		log(meta, count);
 		count = 0;
 		return sig;
 	}
