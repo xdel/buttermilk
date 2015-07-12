@@ -357,7 +357,7 @@ public class CreateKeyPanel extends JPanel {
 					meta = C2KeyMetadata.createSecureScrypt(password);
 				}
 				Curve25519KeyContents contents = Buttermilk.INSTANCE.generateC2Keys(meta);
-				Curve25519KeyForPublication pub = contents.cloneForPublication();
+				Curve25519KeyForPublication pub = contents.copyForPublication();
 				this.keyAlg = keyAlg;
 				this.keyForPublication = pub;
 				this.secureKey = contents;
