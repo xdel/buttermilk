@@ -6,14 +6,14 @@
 package com.cryptoregistry.formats;
 
 /**
- * Request the mode of formatting to be applied when serialization is done on this key.
+ * <p>Request the mode of formatting to be applied when serialization is done on this key.</p>
  * 
- * Rather than "public" and "private" distinctions we have an alternative in "secured", "unsecured", and "for publication".
+ * <p>Rather than "public" and "private" distinctions we have an alternative in "secured", "unsecured", and "for publication".</p>
  * 
- * REQUEST_FOR_PUBLICATION will try to assure that nothing which is supposed to be confidential is released.
+ * <p>REQUEST_FOR_PUBLICATION will try to assure that nothing which is supposed to be confidential is released during serialization.</p>
  * 
  * @author Dave
- *
+ * @see KeyFormat
  */
 public enum Mode {
 	UNSECURED('U'), REQUEST_SECURE('S'), REQUEST_FOR_PUBLICATION('P');

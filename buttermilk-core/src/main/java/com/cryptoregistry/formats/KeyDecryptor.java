@@ -15,6 +15,12 @@ import com.cryptoregistry.pbe.PBEAlg;
 import com.cryptoregistry.pbe.PBEParams;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+/**
+ * Decrypt the Armored form of a confidential key. The type can be acquired using the CryptoKey interface.
+ * 
+ * @author Dave
+ *
+ */
 public class KeyDecryptor {
 
 	final ArmoredPBEResult wrapped;
@@ -40,12 +46,14 @@ public class KeyDecryptor {
 		}else{
 			ArmoredScryptResult res = (ArmoredScryptResult) wrapped;
 			params = new PBEParams(PBEAlg.SCRYPT);
+			
+			params.setPassword(password);
 			params.setSalt(res.getSaltWrapper());
 			params.setIv(res.getIVWrapper());
-			params.setSalt(res.getSaltWrapper());
+			params.setBlockSize_r(res.blockSize);
 			params.setCpuMemoryCost_N(res.cpuMemoryCost);
 			params.setParallelization_p(res.parallelization);
-			params.setPassword(password);
+			
 			PBE pbe0 = new PBE(params);
 			data = pbe0.decrypt(res.getResultBytes());
 		}

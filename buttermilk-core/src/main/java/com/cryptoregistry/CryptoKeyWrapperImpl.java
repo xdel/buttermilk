@@ -75,6 +75,9 @@ public class CryptoKeyWrapperImpl implements CryptoKeyWrapper {
 
 	@Override
 	public boolean unlock(Password password) {
+		
+		// TODO update with KeyDecryptor
+		
 		if(wrapped instanceof ArmoredPBEResult){
 			PBEParams params = null;
 			byte [] data = null;
