@@ -7,12 +7,6 @@ import java.io.InputStreamReader;
 import java.util.HashSet;
 import java.util.Set;
 
-/**
- * Package protected checker 
- * 
- * @author Dave
- *
- */
 public class DomainTLDChecker {
 	
 	final Set<String> tlds = new HashSet<String>();
