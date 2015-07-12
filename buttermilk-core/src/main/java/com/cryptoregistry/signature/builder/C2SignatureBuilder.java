@@ -5,12 +5,10 @@
  */
 package com.cryptoregistry.signature.builder;
 
-import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.iharder.Base64;
 import x.org.bouncycastle.crypto.digests.SHA256Digest;
 
 import com.cryptoregistry.SignatureAlgorithm;
@@ -22,7 +20,7 @@ import com.cryptoregistry.signature.SignatureMetadata;
 
 /**<pre>
  * 
- * construct a signature using EC KCDSA. Basic process:
+ * construct a signature using ECKCDSA. Basic process:
  * 
  * builder(registration handle, signer key contents, digest)
  * builder.update("handle:token0", bytes0)
@@ -30,15 +28,15 @@ import com.cryptoregistry.signature.SignatureMetadata;
  * builder.update("handle:token2", bytes2)
  * RSACryptoSignature sigHolder = builder.build()
  * 
- * however, you can make use of the various content iterators to make signing much easier. See test cases
+ * You can make use of the various content iterators to make signing much easier. See test cases
  * 
- * 
+ * Tracing can be turned on with setDebugMode(true);
  * 
  * </pre>
  * @author Dave
  *
  */
-public class C2SignatureBuilder {
+public class C2SignatureBuilder extends SignatureBuilder {
 
 	final Curve25519KeyContents sKey;
 	final SHA256Digest digest;
@@ -99,13 +97,7 @@ public class C2SignatureBuilder {
 		references.add(label);
 		byte [] bytes = input.getBytes(Charset.forName("UTF-8"));
 		digest.update(bytes, 0, bytes.length);
-		
-		try {
-			System.err.println("update="+label+", "+Base64.encodeBytes(bytes, Base64.URL_SAFE));
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		
+		log(label,bytes);
 		return this;
 	}
 	
@@ -113,29 +105,15 @@ public class C2SignatureBuilder {
 		if(bytes == null) throw new RuntimeException("Input is null: "+label);
 		references.add(label);
 		digest.update(bytes, 0, bytes.length);
-		
-		try {
-			System.err.println("update="+label+", "+Base64.encodeBytes(bytes, Base64.URL_SAFE));
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		
-		
+		log(label,bytes);
 		return this;
 	}
 	
 	public C2CryptoSignature build(){
-		
 		byte [] bytes = new byte[digest.getDigestSize()];
 		digest.doFinal(bytes, 0);
 		digest.reset();
-		
-		try {
-			System.err.println("signer message digest="+Base64.encodeBytes(bytes, Base64.URL_SAFE));
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		
+		log(meta,bytes);
 		C2CryptoSignature sig = CryptoFactory.INSTANCE.sign(meta, sKey, bytes, digest);
 		for(String ref: references) {
 			sig.addDataReference(ref);

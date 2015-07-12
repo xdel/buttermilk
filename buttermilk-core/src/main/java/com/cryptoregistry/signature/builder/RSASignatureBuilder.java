@@ -5,12 +5,10 @@
  */
 package com.cryptoregistry.signature.builder;
 
-import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.iharder.Base64;
 import x.org.bouncycastle.crypto.Digest;
 import x.org.bouncycastle.crypto.digests.SHA256Digest;
 
@@ -35,7 +33,7 @@ import com.cryptoregistry.signature.SignatureMetadata;
  * @author Dave
  *
  */
-public class RSASignatureBuilder {
+public class RSASignatureBuilder  extends SignatureBuilder {
 
 	final RSAKeyContents sKey;
 	final Digest digest;
@@ -116,10 +114,10 @@ public class RSASignatureBuilder {
 	}
 	
 	public RSACryptoSignature build(){
-		
 		byte [] bytes = new byte[digest.getDigestSize()];
 		digest.doFinal(bytes, 0);
-		
+		digest.reset();
+		log(meta,bytes);
 		RSACryptoSignature sig = CryptoFactory.INSTANCE.sign(meta, sKey, bytes);
 		for(String ref: references) {
 			sig.addDataReference(ref);
