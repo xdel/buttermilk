@@ -42,11 +42,11 @@ class SymmetricKeyFormatter {
 				formatOpen(g, format.encodingHint, writer);
 				break;
 			}
-			case SECURED: {
+			case REQUEST_SECURE: {
 				seal(g, format.encodingHint, writer);
 				break;
 			}
-			case FOR_PUBLICATION: {
+			case REQUEST_FOR_PUBLICATION: {
 				throw new RuntimeException("For_Publication mode not available for this key type");
 			}
 			default:

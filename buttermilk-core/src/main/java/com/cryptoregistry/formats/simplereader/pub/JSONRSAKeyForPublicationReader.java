@@ -95,7 +95,7 @@ public class JSONRSAKeyForPublicationReader {
 				RSAKeyMetadata meta = new RSAKeyMetadata(
 						distUUID.substring(0, distUUID.length() - 2), 
 						createdOn, 
-						new KeyFormat(enc, Mode.FOR_PUBLICATION, null)
+						new KeyFormat(enc, Mode.REQUEST_FOR_PUBLICATION, null)
 				);
 				
 				meta.setStrength(strength);

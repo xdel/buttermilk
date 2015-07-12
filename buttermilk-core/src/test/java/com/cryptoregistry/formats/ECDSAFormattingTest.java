@@ -102,7 +102,7 @@ public class ECDSAFormattingTest {
 		String handle = keys0.getMetadata().getHandle();
 		JSONFormatter format = new JSONFormatter("Chinese Knees");
 	    format.add(keys0); // formats an unsecured key
-	    format.add(keys0.clone(new KeyFormat(password))); // formats a secured clone of the key with a Base64url encoding hint, which is right for Curve25519
+	    format.add(keys0.clone(KeyFormat.securedPBKDF2(password))); // formats a secured clone of the key with a Base64url encoding hint, which is right for Curve25519
 	    format.add(keys0.cloneForPublication()); // makes a clone ready for publication
 		StringWriter writer = new StringWriter();
 		format.format(writer);

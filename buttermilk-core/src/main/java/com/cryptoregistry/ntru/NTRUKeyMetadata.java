@@ -34,26 +34,32 @@ public class NTRUKeyMetadata implements CryptoKeyMetadata {
 	 * @return
 	 */
 	public static NTRUKeyMetadata createDefault() {
-		return new NTRUKeyMetadata(UUID.randomUUID().toString(), new Date(),new KeyFormat(EncodingHint.NoEncoding,Mode.UNSECURED));
+		return new NTRUKeyMetadata(UUID.randomUUID().toString(), new Date(),new KeyFormat(EncodingHint.NoEncoding,Mode.UNSECURED,null));
 	}
 	
 	public static NTRUKeyMetadata createForPublication() {
-		return new NTRUKeyMetadata(UUID.randomUUID().toString(), new Date(),new KeyFormat(EncodingHint.NoEncoding,Mode.FOR_PUBLICATION));
+		return new NTRUKeyMetadata(UUID.randomUUID().toString(), new Date(),new KeyFormat(EncodingHint.NoEncoding,Mode.REQUEST_FOR_PUBLICATION,null));
 	}
 	
-	public static NTRUKeyMetadata createSecureDefault(char[]password) {
-		return new NTRUKeyMetadata(UUID.randomUUID().toString(), new Date(),new KeyFormat(EncodingHint.NoEncoding,password));
+	public static NTRUKeyMetadata createSecureDefault(char[]passwordChars) {
+		return new NTRUKeyMetadata(UUID.randomUUID().toString(), new Date(),
+				new KeyFormat(EncodingHint.NoEncoding, 
+						Mode.REQUEST_SECURE, 
+						PBEParamsFactory.INSTANCE.createPBKDF2Params(passwordChars)));
 	}
 	
 	public static NTRUKeyMetadata createSecureScrypt(char[]password) {
 		return new NTRUKeyMetadata(UUID.randomUUID().toString(), new Date(),
 				new KeyFormat(EncodingHint.NoEncoding,
+						Mode.REQUEST_SECURE, 
 						PBEParamsFactory.INSTANCE.createScryptParams(password)));
 	}
 	
 	public static NTRUKeyMetadata createSecure(PBEParams params) {
 		return new NTRUKeyMetadata(UUID.randomUUID().toString(), new Date(),
-				new KeyFormat(EncodingHint.NoEncoding,params));
+				new KeyFormat(EncodingHint.NoEncoding,
+						Mode.REQUEST_SECURE, 
+						params));
 	}
 
 	@Override
@@ -119,7 +125,7 @@ public class NTRUKeyMetadata implements CryptoKeyMetadata {
 	}
 	
 	public NTRUKeyMetadata cloneForPublication() {
-		return new NTRUKeyMetadata(handle, createdOn,new KeyFormat(EncodingHint.NoEncoding,Mode.FOR_PUBLICATION));
+		return new NTRUKeyMetadata(handle, createdOn,new KeyFormat(EncodingHint.NoEncoding,Mode.REQUEST_FOR_PUBLICATION, null));
 	}
 
 	@Override

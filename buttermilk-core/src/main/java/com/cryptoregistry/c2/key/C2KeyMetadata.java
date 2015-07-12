@@ -5,11 +5,7 @@ import java.util.UUID;
 
 import com.cryptoregistry.CryptoKeyMetadata;
 import com.cryptoregistry.KeyGenerationAlgorithm;
-import com.cryptoregistry.formats.EncodingHint;
 import com.cryptoregistry.formats.KeyFormat;
-import com.cryptoregistry.formats.Mode;
-import com.cryptoregistry.pbe.PBEParams;
-import com.cryptoregistry.pbe.PBEParamsFactory;
 
 
 public class C2KeyMetadata implements CryptoKeyMetadata {
@@ -33,35 +29,33 @@ public class C2KeyMetadata implements CryptoKeyMetadata {
 		return new C2KeyMetadata(this.handle,d,f);
 	}
 	
-	/**
-	 * Returns a default handle, createOn, and KeyFormat for base64Encode, Mode.OPEN
-	 * @return
-	 */
+	
 	public static C2KeyMetadata createUnsecured() {
-		return new C2KeyMetadata(UUID.randomUUID().toString(), new Date(),new KeyFormat());
+		return new C2KeyMetadata(UUID.randomUUID().toString(), new Date(),KeyFormat.unsecured());
 	}
 	
 	public static C2KeyMetadata createUnsecured(String handle) {
-		return new C2KeyMetadata(handle, new Date(),new KeyFormat());
+		return new C2KeyMetadata(handle, new Date(),KeyFormat.unsecured());
 	}
 	
 	public static C2KeyMetadata createForPublication() {
-		return new C2KeyMetadata(UUID.randomUUID().toString(), new Date(),new KeyFormat(Mode.FOR_PUBLICATION));
+		return new C2KeyMetadata(UUID.randomUUID().toString(), new Date(), KeyFormat.forPublication());
 	}
 	
-	public static C2KeyMetadata createSecurePBKDF2(char[]password) {
-		return new C2KeyMetadata(UUID.randomUUID().toString(), new Date(),new KeyFormat(password));
+	public static C2KeyMetadata createSecurePBKDF2(char[]passwordChars) {
+		return new C2KeyMetadata(UUID.randomUUID().toString(), new Date(),KeyFormat.securedPBKDF2(passwordChars));
 	}
 	
-	public static C2KeyMetadata createSecureScrypt(char[]password) {
-		return new C2KeyMetadata(UUID.randomUUID().toString(), new Date(),
-				new KeyFormat(EncodingHint.Base64url,
-						PBEParamsFactory.INSTANCE.createScryptParams(password)));
+	public static C2KeyMetadata createSecurePBKDF2(int iterations, char[]passwordChars) {
+		return new C2KeyMetadata(UUID.randomUUID().toString(), new Date(),KeyFormat.securedPBKDF2(iterations, passwordChars));
 	}
 	
-	public static C2KeyMetadata createSecure(PBEParams params) {
-		return new C2KeyMetadata(UUID.randomUUID().toString(), new Date(),
-				new KeyFormat(EncodingHint.Base64url,params));
+	public static C2KeyMetadata createSecureScrypt(char[]passwordChars) {
+		return new C2KeyMetadata(UUID.randomUUID().toString(), new Date(),KeyFormat.securedSCRYPT(passwordChars));
+	}
+	
+	public static C2KeyMetadata createSecureScrypt(int cpuCost, int parallelization, char[]passwordChars) {
+		return new C2KeyMetadata(UUID.randomUUID().toString(), new Date(),KeyFormat.securedSCRYPT(cpuCost, parallelization, passwordChars));
 	}
 
 	@Override
@@ -88,17 +82,23 @@ public class C2KeyMetadata implements CryptoKeyMetadata {
 		return format;
 	}
 	public C2KeyMetadata cloneForPublication() {
-		return new C2KeyMetadata(handle, createdOn,new KeyFormat(Mode.FOR_PUBLICATION));
+		return new C2KeyMetadata(handle, createdOn, KeyFormat.forPublication());
 	}
 	
-	public C2KeyMetadata cloneSecurePBKDF2(char[]password) {
-		return new C2KeyMetadata(handle, createdOn, new KeyFormat(password));
+	public C2KeyMetadata cloneSecurePBKDF2(char[]passwordChars) {
+		return new C2KeyMetadata(handle, createdOn, KeyFormat.securedPBKDF2(passwordChars));
 	}
 	
-	public C2KeyMetadata cloneSecureScrypt(char[]password) {
-		return new C2KeyMetadata(handle, createdOn,
-				new KeyFormat(EncodingHint.Base64url,
-						PBEParamsFactory.INSTANCE.createScryptParams(password)));
+	public C2KeyMetadata cloneSecurePBKDF2(int iters, char[]passwordChars) {
+		return new C2KeyMetadata(handle, createdOn, KeyFormat.securedPBKDF2(iters, passwordChars));
+	}
+	
+	public C2KeyMetadata cloneSecureScrypt(char[]passwordChars) {
+		return new C2KeyMetadata(handle, createdOn, KeyFormat.securedSCRYPT(passwordChars));
+	}
+	
+	public C2KeyMetadata cloneSecureScrypt(int cpuCost, int parallelization, char[]passwordChars) {
+		return new C2KeyMetadata(handle, createdOn, KeyFormat.securedSCRYPT(cpuCost,parallelization, passwordChars));
 	}
 
 	@Override

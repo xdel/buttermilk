@@ -1,7 +1,9 @@
 package com.cryptoregistry.signature.validator;
 
 import java.io.ByteArrayOutputStream;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import x.org.bouncycastle.crypto.Digest;
 
@@ -121,9 +123,16 @@ This code generates and validates the following data structure:
 public class SelfContainedSignatureValidator {
 
 	private final KeyMaterials km;
+	private final boolean debugMode;
 	
 	public SelfContainedSignatureValidator(KeyMaterials km) {
 		this.km = km;
+		this.debugMode = false;
+	}
+	
+	public SelfContainedSignatureValidator(KeyMaterials km, boolean debug) {
+		this.km = km;
+		this.debugMode = debug;
 	}
 	
 	/**
@@ -142,6 +151,16 @@ public class SelfContainedSignatureValidator {
 		// step 1.1: Prepare and load the resolver internal cache
 		SelfContainedJSONResolver resolver = new SelfContainedJSONResolver(km.baseMap());
 		resolver.walk();
+		if(debugMode) {
+			Map<String,Object> objectGraph = resolver.getObjectGraph();
+			Iterator<String> iter = objectGraph.keySet().iterator();
+			System.err.println("****************Resolver pool **************");
+			while(iter.hasNext()){
+				String key = iter.next();
+				Object obj = objectGraph.get(key);
+				System.err.format("%s = %s\n", key, obj);
+			}
+		}
 		
 		// step 1.2: for each signature, validate
 		for(CryptoSignature sig: sigs){

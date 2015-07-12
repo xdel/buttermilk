@@ -25,7 +25,7 @@ public class PBEParams {
 	
 	private int iterations; // set this if using PBKDF2
 	
-	// used with Scrypt
+	// used for the AES encryption - do not set here
 	private SensitiveBytes iv;
 	
 	// set these if using SCrypt, or else rely on the defaults
@@ -46,7 +46,7 @@ public class PBEParams {
 		np.setCpuMemoryCost_N(this.getCpuMemoryCost_N());
 		np.setDesiredKeyLengthInBytes(this.getDesiredKeyLengthInBytes());
 		np.setIterations(this.getIterations());
-		np.setIv(this.getIv().clone());
+		if(np.getIv() != null) np.setIv(this.getIv().clone());
 		np.setSalt(this.getSalt().clone());
 		np.setParallelization_p(this.getParallelization_p());
 		np.setPassword(this.getPassword().clone());
@@ -189,6 +189,7 @@ public class PBEParams {
 				+ blockSize_r + ", parallelization_p=" + parallelization_p
 				+ ", desiredKeyLengthInBytes=" + desiredKeyLengthInBytes + "]";
 	}
+
 	
 	
 

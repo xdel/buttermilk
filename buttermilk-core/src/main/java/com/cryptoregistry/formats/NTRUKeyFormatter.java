@@ -45,11 +45,11 @@ class NTRUKeyFormatter {
 				formatOpen(g, writer);
 				break;
 			}
-			case SECURED: {
+			case REQUEST_SECURE: {
 				seal(g, writer);
 				break;
 			}
-			case FOR_PUBLICATION: {
+			case REQUEST_FOR_PUBLICATION: {
 				formatForPublication(g, writer);
 				break;
 			}

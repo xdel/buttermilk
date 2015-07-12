@@ -35,7 +35,7 @@ public class ECKeyContents extends ECKeyForPublication implements Signer {
 	}
 	
 	public ECKeyContents(char [] password, ECPoint q, String curveName, BigInteger d) {
-		super(ECKeyMetadata.createSecureDefault(password), q, curveName);
+		super(ECKeyMetadata.createSecurePBKDF2(password), q, curveName);
 		this.d = d;
 	}
 	
@@ -55,7 +55,7 @@ public class ECKeyContents extends ECKeyForPublication implements Signer {
 	}
 	
 	public ECKeyContents(char [] password, ECPoint q, ECCustomCurve customCurveDefinition, BigInteger d) {
-		super(ECKeyMetadata.createSecureDefault(password), q, customCurveDefinition);
+		super(ECKeyMetadata.createSecurePBKDF2(password), q, customCurveDefinition);
 		this.d = d;
 	}
 	
@@ -76,7 +76,7 @@ public class ECKeyContents extends ECKeyForPublication implements Signer {
 		}
 	}
 	
-	public ECKeyForPublication forPublication(){
+	public ECKeyForPublication copyForPublication(){
 		ECKeyMetadata meta = metadata.cloneForPublication();
 		if(usesNamedCurve()) {
 			return new ECKeyForPublication(meta,Q,curveName);
@@ -87,7 +87,7 @@ public class ECKeyContents extends ECKeyForPublication implements Signer {
 	
 	@Override
 	public CryptoKey keyForPublication() {
-		return forPublication();
+		return copyForPublication();
 	}
 	
 	public ECKeyContents clone(){

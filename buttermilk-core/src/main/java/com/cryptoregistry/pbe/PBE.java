@@ -7,6 +7,8 @@ package com.cryptoregistry.pbe;
 
 import java.util.Arrays;
 
+import com.cryptoregistry.passwords.SensitiveBytes;
+
 import x.org.bouncycastle.crypto.PBEParametersGenerator;
 import x.org.bouncycastle.crypto.engines.AESFastEngine;
 import x.org.bouncycastle.crypto.generators.PKCS5S2ParametersGenerator;
@@ -102,6 +104,8 @@ public class PBE {
 					params.getSalt().getData(), 
 					params.getIterations());
 				holder = (ParametersWithIV) generator.generateDerivedParameters(KEY_SIZE, IV_SIZE);
+				// iv created here
+				params.setIv(new SensitiveBytes(holder.getIV()));
 				break;
 			}
 			case SCRYPT: {

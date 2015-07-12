@@ -64,7 +64,13 @@ public class Password {
 		char [] c = new char[length];
 		System.arraycopy(password, 0, c, 0, length);
 		boolean isAlive = this.alive;
-		return new Password(c,isAlive);
+		if(this instanceof NewPassword){
+			return new NewPassword(c,isAlive);
+		}else if(this instanceof ExistingPassword){
+			return new ExistingPassword(c,isAlive);
+		}else{
+			return new Password(c,isAlive);
+		}
 	}
 
 	public char [] getPassword(){

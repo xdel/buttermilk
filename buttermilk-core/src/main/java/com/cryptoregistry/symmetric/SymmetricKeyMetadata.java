@@ -29,24 +29,19 @@ public class SymmetricKeyMetadata implements CryptoKeyMetadata {
 		this.format = format;
 	}
 	
-	public static SymmetricKeyMetadata createSecureDefault(char[]password) {
-		return new SymmetricKeyMetadata(UUID.randomUUID().toString(), new Date(),new KeyFormat(password));
+	public static SymmetricKeyMetadata createSecureDefault(char[]passwordChars) {
+		return new SymmetricKeyMetadata(UUID.randomUUID().toString(), new Date(),KeyFormat.securedPBKDF2(passwordChars));
 	}
 	
 	public static SymmetricKeyMetadata createUnsecure() {
-		return new SymmetricKeyMetadata(UUID.randomUUID().toString(), new Date(), new KeyFormat());
+		return new SymmetricKeyMetadata(UUID.randomUUID().toString(), new Date(), KeyFormat.unsecured());
 	}
 	
-	public static SymmetricKeyMetadata createSecureScrypt(char[]password) {
+	public static SymmetricKeyMetadata createSecureScrypt(char[]passwordChars) {
 		return new SymmetricKeyMetadata(UUID.randomUUID().toString(), new Date(),
-				new KeyFormat(EncodingHint.Base64url,
-						PBEParamsFactory.INSTANCE.createScryptParams(password)));
+				KeyFormat.securedSCRYPT(passwordChars));
 	}
 	
-	public static SymmetricKeyMetadata createSecure(PBEParams params) {
-		return new SymmetricKeyMetadata(UUID.randomUUID().toString(), new Date(),
-				new KeyFormat(EncodingHint.Base64url,params));
-	}
 
 	@Override
 	public String getHandle() {

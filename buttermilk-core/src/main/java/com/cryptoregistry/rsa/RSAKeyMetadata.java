@@ -46,36 +46,30 @@ public class RSAKeyMetadata implements CryptoKeyMetadata {
 	 * @return
 	 */
 	public static RSAKeyMetadata createDefault() {
-		return new RSAKeyMetadata(UUID.randomUUID().toString(), new Date(),new KeyFormat());
+		return new RSAKeyMetadata(UUID.randomUUID().toString(), new Date(),KeyFormat.unsecured());
 	}
 	
 	public static RSAKeyMetadata createDefault(String handle) {
-		return new RSAKeyMetadata(handle, new Date(),new KeyFormat());
+		return new RSAKeyMetadata(handle, new Date(), KeyFormat.unsecured());
 	}
 	
 	public static RSAKeyMetadata createForPublication() {
-		return new RSAKeyMetadata(UUID.randomUUID().toString(), new Date(),new KeyFormat(Mode.FOR_PUBLICATION));
+		return new RSAKeyMetadata(UUID.randomUUID().toString(), new Date(), KeyFormat.forPublication());
 	}
 	
-	public static RSAKeyMetadata createSecureDefault(char[]password) {
-		return new RSAKeyMetadata(UUID.randomUUID().toString(), new Date(),new KeyFormat(password));
-	}
-	
-	public static RSAKeyMetadata createSecurePBKDF2(char[]password) {
+	public static RSAKeyMetadata createSecurePBKDF2(char[]passwordChars) {
 		return new RSAKeyMetadata(UUID.randomUUID().toString(), new Date(),
-				new KeyFormat(EncodingHint.Base64url,
-						PBEParamsFactory.INSTANCE.createPBKDF2Params(password)));
+				KeyFormat.securedPBKDF2(passwordChars));
 	}
 	
-	public static RSAKeyMetadata createSecureScrypt(char[]password) {
+	public static RSAKeyMetadata createSecureScrypt(char[]passwordChars) {
 		return new RSAKeyMetadata(UUID.randomUUID().toString(), new Date(),
-				new KeyFormat(EncodingHint.Base64url,
-						PBEParamsFactory.INSTANCE.createScryptParams(password)));
+				KeyFormat.securedSCRYPT(passwordChars));
 	}
 	
 	public static RSAKeyMetadata createSecure(PBEParams params) {
 		return new RSAKeyMetadata(UUID.randomUUID().toString(), new Date(),
-				new KeyFormat(EncodingHint.Base64url,params));
+				new KeyFormat(EncodingHint.Base64url,Mode.REQUEST_SECURE, params));
 	}
 
 	@Override
@@ -147,7 +141,7 @@ public class RSAKeyMetadata implements CryptoKeyMetadata {
 	}
 
 	public RSAKeyMetadata cloneForPublication() {
-		RSAKeyMetadata m = new RSAKeyMetadata(handle, createdOn,new KeyFormat(Mode.FOR_PUBLICATION));
+		RSAKeyMetadata m = new RSAKeyMetadata(handle, createdOn, KeyFormat.forPublication());
 		m.setCertainty(this.certainty);
 		m.setStrength(this.strength);
 		return m;
