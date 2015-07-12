@@ -19,6 +19,13 @@ import com.cryptoregistry.util.TimeUtil;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
 
+/**
+ * Produce an Armored confidential key. This allows a confidential key object to be "locked" or "unlocked" with a password
+ * in a manner similar to a private key in a keystore. The inner encoding is JSON.
+ * 
+ * @author Dave
+ *
+ */
 public class KeyEncryptor {
 
 	KeyHolder holder;
