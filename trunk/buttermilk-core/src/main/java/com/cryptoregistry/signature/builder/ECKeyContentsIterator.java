@@ -39,7 +39,7 @@ public class ECKeyContentsIterator implements MapIterator {
 	}
 	
 	/**
-	 * We always encode the public point Q in Encoding Base64
+	 * We always encode the public point Q in Encoding Base64url
 	 * 
 	 * @param verbose
 	 */
@@ -50,13 +50,13 @@ public class ECKeyContentsIterator implements MapIterator {
 			map.put(handle+":"+"Handle",handle);
 			map.put(handle+":"+"CreatedOn",TimeUtil.format(pKey.getCreatedOn()));
 			map.put(handle+":"+"KeyAlgorithm",pKey.getKeyAlgorithm().toString());
-			map.put(handle+":"+"Q",FormatUtil.serializeECPoint(pKey.Q, EncodingHint.Base64));
+			map.put(handle+":"+"Q",FormatUtil.serializeECPoint(pKey.Q, EncodingHint.Base64url));
 			map.put(handle+":"+"CurveName",pKey.curveName);
 		}else{
 			map.put(handle+":"+"Handle",handle);
 			map.put("."+"CreatedOn",TimeUtil.format(pKey.getCreatedOn()));
 			map.put("."+"KeyAlgorithm",pKey.getKeyAlgorithm().toString());
-			map.put("."+"Q",FormatUtil.serializeECPoint(pKey.Q, EncodingHint.Base64));
+			map.put("."+"Q",FormatUtil.serializeECPoint(pKey.Q, EncodingHint.Base64url));
 			map.put("."+"CurveName",pKey.curveName);
 		}
 	}

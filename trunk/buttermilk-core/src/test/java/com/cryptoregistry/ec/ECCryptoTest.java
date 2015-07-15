@@ -6,13 +6,9 @@
 package com.cryptoregistry.ec;
 
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.math.BigInteger;
-import java.nio.charset.Charset;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -41,11 +37,12 @@ public class ECCryptoTest {
 	
 	// see http://crypto.stackexchange.com/questions/18488/ecdsa-with-sha256-and-sepc192r1-curve-impossible-or-how-to-calculate-e
 	// There does appear to be an issue, SHA-256 will work in some cases but not others
+	// we solve this by re-digesting the input if it is too long using SHA1
 	@Test
 	public void testZ() {
 		for(CurveFactory.CurveName c: CurveFactory.CurveName.values()){
 			testrun(c, new SHA1Digest());
-			testrun(c, new SHA256Digest());
+			testrun(c, new SHA256Digest()); // these are re-digested internally to the Factory methods
 			testrun(c, new SHA512Digest());
 		}
 	}
@@ -189,7 +186,7 @@ public class ECCryptoTest {
 		JSONReader js = new JSONReader(new StringReader(serialized));
 		KeyMaterials km = js.parse();
 		
-		// newer way
+		// newer way, encapsulates the above
 		SelfContainedSignatureValidator validator = new SelfContainedSignatureValidator(km);
 		Assert.assertTrue(validator.validate());
 	}

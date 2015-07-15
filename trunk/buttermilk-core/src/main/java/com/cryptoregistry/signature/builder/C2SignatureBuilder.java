@@ -31,7 +31,9 @@ import com.cryptoregistry.signature.SignatureMetadata;
  * 
  * You can make use of the various content iterators to make signing much easier. See test cases
  * 
- * Tracing can be turned on with setDebugMode(true);
+ * Tracing can be turned on with setDebugMode(true)
+ * 
+ * NOTE: you cannot use this class with SelfContainedSignatureValidator. Use C2SignatureCollector instead. 
  * 
  * </pre>
  * @author Dave

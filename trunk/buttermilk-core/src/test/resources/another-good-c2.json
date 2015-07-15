@@ -1,0 +1,47 @@
+{
+  "Version" : "Buttermilk Key Materials 1.0",
+  "RegHandle" : "Chinese Eyes",
+  "Email" : "",
+  "Contacts" : {
+    "53c8f804-28e5-4608-a113-1555f5f902e5" : {
+      "GivenName.0" : "David",
+      "GivenName.1" : "Richard",
+      "FamilyName.0" : "Smith",
+      "Address.0" : "1714 Roberts Ct.",
+      "City" : "Madison",
+      "State" : "Wisconsin",
+      "PostalCode" : "53711",
+      "CountryCode" : "US"
+    }
+  },
+  "Data" : {
+    "Local" : {
+      "4c6b616b-75ac-450b-8d67-1ca27a312158" : {
+        "Copyright" : "© 2014, David R. Smith. All Rights Reserved",
+        "License" : "http://www.apache.org/licenses/LICENSE-2.0.txt"
+      }
+    }
+  },
+  "Keys" : {
+    "b7a90f74-1b8d-478e-b169-79ce5611864b-U" : {
+      "KeyAlgorithm" : "Curve25519",
+      "CreatedOn" : "2015-07-15T04:57:07+0000",
+      "Encoding" : "Base64url",
+      "P" : "StY0Zs7CQNM7ZXOrZhFCeA5Mg3Dr-7vMkJMGARJOd3Q=",
+      "s" : "t_NZ5x7JblxLWFm1JygaNhCeVSHgWSJ4vSHdXwLsQwE=",
+      "k" : "6GLEGBl13ZkDzV958PoMkT8AHBCV5MHXEUeEp72RYF0="
+    }
+  },
+  "Signatures" : {
+    "be365871-2c57-4e5c-af3f-31eb8da7e340" : {
+      "CreatedOn" : "2015-07-15T04:57:07+0000",
+      "SignedWith" : "b7a90f74-1b8d-478e-b169-79ce5611864b",
+      "SignedBy" : "Chinese Eyes",
+      "SignatureAlgorithm" : "ECKCDSA",
+      "DigestAlgorithm" : "SHA-256",
+      "v" : "6J2ZyGAPZycPAnJoZz2WV26f4xwHse4xeW9IuUlhngM=",
+      "r" : "hozrDftAWimLEp-e7CM_u-qVctCXW1QxX469SyzafLY=",
+      "DataRefs" : "be365871-2c57-4e5c-af3f-31eb8da7e340:SignedBy, .SignedWith, b7a90f74-1b8d-478e-b169-79ce5611864b:Handle, .CreatedOn, .KeyAlgorithm, .P, 53c8f804-28e5-4608-a113-1555f5f902e5:GivenName.0, .GivenName.1, .FamilyName.0, .Address.0, .City, .State, .PostalCode, .CountryCode, 4c6b616b-75ac-450b-8d67-1ca27a312158:Copyright, .License"
+    }
+  }
+}
