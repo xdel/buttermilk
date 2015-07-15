@@ -38,7 +38,7 @@ public class KeyMetadataProtoReader {
 		String alg = proto.getKeyGenerationAlgorithm();
 		Date createdOn = new Date(proto.getCreatedOn());
 		EncodingHint encodingHint = EncodingAdapter.getEncodingHintFor(proto.getEncodingHint());
-		KeyFormat format = new KeyFormat(encodingHint,Mode.UNSECURED);
+		KeyFormat format = new KeyFormat(encodingHint,Mode.UNSECURED,null);
 		KeyGenerationAlgorithm kga = KeyGenerationAlgorithm.valueOf(alg);
 	
 		switch(kga){
@@ -78,7 +78,7 @@ public class KeyMetadataProtoReader {
 		String alg = proto.getKeyGenerationAlgorithm();
 		Date createdOn = new Date(proto.getCreatedOn());
 		EncodingHint encodingHint = EncodingAdapter.getEncodingHintFor(proto.getEncodingHint());
-		KeyFormat format = new KeyFormat(encodingHint,Mode.FOR_PUBLICATION);
+		KeyFormat format = new KeyFormat(encodingHint,Mode.REQUEST_FOR_PUBLICATION,null);
 		KeyGenerationAlgorithm kga = KeyGenerationAlgorithm.valueOf(alg);
 	
 		switch(kga){
