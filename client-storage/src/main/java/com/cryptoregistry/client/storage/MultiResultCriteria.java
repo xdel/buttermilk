@@ -70,7 +70,7 @@ public class MultiResultCriteria implements Criteria {
 						case Symmetric: continue;
 						case Curve25519: {
 							Curve25519KeyContents contents = (Curve25519KeyContents) key;
-							builder.add(contents.cloneForPublication());
+							builder.add(contents.copyForPublication());
 							break;
 						}
 						case EC: {
