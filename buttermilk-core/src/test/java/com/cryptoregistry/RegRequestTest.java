@@ -2,8 +2,6 @@ package com.cryptoregistry;
 
 import java.io.StringReader;
 import java.io.StringWriter;
-import java.util.ArrayList;
-import java.util.List;
 
 import junit.framework.Assert;
 
@@ -30,9 +28,10 @@ public class RegRequestTest {
 		this.createSignatures();
 	}
 
-	
-
 	private void createSignatures() {
+
+		String regHandle = "The IT Girl";
+		String privateEmail = "dave@cryptoregistry.com";
 
 		MapData affirmations = new MapData();
 		affirmations.put("Copyright", "© 2015 DAVE SMITH, All Rights Reserved");
@@ -40,9 +39,6 @@ public class RegRequestTest {
 				"I agree to the terms of service.");
 		affirmations.put("InfoAffirmation",
 				"I agree this information is correct and complete");
-
-		String _regHandle = "The Dirty Monkey";
-		String privateEmail = "dave@cryptoregistry.com";
 
 		CryptoContact c0 = new CryptoContact();
 		c0.add("Address.0", "Unit 1");
@@ -52,88 +48,60 @@ public class RegRequestTest {
 		c0.add("Country", "AU");
 		c0.add("PostalCode", "2251");
 
-		CryptoContact c1 = new CryptoContact();
-		c1.add("Address.0", "Unit 2");
-		c1.add("Address.1", "");
-		c1.add("City", "Different");
-		c1.add("StateOrProvince", "NSW");
-		c1.add("Country", "AU");
-		c1.add("PostalCode", "2251");
-
-		List<CryptoContact> contacts = new ArrayList<CryptoContact>();
-		contacts.add(c0);
-		contacts.add(c1);
-
 		char[] pass = { 'p', 'a', 's', 's' };
 		C2KeyMetadata meta = C2KeyMetadata.createSecurePBKDF2(pass);
-		List<CryptoKey> secureKeys = new ArrayList<CryptoKey>();
-		secureKeys.add(com.cryptoregistry.c2.CryptoFactory.INSTANCE.generateKeys(meta));
+		CryptoKey confidentialKey = com.cryptoregistry.c2.CryptoFactory.INSTANCE.generateKeys(meta);
 
-		for (CryptoKey confidentialKey : secureKeys) {
+		JSONFormatter requestFormatter = new JSONFormatter(regHandle,privateEmail);
+		CryptoKey pubKey = confidentialKey.keyForPublication();
 
-			String regHandle = _regHandle;
+		MapIterator iter = null;
 
-			JSONFormatter requestFormatter = new JSONFormatter(regHandle,privateEmail);
-			CryptoKey pubKey = confidentialKey.keyForPublication();
-
-			MapIterator iter = null;
-
-			switch (confidentialKey.getMetadata().getKeyAlgorithm()) {
-			case Curve25519: {
-				Curve25519KeyForPublication pub = (Curve25519KeyForPublication) pubKey;
-				C2SignatureBuilder sigBuilder = new C2SignatureBuilder(regHandle, (Curve25519KeyContents) confidentialKey);
-				iter = new C2KeyContentsIterator(pub);
-				// key contents
-				while (iter.hasNext()) {
-					String label = iter.next();
-					sigBuilder.update(label, iter.get(label));
-				}
-				requestFormatter.add(pub);
-
-				// contacts
-
-				for (CryptoContact contact : contacts) {
-					iter = new ContactContentsIterator(contact);
-					while (iter.hasNext()) {
-						String label = iter.next();
-						sigBuilder.update(label, iter.get(label));
-					}
-					requestFormatter.add(contact);
-				}
-
-				// affirmations - MapData
-				iter = new MapDataContentsIterator(affirmations);
-				while (iter.hasNext()) {
-					String label = iter.next();
-					sigBuilder.update(label, iter.get(label));
-				}
-				requestFormatter.add(affirmations);
-
-				C2CryptoSignature sig = sigBuilder.build();
-				requestFormatter.add(sig);
-
-				break;
-			}
-
-			default: {
-				// nothing
-			}
-			}// end of switch
-
-			StringWriter writer = new StringWriter();
-			requestFormatter.format(writer);
-			String output = writer.toString();
-			// System.err.println(output);
-
-			JSONReader js = new JSONReader(new StringReader(output));
-			KeyMaterials km = js.parse();
-			char[] pass1 = { 'p', 'a', 's', 's' };
-			km.keys().get(0).unlock(new Password(pass1));
-			SelfContainedSignatureValidator validator = new SelfContainedSignatureValidator(
-					km, true);
-			boolean ok = validator.validate();
-			Assert.assertTrue(ok);
+		Curve25519KeyForPublication pub = (Curve25519KeyForPublication) pubKey;
+		C2SignatureBuilder sigBuilder = new C2SignatureBuilder(regHandle,
+				(Curve25519KeyContents) confidentialKey);
+		sigBuilder.setDebugMode(true);
+		iter = new C2KeyContentsIterator(pub);
+		// key contents
+		while (iter.hasNext()) {
+			String label = iter.next();
+			sigBuilder.update(label, iter.get(label));
 		}
-	}// end of method
+		requestFormatter.add(pub);
+
+		// contacts
+
+			iter = new ContactContentsIterator(c0);
+			while (iter.hasNext()) {
+				String label = iter.next();
+				sigBuilder.update(label, iter.get(label));
+			}
+			requestFormatter.add(c0);
+
+		// affirmations - MapData
+		iter = new MapDataContentsIterator(affirmations);
+		while (iter.hasNext()) {
+			String label = iter.next();
+			sigBuilder.update(label, iter.get(label));
+		}
+		requestFormatter.add(affirmations);
+
+		C2CryptoSignature sig = sigBuilder.build();
+		requestFormatter.add(sig);
+
+		StringWriter writer = new StringWriter();
+		requestFormatter.format(writer);
+		String output = writer.toString();
+		System.err.println(output);
+
+		JSONReader js = new JSONReader(new StringReader(output));
+		KeyMaterials km = js.parse();
+		char[] pass1 = { 'p', 'a', 's', 's' };
+		km.keys().get(0).unlock(new Password(pass1));
+		SelfContainedSignatureValidator validator = new SelfContainedSignatureValidator(km, true);
+		boolean ok = validator.validate();
+		Assert.assertTrue(ok);
+
+	}
 
 }

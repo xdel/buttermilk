@@ -1,11 +1,15 @@
 package com.cryptoregistry.signature.validator;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
+import net.iharder.Base64;
 import x.org.bouncycastle.crypto.Digest;
+import x.org.bouncycastle.crypto.digests.SHA1Digest;
 
 import com.cryptoregistry.CryptoKey;
 import com.cryptoregistry.CryptoKeyWrapper;
@@ -123,7 +127,9 @@ This code above generates and validates the following data structure when format
 public class SelfContainedSignatureValidator {
 
 	private final KeyMaterials km;
+	private SelfContainedJSONResolver resolver;
 	private boolean debugMode;
+	ByteArrayOutputStream collector;
 	
 	public SelfContainedSignatureValidator(KeyMaterials km) {
 		this.km = km;
@@ -155,17 +161,21 @@ public class SelfContainedSignatureValidator {
 		}
 		
 		// step 1.1: Prepare and load the resolver internal cache
-		SelfContainedJSONResolver resolver = new SelfContainedJSONResolver(km.baseMap());
+		resolver = new SelfContainedJSONResolver(km.baseMap());
+		resolver.setDebugMode(debugMode);
 		resolver.walk();
 		if(debugMode) {
-			Map<String,Object> objectGraph = resolver.getObjectGraph();
-			Iterator<String> iter = objectGraph.keySet().iterator();
-			System.err.println("****************Resolver pool **************");
+			Map<String,String> map = resolver.getCache();
+			TreeMap<String,String> tree = new TreeMap<String,String>(map);
+			Iterator<String> iter = tree.keySet().iterator();
+			System.err.println("Resolver pool has "+tree.size()+ " members");
+			System.err.println("****************Resolver cache **************");
 			while(iter.hasNext()){
 				String key = iter.next();
-				Object obj = objectGraph.get(key);
+				Object obj = tree.get(key);
 				System.err.format("%s = %s\n", key, obj);
 			}
+			System.err.println("*************End Resolver cache **************");
 		}
 		
 		// step 1.2: for each signature, validate
@@ -173,7 +183,7 @@ public class SelfContainedSignatureValidator {
 			
 			// step 1.2.0: collect the data the signature was made against.
 			// Fail if a token is not found or some other error occurs
-			ByteArrayOutputStream collector = new ByteArrayOutputStream();
+			collector = new ByteArrayOutputStream();
 			try {
 				resolver.resolve(sig.getDataRefs(), collector);
 			} catch (RefNotFoundException e) {
@@ -181,7 +191,7 @@ public class SelfContainedSignatureValidator {
 			}
 			byte [] bytes = collector.toByteArray();
 			
-			//step 1.2.1: get the for publication key used for this signature - assumption is that it is present
+			//step 1.2.1: get the for-publication key used for this signature - assumption is that it is present; if not, fail
 			String keyUUID = sig.getSignedWith();
 			List<CryptoKeyWrapper> keys = km.keys();
 			CryptoKey key = null;
@@ -192,7 +202,7 @@ public class SelfContainedSignatureValidator {
 			}
 			
 			// step 1.2.2: see if key was found, if not, then fail
-			if(key == null) throw new RuntimeException("Could not find required key, it is assumed to be present for this to work: "+key);
+			if(key == null) throw new RuntimeException("Could not find required 'SignedWith' key, it is assumed to be present for this to work: "+keyUUID);
 			
 			// step 1.2.3: do validation based on signature algorithm type, bail if not valid
 			boolean valid = false;
@@ -238,11 +248,25 @@ public class SelfContainedSignatureValidator {
 	
 	private boolean validateC2(C2CryptoSignature sig, Curve25519KeyForPublication key, byte [] sourceBytes){
 		Digest digest = sig.getDigestInstance();
-		digest.update(sourceBytes, 0, sourceBytes.length);
-		byte [] m = new byte[digest.getDigestSize()];
-		digest.doFinal(m, 0);
-		digest.reset();
-		return  com.cryptoregistry.c2.CryptoFactory.INSTANCE.verify(key, m, sig.getSignature(), digest);
+	//	digest.update(sourceBytes, 0, sourceBytes.length);
+	//	byte [] m = new byte[digest.getDigestSize()];
+	//	digest.doFinal(m, 0);
+	//	digest.reset();
+		
+		SHA1Digest td = new SHA1Digest();
+		td.update(sourceBytes, 0, sourceBytes.length);
+		byte [] result = new byte[td.getDigestSize()];
+		td.doFinal(result, 0);
+		try {
+			System.err.println("Bytes: "+Base64.encodeBytes(sourceBytes, Base64.URL_SAFE));
+			System.err.println("Check: "+Base64.encodeBytes(result, Base64.URL_SAFE));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
+		return  com.cryptoregistry.c2.CryptoFactory.INSTANCE.verify(key, sourceBytes, sig.getSignature(), digest);
 	}
 
 	public boolean isDebugMode() {
@@ -251,6 +275,19 @@ public class SelfContainedSignatureValidator {
 
 	public void setDebugMode(boolean debugMode) {
 		this.debugMode = debugMode;
+		if(resolver != null) resolver.setDebugMode(debugMode);
+	}
+
+	public SelfContainedJSONResolver getResolver() {
+		return resolver;
+	}
+
+	public void setResolver(SelfContainedJSONResolver resolver) {
+		this.resolver = resolver;
+	}
+
+	public ByteArrayOutputStream getCollector() {
+		return collector;
 	}
 
 }

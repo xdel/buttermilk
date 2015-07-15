@@ -14,6 +14,13 @@ import com.cryptoregistry.HTTPURLResolver;
 import com.cryptoregistry.MapData;
 import com.cryptoregistry.ListData;
 
+/**
+ * The list data are URLs which contain our contents to sign. The URL should be Idempotent (i.e., always
+ * return the same content). 
+ * 
+ * @author Dave
+ *
+ */
 public class ListDataContentsIterator implements Iterator<String> {
 	
 	final ListData listData;

@@ -7,7 +7,7 @@ import com.cryptoregistry.signature.SignatureMetadata;
 import net.iharder.Base64;
 
 /**
- * Base class, provides the debug/tracing mode
+ * Base class, provides the debug/tracing common code
  * 
  * @author Dave
  *
@@ -15,8 +15,13 @@ import net.iharder.Base64;
 public class SignatureBuilder {
 	
 	protected boolean debugMode;
+	int startIndex=0, endIndex=0;
 
 	public SignatureBuilder() {}
+	
+	public SignatureBuilder(boolean debug) {
+		this.debugMode=debug;
+	}
 
 	public boolean isDebugMode() {
 		return debugMode;
@@ -28,8 +33,10 @@ public class SignatureBuilder {
 	
 	protected void log(String label, byte [] bytes){
 		if(debugMode){
+			startIndex = endIndex;
+			endIndex+=bytes.length;
 			try {
-				System.err.println("update="+label+", "+Base64.encodeBytes(bytes, Base64.URL_SAFE));
+				System.err.println("update="+label+", "+Base64.encodeBytes(bytes, Base64.URL_SAFE)+" start:"+startIndex+", end:"+endIndex);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}

@@ -14,6 +14,9 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
+import net.iharder.Base64;
+import x.org.bouncycastle.util.encoders.Hex;
+
 /**
  * The Java 7 idioms
  * 
@@ -39,12 +42,53 @@ public class FileUtil {
 			throw new RuntimeException(e);
 		}
 	}
+	
+	public static void writeFile(String fileName, byte [] data){
+		try {
+			File file = new File(fileName);
+			String path = file.getCanonicalPath();
+			Files.write(Paths.get(path), data);
+			System.out.println("Wrote: "+path);
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+	}
 
 	// http://stackoverflow.com/questions/326390/how-to-create-a-java-string-from-the-contents-of-a-file/326440#326440
+	// for smaller files, obviously
 	public static String readFile(String path, Charset encoding)
 			throws IOException {
 		byte[] encoded = Files.readAllBytes(Paths.get(path));
 		return encoding.decode(ByteBuffer.wrap(encoded)).toString();
+	}
+	
+	/**
+	 * For smaller files, obviously
+	 * @param path
+	 * @param armor
+	 * @return
+	 * @throws IOException
+	 */
+	public static byte[] readFile(String path, ARMOR armor)
+			throws IOException {
+		byte[] bytes = Files.readAllBytes(Paths.get(path));
+		if(armor == null || armor == ARMOR.none){
+			return bytes;
+		}else{
+			switch(armor){
+				case hex:
+				case base16:{
+					return Hex.decode(bytes);
+				}
+				case base64:{
+					return Base64.decode(bytes);
+				}
+				case base64url:{
+					return Base64.decode(bytes, 0, bytes.length, Base64.URL_SAFE);
+				}
+				default: throw new RuntimeException("Unknown option");
+			}
+		}
 	}
 
 	/**
@@ -66,6 +110,10 @@ public class FileUtil {
 		}
 
 		return writer.toString();
+	}
+	
+	public enum ARMOR {
+		none,base64,base64url,base16,hex;
 	}
 
 }
