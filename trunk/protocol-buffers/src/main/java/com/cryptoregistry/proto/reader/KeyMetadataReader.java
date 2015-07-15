@@ -33,7 +33,7 @@ public class KeyMetadataReader {
 		String alg = proto.getKeyGenerationAlgorithm();
 		Date createdOn = new Date(proto.getCreatedOn());
 		EncodingHint encodingHint = EncodingAdapter.getEncodingHintFor(proto.getEncodingHint());
-		KeyFormat format = new KeyFormat(encodingHint,Mode.UNSECURED);
+		KeyFormat format = new KeyFormat(encodingHint,Mode.UNSECURED,null);
 		KeyGenerationAlgorithm kga = KeyGenerationAlgorithm.valueOf(alg);
 	
 		switch(kga){
