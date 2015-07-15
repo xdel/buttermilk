@@ -15,7 +15,7 @@ import com.cryptoregistry.formats.JSONReader;
 import com.cryptoregistry.passwords.Password;
 import com.cryptoregistry.signature.C2CryptoSignature;
 import com.cryptoregistry.signature.builder.C2KeyContentsIterator;
-import com.cryptoregistry.signature.builder.C2SignatureBuilder;
+import com.cryptoregistry.signature.builder.C2SignatureCollector;
 import com.cryptoregistry.signature.builder.ContactContentsIterator;
 import com.cryptoregistry.signature.builder.MapDataContentsIterator;
 import com.cryptoregistry.signature.validator.SelfContainedSignatureValidator;
@@ -58,14 +58,14 @@ public class RegRequestTest {
 		MapIterator iter = null;
 
 		Curve25519KeyForPublication pub = (Curve25519KeyForPublication) pubKey;
-		C2SignatureBuilder sigBuilder = new C2SignatureBuilder(regHandle,
+		C2SignatureCollector sigBuilder = new C2SignatureCollector(regHandle,
 				(Curve25519KeyContents) confidentialKey);
 		sigBuilder.setDebugMode(true);
 		iter = new C2KeyContentsIterator(pub);
 		// key contents
 		while (iter.hasNext()) {
 			String label = iter.next();
-			sigBuilder.update(label, iter.get(label));
+			sigBuilder.collect(label, iter.get(label));
 		}
 		requestFormatter.add(pub);
 
@@ -74,7 +74,7 @@ public class RegRequestTest {
 			iter = new ContactContentsIterator(c0);
 			while (iter.hasNext()) {
 				String label = iter.next();
-				sigBuilder.update(label, iter.get(label));
+				sigBuilder.collect(label, iter.get(label));
 			}
 			requestFormatter.add(c0);
 
@@ -82,7 +82,7 @@ public class RegRequestTest {
 		iter = new MapDataContentsIterator(affirmations);
 		while (iter.hasNext()) {
 			String label = iter.next();
-			sigBuilder.update(label, iter.get(label));
+			sigBuilder.collect(label, iter.get(label));
 		}
 		requestFormatter.add(affirmations);
 
@@ -98,7 +98,7 @@ public class RegRequestTest {
 		KeyMaterials km = js.parse();
 		char[] pass1 = { 'p', 'a', 's', 's' };
 		km.keys().get(0).unlock(new Password(pass1));
-		SelfContainedSignatureValidator validator = new SelfContainedSignatureValidator(km, true);
+		SelfContainedSignatureValidator validator = new SelfContainedSignatureValidator(km);
 		boolean ok = validator.validate();
 		Assert.assertTrue(ok);
 

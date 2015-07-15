@@ -231,7 +231,7 @@ public abstract class Handshake {
 		switch(hp) {
 			case H0: {
 				Date d = TimeUtil.getISO8601FormatDate(H0_DATE);
-				SymmetricKeyMetadata meta = new SymmetricKeyMetadata(H0_UUID, d, new KeyFormat());
+				SymmetricKeyMetadata meta = new SymmetricKeyMetadata(H0_UUID, d, KeyFormat.unsecured());
 				byte [] key = "00000000000000000000000000000000".getBytes(Charset.forName("UTF-8"));
 				return new SymmetricKeyContents(meta,key);
 			}
