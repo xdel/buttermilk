@@ -8,7 +8,6 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
-import java.util.Date;
 import java.util.List;
 
 import net.iharder.Base64;
@@ -23,8 +22,8 @@ import com.cryptoregistry.CryptoContact;
 import com.cryptoregistry.CryptoKey;
 import com.cryptoregistry.CryptoKeyWrapper;
 import com.cryptoregistry.KeyMaterials;
-import com.cryptoregistry.MapData;
 import com.cryptoregistry.ListData;
+import com.cryptoregistry.MapData;
 import com.cryptoregistry.c2.CryptoFactory;
 import com.cryptoregistry.c2.key.AgreementPrivateKey;
 import com.cryptoregistry.c2.key.C2KeyMetadata;
@@ -37,12 +36,10 @@ import com.cryptoregistry.passwords.Password;
 import com.cryptoregistry.passwords.SensitiveBytes;
 import com.cryptoregistry.pbe.PBEAlg;
 import com.cryptoregistry.pbe.PBEParams;
-import com.cryptoregistry.pbe.PBEParamsFactory;
 import com.cryptoregistry.signature.C2CryptoSignature;
 import com.cryptoregistry.signature.CryptoSignature;
 import com.cryptoregistry.signature.SelfContainedJSONResolver;
 import com.cryptoregistry.signature.builder.C2KeyContentsIterator;
-import com.cryptoregistry.signature.builder.C2SignatureBuilder;
 import com.cryptoregistry.signature.builder.C2SignatureCollector;
 import com.cryptoregistry.signature.builder.ContactContentsIterator;
 import com.cryptoregistry.signature.builder.MapDataContentsIterator;
@@ -50,7 +47,6 @@ import com.cryptoregistry.signature.builder.ListDataContentsIterator;
 import com.cryptoregistry.signature.validator.SelfContainedSignatureValidator;
 import com.cryptoregistry.util.MapIterator;
 import com.cryptoregistry.util.TimeUtil;
-import com.cryptoregistry.util.XORUtil;
 
 
 public class C2FormattingTest {
@@ -65,17 +61,15 @@ public class C2FormattingTest {
 	private static byte[] k={
 		9,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 	};
-	
-	
-		// hypothesis good keys
-	   private static String P_good = "3JVaTWVUk3wsUaBncyDfu5S4dI0aeKOVRg5PgBypIC8=";
-	   private static String s_good = "LPMOH75stRqCAnEfsLLI9vUXhSyCIdL_njGH-b7zaA4=";
-	   private static String k_good = "8Doemi0oJsiGNjhquM1zijJzF1FgjEb7yoSCVZOPqW8=";
+    	  
+	   private static String P_good = "StY0Zs7CQNM7ZXOrZhFCeA5Mg3Dr-7vMkJMGARJOd3Q=";
+	   private static String s_good = "t_NZ5x7JblxLWFm1JygaNhCeVSHgWSJ4vSHdXwLsQwE=";
+	   private static String k_good = "6GLEGBl13ZkDzV958PoMkT8AHBCV5MHXEUeEp72RYF0=";
 	   
-	   // hypothesis bad keys
-	   private static String P_bad = "uqZJLi7U40p-D32Ph5IPQe0krQ2q7P-7DqMgltKwSno=";
-	   private static String s_bad = "da9UYSVV2l2Z2YoWoEcQtU-AkeQedf9CIfL7_h02VQU=";
-	   private static String k_bad = "cMHm13JJdavkOcQFt9c3F2O2ZfkxElQe-oZR_rbU9Xg=";
+	    	  
+	   private static String P_more = "9hBysueNKkfbbE9s6ZEWrqxp7m-58hpQH4t7Nu2n4To=";
+	   private static String s_more = "CgLwrtXIh0Ud_92kCGNWvufwcef9NKPZYmnY-nlrvw4=";
+	   private static String k_more = "uMOOK2we1YoCYtRX1PHGc8k9DNcDJDgtDggZWu6YqGY=";
 	   
 	
 	@Test
@@ -324,9 +318,9 @@ public class C2FormattingTest {
 		C2KeyMetadata meta = new C2KeyMetadata(uuidVal, TimeUtil.getISO8601FormatDate(date), format);
 		Curve25519KeyContents contents0 = new Curve25519KeyContents(
 				meta,
-				new PublicKey(Base64.decode(P_bad,Base64.URL_SAFE)), 
-				new SigningPrivateKey(Base64.decode(s_bad,Base64.URL_SAFE)), 
-				new AgreementPrivateKey(Base64.decode(k_bad,Base64.URL_SAFE))
+				new PublicKey(Base64.decode(P_more,Base64.URL_SAFE)), 
+				new SigningPrivateKey(Base64.decode(s_more,Base64.URL_SAFE)), 
+				new AgreementPrivateKey(Base64.decode(k_more,Base64.URL_SAFE))
 		);
 		
 		JSONFormatter builder0 = new JSONFormatter("Chinese Eyes", "dave@somewhere.com");
@@ -465,16 +459,16 @@ public class C2FormattingTest {
 		
 		Curve25519KeyContents contents0 = new Curve25519KeyContents(
 				meta,
-				new PublicKey(Base64.decode(P_bad,Base64.URL_SAFE)), 
-				new SigningPrivateKey(Base64.decode(s_bad,Base64.URL_SAFE)), 
-				new AgreementPrivateKey(Base64.decode(k_bad,Base64.URL_SAFE))
+				new PublicKey(Base64.decode(P_more,Base64.URL_SAFE)), 
+				new SigningPrivateKey(Base64.decode(s_more,Base64.URL_SAFE)), 
+				new AgreementPrivateKey(Base64.decode(k_more,Base64.URL_SAFE))
 		);
 		
 		Curve25519KeyContents contents1 = new Curve25519KeyContents(
 				metaClone,
-				new PublicKey(Base64.decode(P_bad,Base64.URL_SAFE)), 
-				new SigningPrivateKey(Base64.decode(s_bad,Base64.URL_SAFE)), 
-				new AgreementPrivateKey(Base64.decode(k_bad,Base64.URL_SAFE))
+				new PublicKey(Base64.decode(P_more,Base64.URL_SAFE)), 
+				new SigningPrivateKey(Base64.decode(s_more,Base64.URL_SAFE)), 
+				new AgreementPrivateKey(Base64.decode(k_more,Base64.URL_SAFE))
 		);
 		
 		Assert.assertTrue(contents0.equals(contents1));
@@ -509,117 +503,10 @@ public class C2FormattingTest {
 		return (Curve25519KeyContents) keyWrapper.getKeyContents();
 	}
 	
-	@Test
-	public void testHypothesisGoodKeys() throws IOException {
-		
-		CryptoContact contact = new CryptoContact("ccc1cdc9-65fe-4f3e-b029-5fd29d035ae8");
-		contact.add("GivenName.0", "David");
-		contact.add("GivenName.1", "Richard");
-		contact.add("FamilyName.0", "Smith");
-		contact.add("Address.0", "1714 Roberts Ct.");
-		contact.add("City", "Madison");
-		contact.add("State", "Wisconsin");
-		contact.add("PostalCode", "53711");
-		contact.add("CountryCode", "US");
-		
-		MapData ld = new MapData("aaa1cdc9-65fe-4f3e-b029-5fd29d035ae8");
-		ld.put("Copyright", "\u00A9 2014, David R. Smith. All Rights Reserved");
-		ld.put("License", "http://www.apache.org/licenses/LICENSE-2.0.txt");
-		
-		String uuidVal0 = "2eb1cdc9-65fe-4f3e-b029-5fd29d035ae8";
-		String date0 = "2015-07-11T07:08:27+0000";
-		EncodingHint hint = EncodingHint.Base64url;
-		
-		KeyFormat format0 = new KeyFormat(hint,Mode.UNSECURED,null);
-		
-		// load known "good" keys
-		C2KeyMetadata meta = new C2KeyMetadata(uuidVal0, TimeUtil.getISO8601FormatDate(date0), format0);
-		Curve25519KeyContents contents = new Curve25519KeyContents(
-				meta,
-				new PublicKey(Base64.decode(P_good,Base64.URL_SAFE)), 
-				new SigningPrivateKey(Base64.decode(s_good,Base64.URL_SAFE)), 
-				new AgreementPrivateKey(Base64.decode(k_good,Base64.URL_SAFE))
-		);
-		
-		MapIterator iter = new C2KeyContentsIterator(contents.copyForPublication());
-		MapIterator iter2 = new ContactContentsIterator(contact);
-		MapIterator iter3 = new MapDataContentsIterator(ld);
 	
-		C2SignatureBuilder sigBuilder = new C2SignatureBuilder("SIG", TimeUtil.getISO8601FormatDate(date0), "Chinese Eyes", contents, new SHA256Digest());
-		
-		while(iter.hasNext()){
-			String label = iter.next();
-			sigBuilder.update(label, iter.get(label));
-		}
-		while(iter2.hasNext()){
-			String label = iter2.next();
-			sigBuilder.update(label, iter2.get(label));
-		}
-		while(iter3.hasNext()){
-			String label = iter3.next();
-			sigBuilder.update(label, iter3.get(label));
-		}
-		
-		CryptoSignature sig = sigBuilder.build();
-		
-		JSONFormatter builder = new JSONFormatter("Chinese Eyes");
-		builder.add(contact)
-		.add(contents)
-		.add(sig)
-		.add(ld);
-		//.add(rd);
-		
-		StringWriter writer = new StringWriter();
-		builder.format(writer);
-		String out = writer.toString();
-		System.err.println(out);
-		JSONReader reader = new JSONReader(new StringReader(out));
-		KeyMaterials km = reader.parse();
-		Curve25519KeyContents c = (Curve25519KeyContents ) km.keys().get(0).getKeyContents();
-		SelfContainedSignatureValidator validator = new SelfContainedSignatureValidator(km,true);
-		boolean ok = validator.validate();
-		
-		byte [] key0 = contents.publicKey.getBytes();
-		byte [] keyOut = c.publicKey.getBytes();
-		
-		for(int i = 0; i<key0.length;i++){
-			byte a = key0[i];
-			byte b = keyOut[i];
-			if(Byte.compare(a, b) != 0){
-				System.err.println("different: "+(int)a+" "+(int)b+" at index "+i);
-			}
-		}
-		Assert.assertTrue(Arrays.areEqual(key0, keyOut));
-		
-		key0 = contents.signingPrivateKey.getBytes();
-		keyOut = c.signingPrivateKey.getBytes();
-		
-		for(int i = 0; i<key0.length;i++){
-			byte a = key0[i];
-			byte b = keyOut[i];
-			if(Byte.compare(a, b) != 0){
-				System.err.println("different: "+(int)a+" "+(int)b+" at index "+i);
-			}
-		}
-		Assert.assertTrue(Arrays.areEqual(key0, keyOut));
-		
-		key0 = contents.agreementPrivateKey.getBytes();
-		keyOut = c.agreementPrivateKey.getBytes();
-		
-		for(int i = 0; i<key0.length;i++){
-			byte a = key0[i];
-			byte b = keyOut[i];
-			if(Byte.compare(a, b) != 0){
-				System.err.println("different: "+(int)a+" "+(int)b+" at index "+i);
-			}
-		}
-		Assert.assertTrue(Arrays.areEqual(key0, keyOut));
-		
-		Assert.assertTrue(ok);
-	}
 	
 	@Test
-	public void testHypothesisBadKeysMin() throws IOException{
+	public void testHypothesisKeysMin() throws IOException{
 		
 		String uuidVal0 = "2eb1cdc9-65fe-4f3e-b029-5fd29d035ae8";
 		String date0 = "2015-07-11T07:08:27+0000";
@@ -631,9 +518,9 @@ public class C2FormattingTest {
 		C2KeyMetadata meta = new C2KeyMetadata(uuidVal0, TimeUtil.getISO8601FormatDate(date0), format0);
 		Curve25519KeyContents contents = new Curve25519KeyContents(
 				meta,
-				new PublicKey(Base64.decode(P_bad,Base64.URL_SAFE)), 
-				new SigningPrivateKey(Base64.decode(s_bad,Base64.URL_SAFE)), 
-				new AgreementPrivateKey(Base64.decode(k_bad,Base64.URL_SAFE))
+				new PublicKey(Base64.decode(P_more,Base64.URL_SAFE)), 
+				new SigningPrivateKey(Base64.decode(s_more,Base64.URL_SAFE)), 
+				new AgreementPrivateKey(Base64.decode(k_more,Base64.URL_SAFE))
 		);
 		
 		
@@ -643,7 +530,7 @@ public class C2FormattingTest {
 		C2CryptoSignature sig = CryptoFactory.INSTANCE.sign("Chinese Eyes",contents, msgBytes, new SHA256Digest());
 		boolean ok = CryptoFactory.INSTANCE.verify(contents, msgBytes, sig.getSignature(),new SHA256Digest());
 		
-		// But they work!!
+		// They work!!
 		Assert.assertTrue(ok);
 	}
 	
@@ -653,7 +540,7 @@ public class C2FormattingTest {
 	}
 	
 	@Test
-	public void testHypothesisBadKeys() throws IOException {
+	public void testHypothesisMoreKeys() throws IOException {
 		
 		CryptoContact contact = new CryptoContact("ccc1cdc9-65fe-4f3e-b029-5fd29d035ae8");
 		contact.add("GivenName.0", "David");
@@ -679,9 +566,9 @@ public class C2FormattingTest {
 		C2KeyMetadata meta = new C2KeyMetadata(uuidVal0, TimeUtil.getISO8601FormatDate(date0), format0);
 		Curve25519KeyContents contents = new Curve25519KeyContents(
 				meta,
-				new PublicKey(Base64.decode(P_bad,Base64.URL_SAFE)), 
-				new SigningPrivateKey(Base64.decode(s_bad,Base64.URL_SAFE)), 
-				new AgreementPrivateKey(Base64.decode(k_bad,Base64.URL_SAFE))
+				new PublicKey(Base64.decode(P_more,Base64.URL_SAFE)), 
+				new SigningPrivateKey(Base64.decode(s_more,Base64.URL_SAFE)), 
+				new AgreementPrivateKey(Base64.decode(k_more,Base64.URL_SAFE))
 		);
 		
 		MapIterator iter = new C2KeyContentsIterator(contents.copyForPublication());
@@ -763,19 +650,19 @@ public class C2FormattingTest {
 		MapIterator iter2 = new ContactContentsIterator(contact);
 		MapIterator iter3 = new MapDataContentsIterator(ld);
 	//	ListDataContentsIterator remoteIter = new ListDataContentsIterator(rd);
-		C2SignatureBuilder sigBuilder = new C2SignatureBuilder("Chinese Eyes", contents);
+		C2SignatureCollector sigCollector = new C2SignatureCollector("Chinese Eyes", contents);
 		
 		while(iter.hasNext()){
 			String label = iter.next();
-			sigBuilder.update(label, iter.get(label));
+			sigCollector.collect(label, iter.get(label));
 		}
 		while(iter2.hasNext()){
 			String label = iter2.next();
-			sigBuilder.update(label, iter2.get(label));
+			sigCollector.collect(label, iter2.get(label));
 		}
 		while(iter3.hasNext()){
 			String label = iter3.next();
-			sigBuilder.update(label, iter3.get(label));
+			sigCollector.collect(label, iter3.get(label));
 		}
 		
 		// a bit more complex - the remote iterator outputs a list resolved into LocalData
@@ -790,7 +677,7 @@ public class C2FormattingTest {
 	//		}
 	//	}
 		
-		CryptoSignature sig = sigBuilder.build();
+		CryptoSignature sig = sigCollector.build();
 		
 		JSONFormatter builder = new JSONFormatter("Chinese Eyes");
 		builder.add(contact)
@@ -807,6 +694,20 @@ public class C2FormattingTest {
 		KeyMaterials km = reader.parse();
 		SelfContainedSignatureValidator validator = new SelfContainedSignatureValidator(km, true);
 		boolean ok = validator.validate();
+		
+		byte [] sigBytes = sigCollector.getCollector().toByteArray();
+		byte [] valBytes = validator.getCollector().toByteArray();
+		
+		for(int i = 0; i<sigBytes.length;i++){
+			byte a = sigBytes[i];
+			byte b = valBytes[i];
+			if(Byte.compare(a, b) != 0){
+				System.err.println("different: "+(int)a+" "+(int)b+" at index "+i);
+			}
+		}
+		
+		Assert.assertTrue(Arrays.areEqual(sigBytes, valBytes));
+		
 		Assert.assertTrue(ok);
 	}
 	
@@ -821,6 +722,8 @@ public class C2FormattingTest {
 			} catch (UnsupportedEncodingException e1) {}
 			JSONReader js = new JSONReader(reader);
 			KeyMaterials km = js.parse();
+			
+			// test using no C2SignatureCollector
 			SelfContainedJSONResolver resolver = new SelfContainedJSONResolver(km.baseMap());
 			resolver.walk();
 			ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -829,13 +732,9 @@ public class C2FormattingTest {
 				CryptoKey key = km.keys().get(0).getKeyContents();
 				resolver.resolve(sig.dataRefs,out);
 				byte [] msgBytes = out.toByteArray();
-				SHA256Digest digest = new SHA256Digest();
-				digest.update(msgBytes, 0, msgBytes.length);
-				byte [] m = new byte[digest.getDigestSize()];
-				digest.doFinal(m, 0);
 				
 				C2CryptoSignature _sig = (C2CryptoSignature) sig;
-				boolean ok = CryptoFactory.INSTANCE.verify((Curve25519KeyForPublication)key, m, _sig.signature,new SHA256Digest());
+				boolean ok = CryptoFactory.INSTANCE.verify((Curve25519KeyForPublication)key, msgBytes, _sig.signature,new SHA256Digest());
 				Assert.assertTrue(ok);
 			
 			} catch (Exception e) {
@@ -852,47 +751,7 @@ public class C2FormattingTest {
 		}
 	}
 	
-	@Test
-	public void test0HypothesisBadKeys() {
-		InputStream in = this.getClass().getResourceAsStream("/believed-bad-c2.json");
-		Assert.assertNotNull(in);
-		InputStreamReader reader = null;
-		try {
-			try {
-				reader = new InputStreamReader(in, "UTF-8");
-			} catch (UnsupportedEncodingException e1) {}
-			JSONReader js = new JSONReader(reader);
-			KeyMaterials km = js.parse();
-			SelfContainedJSONResolver resolver = new SelfContainedJSONResolver(km.baseMap());
-			resolver.walk();
-			ByteArrayOutputStream out = new ByteArrayOutputStream();
-			try {
-				CryptoSignature sig = km.signatures().get(0);
-				CryptoKey key = km.keys().get(0).getKeyContents();
-				resolver.resolve(sig.dataRefs,out);
-				byte [] msgBytes = out.toByteArray();
-				SHA256Digest digest = new SHA256Digest();
-				digest.update(msgBytes, 0, msgBytes.length);
-				byte [] m = new byte[digest.getDigestSize()];
-				digest.doFinal(m, 0);
-				
-				C2CryptoSignature _sig = (C2CryptoSignature) sig;
-				boolean ok = CryptoFactory.INSTANCE.verify((Curve25519KeyForPublication)key, m, _sig.signature,new SHA256Digest());
-				Assert.assertFalse(ok);
-			
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}finally{
-			if(reader != null)
-				try {
-					reader.close();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-		}
-	}
+	
 	
 	@Test
 	public void test1(){
@@ -913,6 +772,70 @@ public class C2FormattingTest {
 		//System.err.println(out);
 	}
 	
+	
+	@Test
+	public void testListData() {
+		
+		ListData listData = new ListData("LIST0");
+		listData.addURL("http://buttermilk.googlecode.com/svn/trunk/buttermilk-core/data/test0.json");
+		
+		Curve25519KeyContents contents = CryptoFactory.INSTANCE.generateKeys();
+		ListDataContentsIterator remoteIter = new ListDataContentsIterator(listData);
+		MapIterator keyContentsIter = new C2KeyContentsIterator(contents);
+		
+		C2SignatureCollector sigCollector = new C2SignatureCollector("Chinese Eyes", contents);
+		sigCollector.setDebugMode(true);
+		
+		// a bit more complex - the remote iterator outputs a list resolved into LocalData via HTTP
+		while(remoteIter.hasNext()){
+			List<MapData> list = remoteIter.nextData();
+			for(MapData data: list){
+				MapIterator inner = new MapDataContentsIterator(data);
+				while(inner.hasNext()){
+					String label = inner.next();
+					sigCollector.collect(label, inner.get(label));
+				}
+			}
+		}
+		
+		while(keyContentsIter.hasNext()){
+			String label = keyContentsIter.next();
+			sigCollector.collect(label, keyContentsIter.get(label));
+		}
+		
+		CryptoSignature sig = sigCollector.build();
+		
+		JSONFormatter builder = new JSONFormatter("Chinese Eyes");
+		builder.add(listData)
+		.add(contents)
+		.add(sig);
+		
+		StringWriter writer = new StringWriter();
+		builder.format(writer);
+		String out = writer.toString();
+		System.err.println(out);
+		
+		
+		JSONReader reader = new JSONReader(new StringReader(out));
+		KeyMaterials km = reader.parse();
+		SelfContainedSignatureValidator validator = new SelfContainedSignatureValidator(km, true);
+		boolean ok = validator.validate();
+		
+		byte [] sigBytes = sigCollector.getCollector().toByteArray();
+		byte [] valBytes = validator.getCollector().toByteArray();
+		
+		for(int i = 0; i<sigBytes.length;i++){
+			byte a = sigBytes[i];
+			byte b = valBytes[i];
+			if(Byte.compare(a, b) != 0){
+				System.err.println("different: "+(int)a+" "+(int)b+" at index "+i);
+			}
+		}
+		
+		Assert.assertTrue(Arrays.areEqual(sigBytes, valBytes));
+		
+		Assert.assertTrue(ok);
+	}
 	
 
 }

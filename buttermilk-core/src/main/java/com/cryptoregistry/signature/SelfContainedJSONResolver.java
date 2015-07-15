@@ -233,9 +233,11 @@ public class SelfContainedJSONResolver implements SignatureReferenceResolver {
 				break;
 			}
 			case "Remote": {
+				// the Remote data is a list of URLS
 				List<String> inner = (List<String>) map.get(key);
 				for (Object url : inner) {
 					String item = String.valueOf(url);
+					// what is the URL scheme on the list item - we support 2 
 					final String scheme = item.substring(0, 4).toUpperCase();
 					switch (scheme) {
 					case "HTTP": {

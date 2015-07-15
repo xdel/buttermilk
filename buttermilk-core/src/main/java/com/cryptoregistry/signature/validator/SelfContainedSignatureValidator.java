@@ -28,7 +28,7 @@ import com.cryptoregistry.signature.SelfContainedJSONResolver;
 
 /**
  * <p>Validate a Buttermilk 1.0 formatted json file, typically a registration file. All references are expected to be
- * present in the file<p>
+ * present in the file, although we have limited support for HTTP and FILE urls (as "remote" references.)<p>
  * 
  * <p>Fail if)</p>
  * <ol><li>
@@ -246,6 +246,14 @@ public class SelfContainedSignatureValidator {
 		return com.cryptoregistry.ec.CryptoFactory.INSTANCE.verify((ECDSACryptoSignature)sig, key, m);
 	}
 	
+	/**
+	 * For C2 we do not digest first, we pass in the whole sourceBytes. Use C2SignatureCollector with this 
+	 * one (not C2SignatureBuilder).
+	 * @param sig
+	 * @param key
+	 * @param sourceBytes
+	 * @return
+	 */
 	private boolean validateC2(C2CryptoSignature sig, Curve25519KeyForPublication key, byte [] sourceBytes){
 		Digest digest = sig.getDigestInstance();
 	//	digest.update(sourceBytes, 0, sourceBytes.length);
@@ -253,18 +261,19 @@ public class SelfContainedSignatureValidator {
 	//	digest.doFinal(m, 0);
 	//	digest.reset();
 		
-		SHA1Digest td = new SHA1Digest();
-		td.update(sourceBytes, 0, sourceBytes.length);
-		byte [] result = new byte[td.getDigestSize()];
-		td.doFinal(result, 0);
-		try {
-			System.err.println("Bytes: "+Base64.encodeBytes(sourceBytes, Base64.URL_SAFE));
-			System.err.println("Check: "+Base64.encodeBytes(result, Base64.URL_SAFE));
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		if(debugMode){
+			SHA1Digest td = new SHA1Digest();
+			td.update(sourceBytes, 0, sourceBytes.length);
+			byte [] result = new byte[td.getDigestSize()];
+			td.doFinal(result, 0);
+			try {
+				System.err.println("Bytes: "+Base64.encodeBytes(sourceBytes, Base64.URL_SAFE));
+				System.err.println("Check: "+Base64.encodeBytes(result, Base64.URL_SAFE));
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
-		
 		
 		return  com.cryptoregistry.c2.CryptoFactory.INSTANCE.verify(key, sourceBytes, sig.getSignature(), digest);
 	}
