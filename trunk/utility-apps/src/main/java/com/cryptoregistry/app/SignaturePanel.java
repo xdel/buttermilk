@@ -47,7 +47,7 @@ import com.cryptoregistry.signature.CryptoSignature;
 import com.cryptoregistry.signature.ECDSACryptoSignature;
 import com.cryptoregistry.signature.RSACryptoSignature;
 import com.cryptoregistry.signature.builder.C2KeyContentsIterator;
-import com.cryptoregistry.signature.builder.C2SignatureBuilder;
+import com.cryptoregistry.signature.builder.C2SignatureCollector;
 import com.cryptoregistry.signature.builder.ContactContentsIterator;
 import com.cryptoregistry.signature.builder.ECDSASignatureBuilder;
 import com.cryptoregistry.signature.builder.ECKeyContentsIterator;
@@ -249,12 +249,12 @@ public class SignaturePanel extends JPanel {
 		switch(alg){
 			case Curve25519: {
 				Curve25519KeyForPublication pub = (Curve25519KeyForPublication) pubKey;
-				C2SignatureBuilder sigBuilder = new C2SignatureBuilder(regHandle, (Curve25519KeyContents) secureKey);
+				C2SignatureCollector sigBuilder = new C2SignatureCollector(regHandle, (Curve25519KeyContents) secureKey);
 				iter = new C2KeyContentsIterator(pub);
 				// key contents
 				while(iter.hasNext()){
 					String label = iter.next();
-					sigBuilder.update(label, iter.get(label));
+					sigBuilder.collect(label, iter.get(label));
 				}
 				requestFormatter.add(pub);
 				// contacts
@@ -262,7 +262,7 @@ public class SignaturePanel extends JPanel {
 					iter = new ContactContentsIterator(contact);
 					while(iter.hasNext()){
 						String label = iter.next();
-						sigBuilder.update(label, iter.get(label));
+						sigBuilder.collect(label, iter.get(label));
 					}
 					requestFormatter.add(contact);
 				}
@@ -270,7 +270,7 @@ public class SignaturePanel extends JPanel {
 				iter = new MapDataContentsIterator(affirmations);
 				while(iter.hasNext()){
 					String label = iter.next();
-					sigBuilder.update(label, iter.get(label));
+					sigBuilder.collect(label, iter.get(label));
 				}
 				requestFormatter.add(affirmations);
 				
@@ -402,6 +402,5 @@ public class SignaturePanel extends JPanel {
 				} catch (IOException e) {}
 		}
 	}
-	
 	
 }

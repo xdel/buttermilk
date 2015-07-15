@@ -6,7 +6,9 @@
 package com.cryptoregistry.utility.app;
 
 import java.io.IOException;
-import java.nio.charset.Charset;
+
+import net.iharder.Base64;
+import x.org.bouncycastle.util.encoders.Hex;
 
 import com.cryptoregistry.util.CmdLineParser;
 import com.cryptoregistry.util.CmdLineParser.Option;
@@ -23,7 +25,7 @@ public class BiEntropyApp {
 		CmdLineParser parser = new CmdLineParser();
 		Option<String> fileOpt = parser.addStringOption('f', "file");
 		Option<String> argOpt = parser.addStringOption('a', "arg");
-		Option<String> charsetOpt = parser.addStringOption('c', "charset");
+		Option<String> encodingOpt = parser.addStringOption('e', "encoding");
 		
 		try {
 			parser.parse(argv);
@@ -31,18 +33,12 @@ public class BiEntropyApp {
 			String filePath = parser.getOptionValue(fileOpt);
 			String arg = parser.getOptionValue(argOpt);
 			
-			String cs = parser.getOptionValue(charsetOpt);
-			Charset charset = null;
-			if(cs == null) {
-				charset = Charset.defaultCharset();
-			}else {
-				charset = Charset.forName(cs);
-			}
+			FileUtil.ARMOR armor = FileUtil.ARMOR.valueOf(parser.getOptionValue(encodingOpt, FileUtil.ARMOR.none.toString()));
 			
 			if(filePath != null) {
 				// process file
-				String s = FileUtil.readFile(filePath, charset);
-				TresBiEntropy bi = new TresBiEntropy(s.getBytes());
+				byte [] sb = FileUtil.readFile(filePath,armor);
+				TresBiEntropy bi = new TresBiEntropy(sb);
 				Result res = bi.calc();
 				System.out.println(res.toJSON());
 			}else if(arg != null){
@@ -53,9 +49,19 @@ public class BiEntropyApp {
 					System.out.println(res.toJSON());
 					return;
 				}
-				TresBiEntropy bi = new TresBiEntropy(arg.getBytes());
-				Result res = bi.calc();
-				System.out.println(res.toJSON());
+				
+				byte [] bytes = null;
+				switch(armor){
+					case hex:
+					case base16: bytes = Hex.decode(arg.getBytes()); break;
+					case base64: bytes = Base64.decode(arg); break;
+					case base64url: bytes = Base64.decode(arg, Base64.URL_SAFE); break;
+					case none: bytes = arg.getBytes("UTF-8");break;
+				}
+					TresBiEntropy bi = new TresBiEntropy(bytes);
+					Result res = bi.calc();
+					System.out.println(res.toJSON());
+				
 			}else{
 				ShowHelpUtil.showHelp("/bientropy-help-message.txt");
 			}
@@ -65,5 +71,7 @@ public class BiEntropyApp {
 			e.printStackTrace();
 		}
 	}
+	
+	
 
 }
