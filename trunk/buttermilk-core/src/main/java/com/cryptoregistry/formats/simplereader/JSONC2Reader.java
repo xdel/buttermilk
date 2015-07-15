@@ -30,7 +30,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  * <p>
  * While less general, this approach allows the programmer to avoid the process of testing 
  * the runtime object to find the type which was parsed using the "KeyMaterials" semantics. 
- * In other words, it is a simple, efficient, direct approach.  
+ * In other words it is a simple, efficient, direct approach.  
  * </p>
  * 
  * <p>This class assumes you are reading a very simple key file with no associated signatures

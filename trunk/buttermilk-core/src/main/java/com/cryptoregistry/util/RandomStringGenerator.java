@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.Random;
 
 /**
- * Strings are not of cryptographic strength in terms of randomness.
+ * These strings are not of cryptographic strength in terms of randomness.
  * 
  * @author Dave
  *
