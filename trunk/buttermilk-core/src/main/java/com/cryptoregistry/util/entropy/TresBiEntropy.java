@@ -214,8 +214,20 @@ public class TresBiEntropy {
 
 		@Override
 		public String toString() {
+			
+			String output = null;
+			try {
+				switch(armor){
+					case hex: output = new String(Hex.encode(input)).toUpperCase(); break;
+					case base16: output = new String(Hex.encode(input)); break;
+					case base64: output = Base64.encodeBytes(input); break;
+					case base64url: output = Base64.encodeBytes(input, Base64.URL_SAFE); break;
+					case none: output = new String(input,"UTF-8");break;
+				}
+			}catch(IOException x){}
+				
 			return "Result [biEntropy=" + format.format(biEntropy) + ", bitsOfEntropy="
-					+ Math.round(bitsOfEntropy) + "]";
+					+ Math.round(bitsOfEntropy) +"input="+ output+"]";
 		}
 
 		public String toJSON() {
