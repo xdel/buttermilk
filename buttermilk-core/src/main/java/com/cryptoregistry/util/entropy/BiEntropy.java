@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import com.cryptoregistry.util.FileUtil;
 import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -24,7 +25,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
  * 
  * This class is really useful only for one byte inputs which is probably not
  * what brought you looking for this code. See TresBiEntropy class for 
- * arbitrary length inputs like can be used with a password
+ * arbitrary length inputs such as can be used with a password or key
  * 
  * @author Dave
  * @TresBiEntropy
@@ -126,7 +127,14 @@ public class BiEntropy {
 		collect();
 		compute(binaryExpansion);
 		double res = U/T;
-		bitsAsString = binaryExpansion.toString();
+		StringBuffer buf = new StringBuffer();
+		for(Character c: binaryExpansion){
+			buf.append(c);
+			buf.append(" ");
+		}
+		buf.deleteCharAt(buf.length()-1);
+		//bitsAsString = binaryExpansion.toString();
+		bitsAsString = buf.toString();
 		return new Result(input, bitsAsString, res, res*1*8);
 	}
 	
@@ -154,6 +162,7 @@ public class BiEntropy {
 	
 	public class Result {
 		
+		public FileUtil.ARMOR armor;
 		public double biEntropy;
 		public double bitsOfEntropy;
 		private byte in;
@@ -165,6 +174,7 @@ public class BiEntropy {
 			this.bitsOfEntropy = bitsOfEntropy;
 			this.in = in;
 			this.bitsAsString = bitsAsString;
+			
 		}
 
 		@Override
@@ -194,6 +204,37 @@ public class BiEntropy {
 				e.printStackTrace();
 			}
 			return writer.toString();
+		}
+		
+		public String toCSV() {
+			StringBuffer buf = new StringBuffer();
+			buf.append("version");
+			buf.append(",");
+			buf.append("algorithm");
+			buf.append(",");
+			buf.append("input");
+			buf.append(",");
+			buf.append("bits");
+			buf.append(",");
+			buf.append("biEntropy");
+			buf.append(",");
+			buf.append("bitsOfEntropy");
+			buf.append("\n");
+			
+			buf.append( "Buttermilk BiEntropy v1.0");
+			buf.append(",");
+			buf.append("BiEntropy");
+			buf.append(",");
+			buf.append(Character.valueOf((char)in));
+			buf.append(",");
+			buf.append(bitsAsString);
+			buf.append(",");
+			buf.append(format.format(biEntropy));
+			buf.append(",");
+			buf.append(Math.round(bitsOfEntropy));
+			buf.append("\n");
+			
+			return buf.toString();
 		}
 		
 		

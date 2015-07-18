@@ -12,6 +12,10 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import net.iharder.Base64;
+import x.org.bouncycastle.util.encoders.Hex;
+
+import com.cryptoregistry.util.FileUtil;
 import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -22,7 +26,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
  * 
  * http://arxiv.org/ftp/arxiv/papers/1305/1305.0954.pdf
  * 
- * Suitable for arbitrary length byte arrays such as keys or passwords
+ * Suitable for arbitrary length byte arrays such as keys or passwords up to about 256 bits (possibly more)
  * 
  * @author Dave
  *
@@ -37,9 +41,36 @@ public class TresBiEntropy {
 	
 	double U, T; // intermediate values
 	
+	final FileUtil.ARMOR armor;
+	
 	public TresBiEntropy(byte[] input) {
 		this.input = input;
 		binaryExpansion = new ArrayList<Character>();
+		armor = FileUtil.ARMOR.none;
+	}
+	
+	/**
+	 * armor can be none, hex, base16 (same as hex), base64, base64url
+	 * @param input
+	 * @param armor
+	 */
+	public TresBiEntropy(String arg, FileUtil.ARMOR armor) {
+		
+		byte [] bytes = null;
+		
+		try {
+			switch(armor){
+				case hex:
+				case base16: bytes = Hex.decode(arg.getBytes()); break;
+				case base64: bytes = Base64.decode(arg); break;
+				case base64url: bytes = Base64.decode(arg, Base64.URL_SAFE); break;
+				case none: bytes = arg.getBytes("UTF-8");break;
+			}
+		}catch(IOException x){}
+		
+		this.input = bytes;
+		binaryExpansion = new ArrayList<Character>();
+		this.armor = armor;
 	}
 	
 	/**
@@ -126,7 +157,7 @@ public class TresBiEntropy {
 		int length = collect();
 		compute(binaryExpansion);
 		double res = U/T;
-		return new Result(input, res, res*length*8);
+		return new Result(input, res, res*length*8,armor);
 	}
 	
 	/**
@@ -167,16 +198,18 @@ public class TresBiEntropy {
 	
 	public static class Result {
 		
+		public FileUtil.ARMOR armor;
 		public double biEntropy;
 		public double bitsOfEntropy;
 		private byte [] input;
 		final DecimalFormat format = new DecimalFormat("#######0.00");
 		
-		public Result(byte [] input, double biEntropy, double bitsOfEntropy) {
+		public Result(byte [] input, double biEntropy, double bitsOfEntropy, FileUtil.ARMOR armor) {
 			super();
 			this.biEntropy = biEntropy;
 			this.bitsOfEntropy = bitsOfEntropy;
 			this.input = input;
+			this.armor = armor;
 		}
 
 		@Override
@@ -189,8 +222,22 @@ public class TresBiEntropy {
 			Map<String,Object> map = new LinkedHashMap<String,Object>();
 			map.put("version", "Buttermilk BiEntropy v1.0");
 			map.put("algorithm", "TresBiEntropy");
-			if(input.length < 64) map.put("input", new String(input));
-			if(input.length >= 64) map.put("input", new String(input).substring(0, 64)+"...");
+			map.put("encoding", armor.toString());
+			
+			String output = null;
+			try {
+				switch(armor){
+					case hex:
+					case base16: output = new String(Hex.encode(input)); break;
+					case base64: output = Base64.encodeBytes(input); break;
+					case base64url: output = Base64.encodeBytes(input, Base64.URL_SAFE); break;
+					case none: output = new String(input,"UTF-8");break;
+				}
+			}catch(IOException x){}
+			
+			map.put("input", output);
+			
+			
 			map.put("biEntropy", format.format(biEntropy));
 			map.put("bitsOfEntropy", Math.round(bitsOfEntropy));
 			ObjectMapper mapper = new ObjectMapper();
@@ -206,6 +253,94 @@ public class TresBiEntropy {
 				e.printStackTrace();
 			}
 			return writer.toString();
+		}
+		
+		public Map<String,Object> toMap() {
+			Map<String,Object> map = new LinkedHashMap<String,Object>();
+			
+			String output = null;
+			try {
+				switch(armor){
+					case hex:
+					case base16: output = new String(Hex.encode(input)); break;
+					case base64: output = Base64.encodeBytes(input); break;
+					case base64url: output = Base64.encodeBytes(input, Base64.URL_SAFE); break;
+					case none: output = new String(input,"UTF-8");break;
+				}
+			}catch(IOException x){}
+			
+			map.put("input", output);
+			
+			map.put("biEntropy", format.format(biEntropy));
+			map.put("bitsOfEntropy", Math.round(bitsOfEntropy));
+			return map;
+		}
+		
+		public String toCSV() {
+			StringBuffer buf = new StringBuffer();
+			buf.append("version");
+			buf.append(",");
+			buf.append("algorithm");
+			buf.append(",");
+			buf.append("input");
+			buf.append(",");
+			buf.append("bits");
+			buf.append(",");
+			buf.append("biEntropy");
+			buf.append(",");
+			buf.append("bitsOfEntropy");
+			buf.append("\n");
+			
+			String output = null;
+			try {
+				switch(armor){
+					case hex:
+					case base16: output = new String(Hex.encode(input)); break;
+					case base64: output = Base64.encodeBytes(input); break;
+					case base64url: output = Base64.encodeBytes(input, Base64.URL_SAFE); break;
+					case none: output = new String(input,"UTF-8");break;
+				}
+			}catch(IOException x){}
+		
+			buf.append( "Buttermilk BiEntropy v1.0");
+			buf.append(",");
+			buf.append("TresBiEntropy");
+			buf.append(",");
+			buf.append(output);
+			buf.append(",");
+			buf.append(format.format(biEntropy));
+			buf.append(",");
+			buf.append(Math.round(bitsOfEntropy));
+			buf.append("\n");
+			
+			return buf.toString();
+		}
+		
+		public String toCSVLine() {
+			StringBuffer buf = new StringBuffer();
+			String output = null;
+			try {
+				switch(armor){
+					case hex:
+					case base16: output = new String(Hex.encode(input)); break;
+					case base64: output = Base64.encodeBytes(input); break;
+					case base64url: output = Base64.encodeBytes(input, Base64.URL_SAFE); break;
+					case none: output = new String(input,"UTF-8");break;
+				}
+			}catch(IOException x){}
+		
+			buf.append( "Buttermilk BiEntropy v1.0");
+			buf.append(",");
+			buf.append("TresBiEntropy");
+			buf.append(",");
+			buf.append(output);
+			buf.append(",");
+			buf.append(format.format(biEntropy));
+			buf.append(",");
+			buf.append(Math.round(bitsOfEntropy));
+			buf.append("\n");
+			
+			return buf.toString();
 		}
 
 		@Override
