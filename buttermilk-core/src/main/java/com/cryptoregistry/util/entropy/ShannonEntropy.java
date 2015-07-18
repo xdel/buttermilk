@@ -91,6 +91,7 @@ public final class ShannonEntropy {
 			super();
 			this.shannonEntropy = shannonEntropy;
 			this.bitsOfEntropy = bitsOfEntropy;
+			this.input = input;
 		}
 
 		@Override
