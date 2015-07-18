@@ -78,15 +78,16 @@ public final class ShannonEntropy {
 	
 	public static Result shannonEntropy(String input){
 		double ent = getShannonEntropy(input);
-		return new Result(ent,(int)(ent*input.length()));
+		return new Result(input, ent,(int)(ent*input.length()));
 	}
 	
 	public static class Result {
 		
 		public double shannonEntropy;
 		public int bitsOfEntropy;
+		public String input;
 		
-		public Result(double shannonEntropy, int bitsOfEntropy) {
+		public Result(String input, double shannonEntropy, int bitsOfEntropy) {
 			super();
 			this.shannonEntropy = shannonEntropy;
 			this.bitsOfEntropy = bitsOfEntropy;
@@ -95,7 +96,7 @@ public final class ShannonEntropy {
 		@Override
 		public String toString() {
 			return "Result [shannonEntropy=" + shannonEntropy
-					+ ", bitsOfEntropy=" + bitsOfEntropy + "]";
+					+ ", bitsOfEntropy=" + bitsOfEntropy +", input="+input+ "]";
 		}
 
 		@Override
