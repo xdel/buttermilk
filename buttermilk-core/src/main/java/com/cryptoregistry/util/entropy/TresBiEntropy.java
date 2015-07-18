@@ -329,7 +329,7 @@ public class TresBiEntropy {
 				}
 			}catch(IOException x){}
 		
-			buf.append( "Buttermilk BiEntropy v1.0");
+			buf.append("Buttermilk BiEntropy v1.0");
 			buf.append(",");
 			buf.append("TresBiEntropy");
 			buf.append(",");
@@ -338,7 +338,6 @@ public class TresBiEntropy {
 			buf.append(format.format(biEntropy));
 			buf.append(",");
 			buf.append(Math.round(bitsOfEntropy));
-			buf.append("\n");
 			
 			return buf.toString();
 		}
