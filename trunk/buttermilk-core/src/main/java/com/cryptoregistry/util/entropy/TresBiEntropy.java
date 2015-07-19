@@ -227,7 +227,7 @@ public class TresBiEntropy {
 			}catch(IOException x){}
 				
 			return "Result [biEntropy=" + format.format(biEntropy) + ", bitsOfEntropy="
-					+ Math.round(bitsOfEntropy) +"input="+ output+"]";
+					+ Math.round(bitsOfEntropy) +", input="+ output+"]";
 		}
 
 		public String toJSON() {
@@ -353,6 +353,11 @@ public class TresBiEntropy {
 			
 			return buf.toString();
 		}
+		
+		public String biEntropyFormatted(){
+			return format.format(biEntropy);
+		}
+		
 
 		@Override
 		public int hashCode() {
