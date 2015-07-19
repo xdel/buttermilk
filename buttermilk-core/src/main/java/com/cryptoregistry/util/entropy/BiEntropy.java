@@ -37,7 +37,7 @@ public class BiEntropy {
 	
 	final static Character ZERO = new Character('0');
 	final static Character ONE = new Character('1');
-	final DecimalFormat format = new DecimalFormat("#######0.00");
+	final DecimalFormat format = new DecimalFormat("#######0.000");
 	
 	String bitsAsString;
 	
@@ -181,6 +181,10 @@ public class BiEntropy {
 		public String toString() {
 			return "Result [biEntropy=" + format.format(biEntropy) + ", bitsOfEntropy="
 					+ Math.round(bitsOfEntropy) + "]";
+		}
+		
+		public String biEntropyFormatted(){
+			return format.format(biEntropy);
 		}
 		
 		public String toJSON() {
