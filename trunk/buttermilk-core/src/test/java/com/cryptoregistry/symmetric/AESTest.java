@@ -23,6 +23,14 @@ public class AESTest {
 		byte [] unencrypted = aes.decrypt(encrypted);
 		
 		Assert.assertTrue(test_equal(exampleData,unencrypted));
+		
+		// reuse
+		rand.nextBytes(exampleData);
+		encrypted = aes.encrypt(exampleData);
+		unencrypted = aes.decrypt(encrypted);
+		
+		Assert.assertTrue(test_equal(exampleData,unencrypted));
+	
 	}
 	
 	@Test

@@ -22,25 +22,38 @@ public class AESCBCPKCS7 {
 
 	private final byte [] key;
 	private final byte [] iv;
+	private boolean ENCRYPT_MODE;
+	
+	ParametersWithIV holder;
+	CBCBlockCipher blockCipher;
+	PaddedBufferedBlockCipher aesCipher;
 	
 	public AESCBCPKCS7(byte [] key, byte [] iv) {
 		this.key = key;
 		this.iv = iv;
+		init(true);
+	}
+	
+	// internally prep the cipher as required, which allows it to be reused for multiple calls
+	public void init(boolean mode){
+		holder = this.buildKey();
+		blockCipher = new CBCBlockCipher(new AESFastEngine());
+		aesCipher = new PaddedBufferedBlockCipher(blockCipher, new PKCS7Padding());
+		aesCipher.init(mode, holder);
+		ENCRYPT_MODE = mode;
 	}
 	
 	public byte [] encrypt(byte [] input) {
-		ParametersWithIV holder = this.buildKey();
-		CBCBlockCipher blockCipher = new CBCBlockCipher(new AESFastEngine());
-		PaddedBufferedBlockCipher aesCipher = new PaddedBufferedBlockCipher(blockCipher, new PKCS7Padding());
-		aesCipher.init(true, holder);
+		if(!ENCRYPT_MODE){
+			init(true);
+		}
 		return genCipherData(aesCipher, input);
 	}
 	
 	public byte [] decrypt(byte [] encrypted) {
-		ParametersWithIV holder = this.buildKey();
-		CBCBlockCipher blockCipher = new CBCBlockCipher(new AESFastEngine());
-		PaddedBufferedBlockCipher aesCipher = new PaddedBufferedBlockCipher(blockCipher, new PKCS7Padding());
-		aesCipher.init(false, holder);
+		if(ENCRYPT_MODE){
+			init(false);
+		}
 		return genCipherData(aesCipher, encrypted);
 	}
 	
